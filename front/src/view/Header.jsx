@@ -8,10 +8,10 @@ function Header() {
             <ul className="header-left">
                 
                 <li>
-                <Link to="/"><div>img</div></Link>
+                <Link to="/"><div id="logo-img"></div></Link>
                 </li>
                 <li>
-                <Link to="/">KICK EAT</Link>
+                <Link id="header-logo" to="/">KICK EAT</Link>
                 </li>
             </ul>
         </li>
