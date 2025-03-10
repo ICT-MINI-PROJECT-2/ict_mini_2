@@ -16,8 +16,8 @@ a {
     position: fixed;
     display: flex;
     width:100%;
-    min-width:1024px;
     height:80px;
+    min-width:680px;
     line-height: 80px;
     background-color: white;
     border-bottom: 3px solid #b21848;
@@ -26,6 +26,7 @@ a {
     transform: rotateX(0deg);
     perspective: 100%;
     z-index:100;
+    white-space: nowrap;
 }
 
 #logo-img{
@@ -75,7 +76,6 @@ a {
 }
 
 .header-right{
-    min-width: 200px;
     width: 66%;
     float:right;
 }
@@ -97,4 +97,49 @@ a {
 #header-logo{
     color:#b21848;
     font-size: 28px;
+}
+
+@media (max-width:1024px) {
+    .header>li:nth-child(1) {
+        width:25%;
+    }
+    .header>li:nth-child(2) {
+        width:50%;
+    }
+    .header>li:nth-child(3) {
+        width:25%;
+    }
+}
+@media (max-width:780px) {
+    .header{
+        font-size:13px;
+    }
+    .header>li:nth-child(1) {
+        width:33%;
+    }
+    .header>li:nth-child(2) {
+        width:45%;
+    }
+    .header>li:nth-child(3) {
+        width:22%;
+    }
+}
+
+@media (max-width:680px) {
+    .header{
+        font-size:12px;
+    }
+    .header>li:nth-child(1) {
+        width:25%;
+    }
+    .header>li:nth-child(2) {
+        width:53%;
+    }
+    .header>li:nth-child(3) {
+        width:22%;
+    }
+    #header-logo{
+        color:#b21848;
+        font-size: 22px;
+    }
 }
