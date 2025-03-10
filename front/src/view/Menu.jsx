@@ -31,7 +31,7 @@ function Menu(){
                 <Link to="/about">소개</Link>
                 </li>
                 <li>
-                <Link to="/">음식점 찾기</Link>
+                <Link to="/search">음식점 찾기</Link>
                 </li>
                 <li>
                 <Link to="/">자유게시판</Link>
