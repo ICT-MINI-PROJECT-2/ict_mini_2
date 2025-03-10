@@ -7,7 +7,7 @@
     top:50%;
     transform: translateY(-50%);
     position: fixed;
-    background-color: blueviolet;
+    background-color: #b21848;
     width:80px;
     height:80px;
     right:-90px;
@@ -21,11 +21,25 @@
 
 .menu-list {
     top:50%;
-    transform: translateY(-50%);
+    transform-origin: 100% 100%;
+    transform: translateY(-50%) rotateY(-90deg);
     position: fixed;
     width:100px;
     height:200px;
-    right:-200px;
-    background-color: blueviolet;
+    right:0px;
+    background-color: #b21848;
     transition: all 1s;
+}
+
+.menu-list a {
+    color:white;
+}
+
+.menu-button {
+    color:white;
+    font-family: "Gowun Dodum", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 25px;
+    line-height: 11px;
 }

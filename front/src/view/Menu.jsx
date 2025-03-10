@@ -9,11 +9,12 @@ function Menu(){
         if(menu_button && menu_list) {
             menu_button.addEventListener('mouseover', ()=>{
                 menu_list.style.right='0%';
+                menu_list.style.transform='translateY(-50%) rotateY(0deg)';
                 menu_button.style.right='-90px';
             });
             menu_list.addEventListener('mouseover', () =>{
                 menu_list.addEventListener('mouseleave', () => {
-                    menu_list.style.right='-200px';
+                    menu_list.style.transform='translateY(-50%) rotateY(-90deg)';
                     menu_button.style.right='-43px';
                 });
             })
@@ -22,6 +23,10 @@ function Menu(){
     return(
         <div className='menu-bar'>
             <div className='menu-button'>
+            <br/><br/>
+            &nbsp;&nbsp;―<br/>
+            &nbsp;&nbsp;―<br/>
+            &nbsp;&nbsp;―
             </div>
             <ul className='menu-list'>
                 <li>
