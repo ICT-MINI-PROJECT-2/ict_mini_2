@@ -21,23 +21,23 @@ function Header() {
                     <Link to="/about">소개</Link>
                 </li>
                 <li>
-                    <Link to="/">음식점 찾기</Link>
+                    <Link to="/find">음식점 찾기</Link>
                 </li>
                 <li>
-                    <Link to="/">자유게시판</Link>
+                    <Link to="/board">자유게시판</Link>
                 </li>
                 <li>
-                    <Link to="/">맛집 추천</Link>
+                    <Link to="/recommend">맛집 추천</Link>
                 </li>
             </ul>
         </li>
         <li>
             <ul className="header-right">
                 <li>
-                    <Link to="/">회원 가입</Link>
+                    <Link to="/signup">회원 가입</Link>
                 </li>
                 <li>
-                    <Link to="/">로그인</Link>
+                    <Link to="/login">로그인</Link>
                 </li>
             </ul>
         </li>
