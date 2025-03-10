@@ -1,4 +1,50 @@
 .find-container{
+    height:1000px;
     position: relative;
     padding-top:150px;
+}
+#logo {
+    width: 200px;
+    height: 200px;
+    margin: 50px auto 0;
+    background: url('../../../img/kickeat_logo.png');
+    background-size: cover;
+    background-position: center;
+}
+#logo-text {
+    text-align: center;
+    color:#b21848;
+    font-size: 40px;
+    margin-bottom: 50px;
+}
+.find-box {
+    display: flex;
+    justify-content: center;
+    height: 60px;
+    gap: 10px;
+}
+.find-box>input {
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #b21848;
+    font-family: "Gowun Dodum", sans-serif;
+    font-size: 1.2em;
+}
+.find-box input[type=text] {
+    max-width: 600px;
+    width: 50%;
+}
+#plus-btn, #search-btn {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #b21848;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+#plus-btn:hover, #search-btn:hover {
+    background-color: #bd3c63;
 }
