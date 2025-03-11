@@ -6,7 +6,10 @@ ul, li{
 
 a {
     text-decoration: none;
-    color:white;
+    color:#2c0813;
+    font-family: "Gowun Dodum", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .header {
@@ -14,23 +17,67 @@ a {
     display: flex;
     width:100%;
     height:80px;
+    min-width:680px;
     line-height: 80px;
-    background-color: blueviolet;
+    background-color: white;
+    border-bottom: 3px solid #b21848;
     transition: all 1s;
     transform-origin: 0% 0%;
     transform: rotateX(0deg);
     perspective: 100%;
     z-index:100;
+    white-space: nowrap;
+}
+
+#logo-img{
+    background: url(../img/kickeat_logo.png);
+    background-size:cover;
+    background-position: center;
+    width:60px;
+    height:60px;
+    margin-top:3px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.header-center>li>a:hover,.header-right>li>a:hover {
+    font-weight: bold;
+}
+
+.header-center>li>a,.header-right>li>a {
+    position: relative;
+}
+.header-center>li>a:after,.header-right>li>a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0px;
+    height: 2px;
+    margin: 5px 0 0;
+    transition: all 0.3s ease-in-out;
+    transition-duration: 0.3s;
+    opacity: 0;
+    background-color: #b21848;
+}
+.header-center>li>a:hover:after,.header-right>li>a:hover:after {
+    width: 100%;
+    opacity: 1;
 }
 
 .header>li:nth-child(1) {
     width:20%;
 }
 .header>li:nth-child(2) {
-    width:65%;
+    width:60%;
 }
 .header>li:nth-child(3) {
-    width:15%;
+    width:20%;
+}
+
+.header-right{
+    width: 66%;
+    float:right;
 }
 
 .header > li > ul {
@@ -45,4 +92,54 @@ a {
 
 .header-right > li{
     width:50%;
+}
+
+#header-logo{
+    color:#b21848;
+    font-size: 28px;
+}
+
+@media (max-width:1024px) {
+    .header>li:nth-child(1) {
+        width:25%;
+    }
+    .header>li:nth-child(2) {
+        width:50%;
+    }
+    .header>li:nth-child(3) {
+        width:25%;
+    }
+}
+@media (max-width:780px) {
+    .header{
+        font-size:13px;
+    }
+    .header>li:nth-child(1) {
+        width:33%;
+    }
+    .header>li:nth-child(2) {
+        width:45%;
+    }
+    .header>li:nth-child(3) {
+        width:22%;
+    }
+}
+
+@media (max-width:680px) {
+    .header{
+        font-size:12px;
+    }
+    .header>li:nth-child(1) {
+        width:25%;
+    }
+    .header>li:nth-child(2) {
+        width:53%;
+    }
+    .header>li:nth-child(3) {
+        width:22%;
+    }
+    #header-logo{
+        color:#b21848;
+        font-size: 22px;
+    }
 }

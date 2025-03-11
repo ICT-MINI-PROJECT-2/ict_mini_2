@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
                 if(header && menu_button && menu_list){
                     header[0].style.transform = "rotateX(0deg)";
                     menu_button[0].style.right= "-90px";
-                    menu_list[0].style.right = "-200px";
+                    //menu_list[0].style.right = "0px";
                 }
             }
         }

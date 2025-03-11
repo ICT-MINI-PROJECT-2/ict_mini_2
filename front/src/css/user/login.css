@@ -1,0 +1,72 @@
+.login-container{
+    position: relative;
+    padding-top:150px;
+    margin:0 auto;
+    width:60%;
+    min-width:600px;
+    max-width: 900px;
+	height:500px;
+}
+
+#login-title{
+	text-align:center;
+	font-size:45px;
+	padding-top:40px;
+}
+
+#login-box {
+	margin-top:40px;
+	display:grid;
+	grid-template-columns: 2fr 5fr;
+	width:70%;
+	margin-left:20%;
+}
+
+#login-left{
+	margin-left:auto;
+	width:70%;
+	text-align:left;
+}
+
+#idpw{
+	color: #6A3D17;
+	height:30px;
+	line-height:30px;
+	font-size:18px;
+}
+
+.login-submit {
+	color:white;
+    font-size:25px;
+	display:block;
+	margin:auto;
+	margin-top:20px;
+	width: 45%;
+	border:none;
+	height:50px;
+	cursor:pointer;
+	border-radius:10px;
+	background:rgba(106,61,23, 0.7);
+    box-shadow:inset 2px 2px 2px 0px rgba(255, 255, 255, 0.7),
+    1px 1px 3px 0px rgba(106,61,23,.5),
+    3px 3px 2px 0px rgba(106,61,23, 0.5);
+    color:white;
+    
+    transition:all 0.6s;
+}
+
+#login-right > input, #login-right-two > input {
+	padding:0;
+	margin:0;
+	height:30px;
+	background:transparent;
+	border:none;
+	border-radius:4px;
+    background:transparent;
+    box-shadow:inset 2px 2px 2px 0px rgba(106,61,23, 0.5),
+    1px 1px 3px 0px rgba(106,61,23, 0.2),
+    4px 4px 5px 0px rgba(106,61,23, 0.2);
+    padding-left:15px;
+    color:#6A3D17;
+    transition:all 0.7s;
+}
