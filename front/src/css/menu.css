@@ -24,15 +24,18 @@
     transform-origin: 100% 100%;
     transform: translateY(-50%) rotateY(-90deg);
     position: fixed;
-    width:100px;
-    height:200px;
+    width:250px;
+    height:400px;
     right:0px;
-    background-color: #b21848;
+    border: 3px solid #b21848;
+    border-right: 15px solid #b21848;
     transition: all 1s;
+    background-color: white;
+    border-radius: 7px 7px 7px 7px;
 }
 
 .menu-list a {
-    color:white;
+    color:black;
 }
 
 .menu-button {
@@ -42,4 +45,58 @@
     font-style: normal;
     font-size: 25px;
     line-height: 11px;
+}
+
+#menu-title{
+    font-family: "Gowun Dodum", sans-serif;
+    text-align: center;
+    font-size:1.8em;
+    margin-bottom:20px;
+    margin-top:20px;
+}
+
+.menu-list > li {
+    width:80%;
+    height:11.5%;
+    line-height: 20px;
+    font-size:1.3em;
+    margin:auto;
+    padding-left:30px;
+}
+
+.menu-list>li>a:hover {
+    font-weight: bold;
+}
+
+.menu-list>li>a {
+    position: relative;
+}
+.menu-list>li>a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0px;
+    height: 2px;
+    margin: 5px 0 0;
+    transition: all 0.3s ease-in-out;
+    transition-duration: 0.3s;
+    opacity: 0;
+    background-color: #b21848;
+}
+.menu-list>li>a:hover:after {
+    width: 100%;
+    opacity: 1;
+}
+
+#up-button{
+    font-size:35px;
+    line-height: 10px;
+    margin-left:200px;
+    transition: all 0.5s;
+}
+
+#up-button:hover{
+    cursor:pointer;
+    color:#666;
 }

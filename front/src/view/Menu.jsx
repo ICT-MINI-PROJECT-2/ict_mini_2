@@ -20,6 +20,11 @@ function Menu(){
             })
         }
     },[]);
+
+    const scrollUp = () => {
+        window.scrollTo({top:0,left:0,behavior:'smooth'});
+    }
+
     return(
         <div className='menu-bar'>
             <div className='menu-button'>
@@ -29,8 +34,9 @@ function Menu(){
             &nbsp;&nbsp;―
             </div>
             <ul className='menu-list'>
+                <div id='menu-title'>메뉴</div>
                 <li>
-                <Link to="/">홈</Link>
+                <Link to="/">메인 페이지</Link>
                 </li>
                 <li>
                 <Link to="/about">소개</Link>
@@ -44,6 +50,12 @@ function Menu(){
                 <li>
                 <Link to="/">맛집 추천</Link>
                 </li>
+                <li>
+                <Link to="/login">로그인</Link>
+                </li>
+                <div id="up-button" onClick={()=>scrollUp()}>
+                    ▲
+                </div>
             </ul>
         </div>
     );
