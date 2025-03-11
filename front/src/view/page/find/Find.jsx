@@ -4,8 +4,21 @@ import '../../../css/page/find/find.css';
 import Faded from '../../../effect/Faded';
 import plusImg from '../../../img/plus.png';
 import searchImg from '../../../img/search.png';
+import FindListItem from './FindListItem';
+import axios from 'axios';
 
 function Find(){
+    let [list, setList] = useState([]);
+
+    function searchList() {
+        axios.get('http://localhost:9977/find/searchList')
+        .then(function(response){
+            setList(response.data);
+        })
+        .catch(function(error){
+            console.log(error);
+        });
+    }
     const mount = useRef(true);
 
     const [area,setArea] = useState(['성동구','강남구','냠냠구','구구구','어어구','칠칠구']);
@@ -178,7 +191,6 @@ function Find(){
         setTag(tags);
         closeModal();
     }
-
     return(
         <Faded>
             <div id="find-modal">
@@ -227,7 +239,11 @@ function Find(){
                     <div id="search-btn"><img src={searchImg} width='40'/></div>
                 </div>
                 <div className='find-list'>
-
+                    {list.map((item)=>{
+                        return (
+                            <FindListItem restaurant={item}/>
+                        )
+                    })}
                 </div>
             </div>
         </Faded>
