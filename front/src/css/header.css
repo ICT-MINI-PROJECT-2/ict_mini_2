@@ -21,7 +21,7 @@ a {
     line-height: 80px;
     background-color: white;
     border-bottom: 3px solid #b21848;
-    transition: all 1s;
+    transition: all 0.7s;
     transform-origin: 0% 0%;
     transform: rotateX(0deg);
     perspective: 100%;

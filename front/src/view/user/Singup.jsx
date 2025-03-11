@@ -2,6 +2,9 @@ import '../../css/user/signup.css';
 import Faded from '../../effect/Faded'
 import '../../js/user/signup.js';
 import { useEffect, useRef, useState } from 'react';
+import Post from './Post.jsx';
+
+
 
 function Signup(){
     const mount = useRef(true);
@@ -15,8 +18,23 @@ function Signup(){
     
     const [zipcodeOk, setZipcodeOk] = useState(0);
     const [telOk, setTelOk] = useState(0);
-    const [creditOk, setCreditOk] = useState(0);
     
+    const [addr, setAddr] = useState({addr:'',});
+
+    const [popup, setPopup] = useState(false);
+
+    const handleInput = (e) => {
+        setAddr({
+            ...addr,
+            [e.target.name]:e.target.value,
+        })
+    }
+
+    const handleComplete = (data) => {
+        setPopup(!popup);
+    }
+
+
     useEffect(()=> {
         if(!mount.current){}
         else {
@@ -147,12 +165,6 @@ function Signup(){
         var tel3 = document.getElementById("tel3");
         var alert_tel = document.getElementById("alert-tel");
         
-        var credit1 = document.getElementById("credit1");
-        var credit2 = document.getElementById("credit2");
-        var credit3 = document.getElementById("credit3");
-        var credit4 = document.getElementById("credit4");
-        var alert_credit = document.getElementById("alert-credit");
-        
         
         if(zipcode.value === "") {
             alert_zipcode.innerHTML = "우편번호 찾기를 해주세요.";
@@ -171,20 +183,30 @@ function Signup(){
             alert_tel.style.opacity = 0;
             setTelOk(1);
         }
-        var regex_credit = /^[0-9]{4}-?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$/;
-        if(!regex_credit.test(credit1.value+'-'+credit2.value+'-'+credit3.value+'-'+credit4.value)) {
-            alert_credit.innerHTML = "올바른 카드번호를 입력해주세요.";
-            alert_credit.style.opacity = 1;
-            setCreditOk(0);
-        } else {
-            alert_credit.style.opacity = 0;
-            setCreditOk(1);
-        }
-        var result = pwOk+pw_chkOk+nameOk+emailOk+zipcodeOk+idOk+telOk+creditOk+emailOk2;
+        var result = pwOk+pw_chkOk+nameOk+emailOk+zipcodeOk+idOk+telOk+emailOk2;
         console.log(result);
-        if(result===9) {
+        if(result===8) {
             console.log("ok!!");
         }
+    }
+    const postButtonStyle = {
+        position:'absolute',
+        top:'8px',
+        right:'8px',
+        width:'30px',
+        height:'30px',
+        fontSize:'20px'
+    }
+    const postBox={
+        backgroundColor:'white',
+        width:'800px',
+        height:'450px',
+        position:'fixed',
+        left:'50%',
+        top:'50%',
+        transform:'translate(-50%,-50%)',
+        border:'2px solid black',
+        borderRadius:'5px'
     }
     return(
         <Faded>
@@ -198,10 +220,12 @@ function Signup(){
                         <div id="signup-left"><div id="idpw">NAME</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="username" name="username"/><div id="alert-name">Invalid NAME</div></div>
                         <div id="signup-left"><div id="idpw">EMAIL</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="email1" name="email1"/> @ <input type="text" id="email2" name="email2"/><div id="alert-email">Invalid EMAIL</div></div>
                         <div id="signup-left"><div id="idpw">TEL</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="tel1" name="tel1" maxLength='3'/> - <input type="text" id="tel2" name="tel2" maxLength='4'/> - <input type="text" id="tel3" name="tel3" maxLength='4'/><div id="alert-tel">Invalid TEL</div></div>
-                        <div id="signup-left"><div id="idpw">ZIPCODE</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value="3" id="zipcode" name="zipcode" readOnly/><button className="buttons" type="button">Find</button><div id="alert-zipcode">Invalid ZIPCODE</div></div>
-                        <div id="signup-left"><div id="idpw">ADDRESS</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value='3' id="addr" name="addr" readOnly/><div id="alert-addr">Invalid ADDRESS</div></div>
+                        <div id="signup-left"><div id="idpw">ZIPCODE</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value={addr.zonecode} id="zipcode" name="zipcode" readOnly/><button className="buttons" type="button" onClick={handleComplete}>Find</button><div id="alert-zipcode">Invalid ZIPCODE</div></div>
+                        <div id="signup-left"><div id="idpw">ADDRESS</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value={addr.address} id="addr" name="addr" readOnly/><div id="alert-addr">Invalid ADDRESS</div></div>
                         <div id="signup-left"><div id="idpw">DETAIL</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="addrdetail" name="addrdetail"/><div id="alert-addrdetail">Invalid DETAIL</div></div>
-                        <div id="signup-left"><div id="idpw">CREDIT</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="credit1" name="credit1" maxLength='4'/> - <input type="text" id="credit2" name="credit2" maxLength='4'/> - <input type="text" id="credit3" name="credit3" maxLength='4'/> - <input type="text" id="credit4" name="credit4" maxLength='4'/><div id="alert-credit">Invalid CREDIT</div></div>
+                        {popup && <div style={postBox}>
+                            <button title="X" style = {postButtonStyle} onClick={() => setPopup(false)} >X</button> 
+                            <Post addr={addr} setAddr={setAddr} setPopup={setPopup}/></div>}
                     </div>
                     <input className="signup-submit" onClick = {()=> {signUpChk()}} type="button" value="SignUp"/>
                 </form>

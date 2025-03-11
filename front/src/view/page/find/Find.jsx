@@ -236,7 +236,7 @@ function Find(){
                     <div id="plus-btn"><img src={plusImg} width='40' onClick={() => openModal()}/></div>
                     <input type="text" placeholder="검색어를 입력하세요." name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
-                    <div id="search-btn"><img src={searchImg} width='40'/></div>
+                    <div id="search-btn" onClick={searchList}><img src={searchImg} width='40'/></div>
                 </div>
                 <div className='find-list'>
                     {list.map((item)=>{
