@@ -3,10 +3,7 @@ package com.ke.serv.controller;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +17,11 @@ public class FindController {
     @GetMapping("/searchList")
     public List<RestaurantEntity> searchList() {
         return service.findListSelect();
+    }
+
+    @PostMapping("/findInfo")
+    public RestaurantEntity getInfo(@RequestBody RestaurantEntity entity) {
+        System.out.println(entity);
+        return service.restaurantSelect(entity.getId());
     }
 }

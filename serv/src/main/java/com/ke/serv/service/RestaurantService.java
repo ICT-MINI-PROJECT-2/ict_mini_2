@@ -15,4 +15,8 @@ public class RestaurantService {
     public List<RestaurantEntity> findListSelect() {
         return repository.findAll();
     }
+
+    public RestaurantEntity restaurantSelect(int id) {
+        return repository.findById(id);
+    }
 }
