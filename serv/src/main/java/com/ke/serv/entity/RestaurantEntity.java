@@ -14,12 +14,27 @@ public class RestaurantEntity {
 
     @Id
     @Column(name = "RESTAURANT_NO")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "RESTAURANT_NAME", nullable = false)
+    @Column(name = "RESTAURANT_NAME")
     private String name;
 
-    @Column(nullable = false)
     private String location;
+
+    @Column(columnDefinition = "float")
+    private float latitudex;
+
+    @Column(columnDefinition = "float")
+    private float latitudey;
+
+    private String tel;
+
+    private String postno;
+
+    private String category_1;
+
+    private String category_2;
+
+    @Column(columnDefinition = "float")
+    private float area;
 }
