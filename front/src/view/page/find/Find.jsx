@@ -11,13 +11,31 @@ function Find(){
     let [list, setList] = useState([]);
     let [searchWord, setSearchWord] = useState('');
 
+    useEffect(()=>{
+        let findInput = document.getElementsByName("find-input")[0];
+        findInput.addEventListener('focus', ()=>{
+            findInput.addEventListener('keydown', function(event) {
+                if (event.key == 'Enter') {
+                    console.log(findInput.value);
+                    searchList(findInput.value);
+                }
+            });
+        });
+    }, []);
+    
     useEffect(() => {
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
 
-    function searchList() {
-        let searchData = ({
+
+    const searchList = (msg)=> {
+        let searchData;
+        if(msg === null) searchData = ({
             searchWord: searchWord,
+            searchTag: tag
+        })
+        else searchData = ({
+            searchWord: msg,
             searchTag: tag
         })
         axios.post('http://localhost:9977/find/searchList', searchData)
@@ -252,7 +270,7 @@ function Find(){
                     <div id="plus-btn"><img src={plusImg} width='40' onClick={() => openModal()}/></div>
                     <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onChange={doSearch} name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
-                    <div id="search-btn" onClick={searchList}><img src={searchImg} width='40'/></div>
+                    <div id="search-btn" onClick={() =>{searchList(null)}}><img src={searchImg} width='40'/></div>
                 </div>
                 <div className='find-list'>
                     {list.map((item, idx)=>{
