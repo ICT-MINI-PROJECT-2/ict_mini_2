@@ -231,8 +231,9 @@
 
 /* ===== findInfo CSS ===== */
 .info {
+    min-width: 700px;
     padding-top: 80px;
-    margin: 0 10%;
+    margin: 0 auto;
     font-family: "Gowun Dodum", sans-serif;
 }
 .info>h1 {
@@ -248,12 +249,12 @@
     background-color: aliceblue;
 }
 .rLocation, .rate {
+    height: 40vw;
     border: 1px solid, #ddd;
     background-color: #fff;
 }
-.rLocation>div {
-    height: 20vw;
-    margin: 20px;
-    padding: 10px;
-    background-color: antiquewhite;
+#map {
+    margin-top: 5px;
+    height: calc(100% - 30px);
+    border: 1px solid #555;
 }
