@@ -131,3 +131,9 @@
 	opacity:0;
 	font-size:13px;
 }
+
+.postmodal{
+    position : fixed;
+	border-top:2px solid black;
+	top:10%;
+}
