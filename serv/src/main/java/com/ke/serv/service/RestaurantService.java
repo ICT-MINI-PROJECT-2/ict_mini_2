@@ -12,7 +12,13 @@ import java.util.List;
 public class RestaurantService {
     private final RestaurantRepository repository;
 
-    public List<RestaurantEntity> findListSelect() {
-        return repository.findAll();
+    public List<RestaurantEntity> findListSelect(String searchWord) {
+        return repository.findByNameContaining(searchWord);
     }
+
+    public RestaurantEntity restaurantSelect(int id) {
+        return repository.findById(id);
+    }
+
+    public void addRestaurantByAPI(RestaurantEntity re) {repository.save(re);}
 }

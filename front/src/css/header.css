@@ -21,7 +21,7 @@ a {
     line-height: 80px;
     background-color: white;
     border-bottom: 3px solid #b21848;
-    transition: all 1s;
+    transition: all 0.7s;
     transform-origin: 0% 0%;
     transform: rotateX(0deg);
     perspective: 100%;
@@ -97,6 +97,22 @@ a {
 #header-logo{
     color:#b21848;
     font-size: 28px;
+}
+
+#header-who{
+    color:#b21848;
+    position: absolute;
+    top:24px;
+    right:2%;
+    font-size:14px;
+    font-family: "Gowun Dodum", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    height:0;
+}
+#header-who > h5{
+    display: inline;
+    font-size:15px;
 }
 
 @media (max-width:1024px) {
