@@ -10,7 +10,11 @@ import axios from 'axios';
 function Find(){
     let [list, setList] = useState([]);
 
-    function searchList() {
+    useEffect(() => {
+        window.scrollTo({top:450,left:0,behavior:'smooth'});
+    },[list])
+
+    async function searchList() {
         axios.get('http://localhost:9977/find/searchList')
         .then(function(response){
             setList(response.data);
@@ -19,6 +23,7 @@ function Find(){
             console.log(error);
         });
     }
+    
     const mount = useRef(true);
 
     const [area,setArea] = useState(['성동구','강남구','냠냠구','구구구','어어구','칠칠구']);
@@ -239,9 +244,9 @@ function Find(){
                     <div id="search-btn" onClick={searchList}><img src={searchImg} width='40'/></div>
                 </div>
                 <div className='find-list'>
-                    {list.map((item)=>{
+                    {list.map((item, idx)=>{
                         return (
-                            <FindListItem restaurant={item}/>
+                            <FindListItem key={idx} restaurant={item}/>
                         )
                     })}
                 </div>
