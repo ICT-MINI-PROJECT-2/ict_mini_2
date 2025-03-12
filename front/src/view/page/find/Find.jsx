@@ -87,7 +87,7 @@ function Find(){
     },[]);
 
     document.addEventListener('keydown', function(event) {
-        if (event.keyCode == 27) {
+        if (event.key == 27) {
             closeModal();
         }
     });
