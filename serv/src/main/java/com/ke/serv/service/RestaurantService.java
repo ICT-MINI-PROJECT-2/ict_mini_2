@@ -19,4 +19,6 @@ public class RestaurantService {
     public RestaurantEntity restaurantSelect(int id) {
         return repository.findById(id);
     }
+
+    public void addRestaurantByAPI(RestaurantEntity re) {repository.save(re);}
 }
