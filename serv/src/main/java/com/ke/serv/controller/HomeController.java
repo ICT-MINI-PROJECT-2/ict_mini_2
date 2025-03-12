@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
@@ -24,6 +27,19 @@ public class HomeController {
     public String home(){
         return "index";
     }
+
+    @GetMapping("/test")
+    public RestaurantEntity test(String val) {
+        String url = "https://map.naver.com/p/search/아침햇참";
+        try {
+            Document doc = Jsoup.connect(url).get();
+            System.out.println(doc);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return rest_service.restaurantSelect(Integer.parseInt(val));
+    }
+
     @GetMapping("/api")
     public String setAPI(){
         String result="";
