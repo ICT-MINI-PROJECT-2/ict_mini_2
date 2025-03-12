@@ -3,6 +3,7 @@ import Faded from '../../effect/Faded'
 import '../../js/user/signup.js';
 import { useEffect, useRef, useState } from 'react';
 import Post from './Post.jsx';
+import axios from 'axios';
 
 
 
@@ -23,17 +24,27 @@ function Signup(){
 
     const [popup, setPopup] = useState(false);
 
-    const handleInput = (e) => {
-        setAddr({
-            ...addr,
-            [e.target.name]:e.target.value,
-        })
-    }
+    const [idst, setIdst] = useState(0);
 
     const handleComplete = (data) => {
         setPopup(!popup);
     }
 
+    useEffect(()=>{
+        if(idOk===1) {
+            let userid = document.getElementById("userid");
+            var alert_id = document.getElementById("alert-id");
+            axios.post("http://localhost:9977/user/idChk",{userid:userid.value})
+            .then(res => {
+                if(res.data===1) {
+                    setIdOk(0);
+                    alert_id.innerHTML = "이미 존재하는 아이디 입니다.";
+                    alert_id.style.opacity = 1;
+                }
+            })
+            .catch(err=>console.log(err))
+        }
+    },[idst]);
 
     useEffect(()=> {
         if(!mount.current){}
@@ -53,6 +64,7 @@ function Signup(){
             var alert_email = document.getElementById("alert-email");
             if(userid)
             userid.addEventListener("input",()=>{
+                setIdst(userid.value.length);
                 if(userid.value.length < 7) {
                     alert_id.innerHTML = "7자 이상 입력해주세요.";
                     alert_id.style.opacity = 1;
@@ -68,30 +80,6 @@ function Signup(){
                         setIdOk(1);
                     }
             });
-            /*
-            userid.onblur = function(e) {
-                if(idOk==1) {
-                    var params = {
-                        userid:userid.value,
-                    }
-                    fetch("/user/idChk",{
-                        method:"POST",
-                        headers:{
-                            "Content-Type":"application/json",
-                        },
-                        body:JSON.stringify(params)
-                        }).then(response => response.json())
-                        .then(data=>{
-                            if(data==1) {
-                                idOk=0;
-                                alert_id.innerHTML = "이미 존재하는 아이디 입니다.";
-                                alert_id.style.opacity = 1;
-                            }
-                        }).catch(err=> {
-                        console.log(err);
-                    });
-                }
-            }*/
             var regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,15}$/;
             if(userpw)
             userpw.addEventListener("input",()=>{
@@ -184,9 +172,37 @@ function Signup(){
             setTelOk(1);
         }
         var result = pwOk+pw_chkOk+nameOk+emailOk+zipcodeOk+idOk+telOk+emailOk2;
-        console.log(result);
         if(result===8) {
-            console.log("ok!!");
+            let userid = document.getElementById("userid");
+            let userpw = document.getElementById("userpw");
+            let username = document.getElementById("username");
+            let email1 = document.getElementById("email1");
+            let email2 = document.getElementById("email2");
+            let zipcode = document.getElementById('zipcode');
+            let addr = document.getElementById("addr");
+            let addrdetail = document.getElementById('addrdetail');
+            let tel1 = document.getElementById("tel1");
+            let tel2 = document.getElementById("tel2");
+           let tel3 = document.getElementById("tel3");
+           axios.post('http://localhost:9977/user/signup',{
+                userid:userid.value,
+                userpw:userpw.value,
+                username:username.value,
+                email1:email1.value,
+                email2:email2.value,
+                zipcode:zipcode.value,
+                addr:addr.value,
+                addrdetail:addrdetail.value,
+                tel1:tel1.value,
+                tel2:tel2.value,
+                tel3:tel3.value
+           })
+           .then(res => {
+                if(res.data === 'ok') {
+                    window.location.href='#/login';
+                }
+           })
+           .catch(err => console.log(err))
         }
     }
     const postButtonStyle = {
@@ -212,7 +228,7 @@ function Signup(){
         <Faded>
             <div className="signup-container">
             <div id="signup-title">Sign Up</div>
-                <form name="signupForm" method="post" action="signUpChk">
+                <form name="signupForm">
                     <div id="signup-box">
                         <div id="signup-left"><div id="idpw">ID</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="userid" name="userid"/><div id="alert-id">Invalid ID</div></div>
                         <div id="signup-left"><div id="idpw">PW</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw" name="userpw"/><div id="alert-pw">Invalid PW</div></div>
@@ -227,7 +243,7 @@ function Signup(){
                             <button title="X" style = {postButtonStyle} onClick={() => setPopup(false)} >X</button> 
                             <Post addr={addr} setAddr={setAddr} setPopup={setPopup}/></div>}
                     </div>
-                    <input className="signup-submit" onClick = {()=> {signUpChk()}} type="button" value="SignUp"/>
+                    <input className="signup-submit" onClick = {signUpChk} type="button" value="SignUp"/>
                 </form>
             </div>
         </Faded>
