@@ -2,6 +2,12 @@ import {Link} from 'react-router-dom';
 import '../css/header.css';
 
 function Header() {
+
+    const logout = () => {
+        sessionStorage.clear();
+        window.location.href="/";
+    }
+
     return (
       <ul className="header">
         <li>
@@ -33,12 +39,17 @@ function Header() {
         </li>
         <li>
             <ul className="header-right">
-                <li>
-                    <Link to="/signup">회원 가입</Link>
-                </li>
-                <li>
+                {sessionStorage.getItem("loginStatus") === 'Y' ? <li>
+                    <Link to='/mypage'>마이페이지</Link>
+                </li> : <li>
+                    <Link to="/signup">회원가입</Link>
+                </li>}
+                {sessionStorage.getItem("loginStatus") === 'Y' ? <li>
+                    <Link onClick={logout}>로그아웃</Link>
+                </li> : <li>
                     <Link to="/login">로그인</Link>
-                </li>
+                </li>}
+                {sessionStorage.getItem("loginStatus") === 'Y' && <div id="header-who">환영합니다 '<h5>{sessionStorage.getItem("loginName")}</h5>' 님</div>}
             </ul>
         </li>
       </ul>

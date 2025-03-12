@@ -9,16 +9,27 @@ import axios from 'axios';
 
 function Find(){
     let [list, setList] = useState([]);
+    let [searchWord, setSearchWord] = useState('');
+
+    useEffect(() => {
+        window.scrollTo({top:450,left:0,behavior:'smooth'});
+    },[list])
 
     function searchList() {
-        axios.get('http://localhost:9977/find/searchList')
-        .then(function(response){
-            setList(response.data);
+        let searchData = ({
+            searchWord: searchWord,
+            searchTag: tag
         })
-        .catch(function(error){
-            console.log(error);
+        axios.post('http://localhost:9977/find/searchList', searchData)
+        .then(function(res){
+            console.log(searchData);
+            setList(res.data);
+        })
+        .catch(function(err){
+            console.log(err);
         });
     }
+    
     const mount = useRef(true);
 
     const [area,setArea] = useState(['성동구','강남구','냠냠구','구구구','어어구','칠칠구']);
@@ -82,7 +93,7 @@ function Find(){
     },[]);
 
     document.addEventListener('keydown', function(event) {
-        if (event.keyCode == 27) {
+        if (event.key == 27) {
             closeModal();
         }
     });
@@ -191,6 +202,11 @@ function Find(){
         setTag(tags);
         closeModal();
     }
+
+    const doSearch = (e) => {
+        setSearchWord(e.target.value);
+    }
+
     return(
         <Faded>
             <div id="find-modal">
@@ -234,14 +250,14 @@ function Find(){
                 <div id="logo-text">KICK EAT</div>
                 <div className='find-box'>
                     <div id="plus-btn"><img src={plusImg} width='40' onClick={() => openModal()}/></div>
-                    <input type="text" placeholder="검색어를 입력하세요." name="find-input"></input>
+                    <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onChange={doSearch} name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
-                    <div id="search-btn"><img src={searchImg} width='40'/></div>
+                    <div id="search-btn" onClick={searchList}><img src={searchImg} width='40'/></div>
                 </div>
                 <div className='find-list'>
-                    {list.map((item)=>{
+                    {list.map((item, idx)=>{
                         return (
-                            <FindListItem restaurant={item}/>
+                            <FindListItem key={idx} restaurant={item}/>
                         )
                     })}
                 </div>

@@ -1,12 +1,10 @@
 package com.ke.serv.controller;
 
+import com.ke.serv.entity.PagingEntity;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,8 +15,21 @@ import java.util.List;
 public class FindController {
     private final RestaurantService service;
 
-    @GetMapping("/searchList")
-    public List<RestaurantEntity> searchList() {
-        return service.findListSelect();
+    @PostMapping("/searchList")
+    public List<RestaurantEntity> searchList(@RequestBody PagingEntity pe) {
+        List<RestaurantEntity> list = service.findListSelect(pe.getSearchWord());
+        System.out.println(pe.getSearchWord() + ", " + pe.getSearchTag());
+
+        String[] tagList = pe.getSearchTag().split("#");
+        for (String s: tagList) {
+            System.out.println(s);
+        }
+        return list;
+    }
+
+    @PostMapping("/findInfo")
+    public RestaurantEntity getInfo(@RequestBody RestaurantEntity entity) {
+        System.out.println(entity);
+        return service.restaurantSelect(entity.getId());
     }
 }
