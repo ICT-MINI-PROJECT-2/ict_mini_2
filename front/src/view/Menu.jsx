@@ -25,6 +25,11 @@ function Menu(){
         window.scrollTo({top:0,left:0,behavior:'smooth'});
     }
 
+    const logout = () => {
+        sessionStorage.clear();
+        window.location.href="/";
+    }
+
     return(
         <div className='menu-bar'>
             <div className='menu-button'>
@@ -50,9 +55,11 @@ function Menu(){
                 <li>
                 <Link to="/">맛집 추천</Link>
                 </li>
-                <li>
-                <Link to="/login">로그인</Link>
-                </li>
+                {sessionStorage.getItem("loginStatus") === 'Y' ? <li>
+                    <Link onClick={logout}>로그아웃</Link>
+                </li> : <li>
+                    <Link to="/login">로그인</Link>
+                </li>}
                 <div id="up-button" onClick={()=>scrollUp()}>
                     ▲
                 </div>
