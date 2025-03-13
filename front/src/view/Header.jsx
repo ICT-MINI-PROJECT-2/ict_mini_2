@@ -24,7 +24,7 @@ function Header() {
                     <Link to="/find">음식점 찾기</Link>
                 </li>
                 <li>
-                    <Link to="/board">자유게시판</Link>
+                    <Link to="/boardpage">자유게시판</Link>
                 </li>
                 <li>
                     <Link to="/recommend">맛집 추천</Link>

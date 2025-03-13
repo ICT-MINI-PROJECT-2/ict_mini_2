@@ -4,7 +4,7 @@ import MainPage from './page/MainPage';
 import About from './page/About';
 import Login from './user/Login';
 import Signup from './user/Singup';
-import Board from './page/board/Board';
+import Board from './page/board/BoardPage';
 import Find from './page/find/Find';
 import Recommend from './page/recommend/Recommend';
 
@@ -17,7 +17,7 @@ function Body() {
       <Route path="/about" element={<About/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/signup" element={<Signup/>}/>
-      <Route path="/board" element={<Board/>}/>
+      <Route path="/boardpage" element={<Board/>}/>
       <Route path="/find" element={<Find/>}/>
       <Route path="/recommend" element={<Recommend/>}/>
       <Route path="/findInfo" element={<FindInfo/>}/>
