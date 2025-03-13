@@ -2,6 +2,10 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 const {kakao} = window;
 
 function FindInfo() {
@@ -12,6 +16,7 @@ function FindInfo() {
     const [menu_list, setMenu_list] = useState([]);
     const [img_list, setImg_list] = useState([]);
     const [info_list, setInfo_list] = useState([]);
+
     useEffect(()=>{
         if (!mount.current) {}
         else {
@@ -101,10 +106,45 @@ function FindInfo() {
         });
     }
 
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        appendDots: (dots) => (
+          <div
+            style={{
+              width: '100%',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <ul> {dots} </ul>
+          </div>
+        ),
+        dotsClass: 'dots_custom'
+    };
+
     return (
         <div className='info'>
             <h1>{info.rstrName}</h1>
-            <div className='rPhoto'>사진 (슬라이드)</div>
+            <div className='rPhoto'>
+                <Slider {...settings}>
+                {
+                    img_list.map((item) => {
+                        return(<div>
+                            <img src={item} style={{width:'100%', height:'30%'}}/>
+                        </div>);
+                    })
+                }
+                </Slider>
+                
+            </div>
 
             <div className='rInfo'>
                 <ul className='info-tab'>
@@ -117,19 +157,35 @@ function FindInfo() {
                 <div className='info-view'>
                     {tab === "home" && (
                         <div id="home">
-                            상세정보<br/>
-                            상세주소: {info.rstrLoc}<br/>
-                            영업시간 ...
+                            {
+                                info_list.map((item) => {
+                                    return(<div>
+                                        {item}
+                                    </div>);
+                                })
+                            }
                         </div>
                     )}
                     {tab === "menu" && (
                         <div id="menu">
-                            메뉴정보 (메뉴이름 + 가격)
+                            {
+                                menu_list.map((item) => {
+                                    return(<div>
+                                        {item}
+                                    </div>);
+                                })
+                            }
                         </div>
                     )}
                     {tab === "photo" && (
                         <div id="photo">
-                            가게사진
+                            {
+                                img_list.map((item) => {
+                                    return(<div>
+                                        <img src={item} width='100%'/>
+                                    </div>);
+                                })
+                            }
                         </div>
                     )}
                     {tab === "review" && (
@@ -146,38 +202,6 @@ function FindInfo() {
             <div className='rLocation'>
                 오시는 길
                 <div id='map'></div>
-            </div>
-            <div className='rate'>
-                리뷰 (list로 출력)<br/>
-                ★★★★☆
-                리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
-            </div>
-            <div>
-                {
-                    img_list.map((item) => {
-                        return(<div>
-                            <img src={item} width='200'/>
-                        </div>);
-                    })
-                }
-            </div>
-            <div>
-              {
-                    menu_list.map((item) => {
-                        return(<div>
-                            {item}
-                        </div>);
-                    })
-                }
-            </div>
-            <div>
-              {
-                    info_list.map((item) => {
-                        return(<div>
-                            {item}
-                        </div>);
-                    })
-                }
             </div>
         </div>
     )
