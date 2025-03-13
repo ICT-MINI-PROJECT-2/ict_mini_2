@@ -6,13 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import java.sql.Timestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Event")
+@EntityListeners(AuditingEntityListener.class)
 public class EventEntity {
 
     @Id
@@ -27,32 +30,25 @@ public class EventEntity {
     private String content;
 
     @CreatedDate
-    private Timestamp createDate;
+    @Column(updatable = false)
+    private LocalDateTime createDate;
 
     @LastModifiedDate
-    private Timestamp modifiedDate;
+    private LocalDateTime modifiedDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BoardCategory category;
+
+    // UserEntity와의 관계 설정 (ManyToOne)
+    @ManyToOne(fetch = FetchType.LAZY) // LAZY 로딩 (필요할 때만 UserEntity 로드)
+    @JoinColumn(name = "user_no") // 외래 키 컬럼 이름
+    private UserEntity user; // UserEntity 참조
+
+    private int hit;
 
     public enum BoardCategory {
         EVENT, INQUIRY, NOTICE, FAQ
     }
 
 }
-
-/* [이벤트에 필요한 정보]
-
-리스트 - 제목, 기간, 작성일
--> 형식은 격자형, 썸네일이 표시될 수 있게
-
-세부 - 제목, 내용, 기간, 작성일, 이미지 관련
-
-Event
-
-읽었던 글을 불러올 수 있는 기능,
-
-user  <- userboardread -> board
-
-*/
