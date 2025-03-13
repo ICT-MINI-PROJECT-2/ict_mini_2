@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,18 +28,6 @@ public class HomeController {
     @GetMapping("/")
     public String home(){
         return "index";
-    }
-
-    @GetMapping("/test")
-    public RestaurantEntity test(String val) {
-        String url = "https://map.naver.com/p/search/아침햇참";
-        try {
-            Document doc = Jsoup.connect(url).get();
-            System.out.println(doc);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return rest_service.restaurantSelect(Integer.parseInt(val));
     }
 
     @GetMapping("/api")
