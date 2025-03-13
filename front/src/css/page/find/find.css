@@ -238,21 +238,36 @@
 }
 .info>h1 {
     text-align: center;
-    font-size: 3em;
+    font-size: 2em;
     text-shadow: 1px 2px #979797;
 }
-.rPhoto, .rLocation, .rate {
+.rPhoto, .rLocation, .rInfo {
     width: 70vw;
     height: 30vw;
     margin: 20px auto;
     padding: 10px;
     background-color: aliceblue;
 }
-.rLocation, .rate {
+.rLocation, .rInfo {
     height: 40vw;
     border: 1px solid, #ddd;
     background-color: #fff;
 }
+.info-tab {
+    width: 70vw;
+    height: 50px;
+    margin: 0 auto;
+}
+.info-tab>li {
+    width: 25%;
+    line-height: 40px;
+    float: left;
+    border-bottom: 1px solid #555;
+    text-align: center;
+}
+
+
+
 #map {
     margin-top: 5px;
     height: calc(100% - 30px);
