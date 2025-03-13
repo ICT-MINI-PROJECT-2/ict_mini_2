@@ -14,8 +14,8 @@ import java.util.List;
 public class RestaurantService {
     private final RestaurantRepository repository;
 
-    public List<RestaurantEntity> findListSelect(String searchWord) {
-        return repository.findByNameContaining(searchWord, PageRequest.of(0, 50));
+    public List<RestaurantEntity> findListSelect(PagingEntity pe) {
+        return repository.findByNameContaining(pe.getSearchWord(), PageRequest.of(pe.getNowPage() -1, pe.getOnePageRecord()));
     }
 
     public RestaurantEntity restaurantSelect(int id) {

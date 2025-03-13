@@ -273,9 +273,6 @@
     border-bottom: 1px solid #555;
     text-align: center;
 }
-
-
-
 #map {
     margin-top: 5px;
     height: calc(100% - 30px);
@@ -286,4 +283,15 @@
     grid-template-columns: repeat(4, 1fr);
     text-align: center;
     gap: 5px;
+}
+.pagination {
+    width: 100%;
+    line-height: 50px;
+    position: static;
+    display: flex;
+    justify-content: center;
+}
+.pagination li {
+    float: left;
+    padding: 0 10px;
 }

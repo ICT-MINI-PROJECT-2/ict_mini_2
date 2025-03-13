@@ -10,7 +10,11 @@ import axios from 'axios';
 function Find(){
     let [list, setList] = useState([]);
     let [searchWord, setSearchWord] = useState('');
+    let [pageNumber, setPageNumber] = useState([]);
+    let [nowPage, setNowPage] = useState(1);
+    let [totalPage, setTotalPage] = useState(1);
 
+    const firstSearch = useRef(false);
     useEffect(()=>{
         let findInput = document.getElementsByName("find-input")[0];
         findInput.addEventListener('focus', ()=>{
@@ -22,25 +26,48 @@ function Find(){
             });
         });
     }, []);
-    
     useEffect(() => {
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
 
+    const page_mount = useRef(true);
+
+    useEffect(()=> {
+        if(!page_mount.current) searchList();
+        else page_mount.current = false;
+    },[nowPage])
 
     const searchList = (msg)=> {
+        if(!firstSearch.current) firstSearch.current = true;
         let searchData;
-        if(msg === null) searchData = ({
+        if(msg === null || msg === undefined) searchData = ({
             searchWord: searchWord,
-            searchTag: tag
+            searchTag: tag,
+            nowPage: nowPage
         })
         else searchData = ({
             searchWord: msg,
-            searchTag: tag
+            searchTag: tag,
+            nowPage: nowPage
         })
         axios.post('http://localhost:9977/find/searchList', searchData)
         .then(async function(res){
-            setList(res.data);
+            console.log(res.data);
+            setList(res.data.list);
+
+            setPageNumber([]);
+            let pe = res.data.pe;
+            
+            for (let p = pe.startPageNum; p < pe.startPageNum + pe.onePageCount; p++) {
+                if (p <= pe.totalPage) {
+                    setPageNumber((prev)=>{
+                        return [...prev, p];
+                    });
+                }
+            }
+
+            setNowPage(pe.nowPage);
+            setTotalPage(pe.totalPage);
         })
         .catch(function(err){
             console.log(err);
@@ -278,6 +305,33 @@ function Find(){
                         )
                     })}
                 </div>
+
+                <ul className="pagination">
+                {
+                    (function(){
+                        if (nowPage > 1){
+                            return (<li className="page-item">
+                                        <a className="page-link" onClick={()=>setNowPage(nowPage - 1)}>◁</a>
+                                    </li>)
+                        }
+                    })()
+                }
+                {
+                    pageNumber.map(function(pg){
+                        if (nowPage == pg);
+                        return <li style={{color: "#b21848"}}><a className="page-link">{pg}</a></li>
+                    })
+                }
+                {
+                    (function(){
+                        if (nowPage < totalPage){
+                            return (<li className="page-item">
+                                        <a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>▷</a>
+                                    </li>)
+                        }
+                    })()
+                }
+            </ul>
             </div>
         </Faded>
     )
