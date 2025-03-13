@@ -232,6 +232,7 @@
 /* ===== findInfo CSS ===== */
 .info {
     min-width: 700px;
+    max-width: 1200px;
     padding-top: 80px;
     margin: 0 auto;
     font-family: "Gowun Dodum", sans-serif;
@@ -242,19 +243,26 @@
     text-shadow: 1px 2px #979797;
 }
 .rPhoto, .rLocation, .rInfo {
-    width: 70vw;
-    height: 30vw;
+    width: 70%;
+    height: 30%;
     margin: 20px auto;
     padding: 10px;
-    background-color: aliceblue;
+    border: 1px solid #ddd;
 }
-.rLocation, .rInfo {
+.rPhoto {
+    max-width: 600px;
+    width: 60%;
+    max-height: 470px;
+    height: 47%;
+}
+.dots_custom li button {
+    max-width: 40px;
+}
+.rLocation {
     height: 40vw;
-    border: 1px solid, #ddd;
     background-color: #fff;
 }
 .info-tab {
-    width: 70vw;
     height: 50px;
     margin: 0 auto;
 }
@@ -272,4 +280,10 @@
     margin-top: 5px;
     height: calc(100% - 30px);
     border: 1px solid #555;
+}
+#photo{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    gap: 5px;
 }
