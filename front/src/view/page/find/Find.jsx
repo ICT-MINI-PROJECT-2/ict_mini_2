@@ -9,18 +9,41 @@ import axios from 'axios';
 
 function Find(){
     let [list, setList] = useState([]);
+    let [searchWord, setSearchWord] = useState('');
 
+    useEffect(()=>{
+        let findInput = document.getElementsByName("find-input")[0];
+        findInput.addEventListener('focus', ()=>{
+            findInput.addEventListener('keydown', function(event) {
+                if (event.key == 'Enter') {
+                    console.log(findInput.value);
+                    searchList(findInput.value);
+                }
+            });
+        });
+    }, []);
+    
     useEffect(() => {
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
 
-    async function searchList() {
-        axios.get('http://localhost:9977/find/searchList')
-        .then(function(response){
-            setList(response.data);
+
+    const searchList = (msg)=> {
+        let searchData;
+        if(msg === null) searchData = ({
+            searchWord: searchWord,
+            searchTag: tag
         })
-        .catch(function(error){
-            console.log(error);
+        else searchData = ({
+            searchWord: msg,
+            searchTag: tag
+        })
+        axios.post('http://localhost:9977/find/searchList', searchData)
+        .then(async function(res){
+            setList(res.data);
+        })
+        .catch(function(err){
+            console.log(err);
         });
     }
     
@@ -87,7 +110,7 @@ function Find(){
     },[]);
 
     document.addEventListener('keydown', function(event) {
-        if (event.keyCode == 27) {
+        if (event.key == 27) {
             closeModal();
         }
     });
@@ -196,6 +219,11 @@ function Find(){
         setTag(tags);
         closeModal();
     }
+
+    const doSearch = (e) => {
+        setSearchWord(e.target.value);
+    }
+
     return(
         <Faded>
             <div id="find-modal">
@@ -239,9 +267,9 @@ function Find(){
                 <div id="logo-text">KICK EAT</div>
                 <div className='find-box'>
                     <div id="plus-btn"><img src={plusImg} width='40' onClick={() => openModal()}/></div>
-                    <input type="text" placeholder="검색어를 입력하세요." name="find-input"></input>
+                    <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onChange={doSearch} name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
-                    <div id="search-btn" onClick={searchList}><img src={searchImg} width='40'/></div>
+                    <div id="search-btn" onClick={() =>{searchList(null)}}><img src={searchImg} width='40'/></div>
                 </div>
                 <div className='find-list'>
                     {list.map((item, idx)=>{

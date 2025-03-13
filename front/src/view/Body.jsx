@@ -7,8 +7,9 @@ import Signup from './user/Singup';
 import Board from './page/board/BoardPage';
 import Find from './page/find/Find';
 import Recommend from './page/recommend/Recommend';
-
+import MyPage from './user/MyPage';
 import FindInfo from './page/find/FindInfo';
+import Test from './Test';
 
 function Body() {
   return (
@@ -20,7 +21,9 @@ function Body() {
       <Route path="/boardpage" element={<Board/>}/>
       <Route path="/find" element={<Find/>}/>
       <Route path="/recommend" element={<Recommend/>}/>
+      <Route path="/mypage" element={<MyPage/>}/>
       <Route path="/findInfo" element={<FindInfo/>}/>
+      <Route path="/test" element={<Test/>}/>
     </Routes>
   );
 }

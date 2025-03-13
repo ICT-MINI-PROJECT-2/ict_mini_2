@@ -35,6 +35,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	implementation 'javax.inject:javax.inject:1'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
 }
 
 tasks.named('test') {

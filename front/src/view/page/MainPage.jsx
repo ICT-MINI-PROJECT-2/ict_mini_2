@@ -9,12 +9,16 @@ import "slick-carousel/slick/slick-theme.css";
 
 function MainPage(){
     const [tt,setTt] = useState('');
-    const test = () =>{
-        axios.get('http://localhost:9977/test')
+    const setAPI = () =>{
+        axios.get('http://localhost:9977/api')
         .then(res => {
             setTt(res.data);
         })
         .catch(err => console.log(err));
+    }
+
+    const testCrolling = () => {
+      window.location.href="#/test";
     }
 
     const settings = {
@@ -64,7 +68,8 @@ function MainPage(){
             </Slider>
                 <br/><br/><br/><br/><br/><br/>
                 <div className="main-content-title">▶ <p>KICK!</p> 오늘의 맛집</div>
-                <button onClick={test} style={{marginTop:'300px'}}>TEST</button>
+                <button onClick={setAPI} style={{marginTop:'300px'}}>절대 클릭 [X] api테스트용</button>
+                <button onClick={testCrolling} style={{marginTop:'100px'}}>크롤링 테스트용</button>
                 {tt}
             </div>
         </Faded>
