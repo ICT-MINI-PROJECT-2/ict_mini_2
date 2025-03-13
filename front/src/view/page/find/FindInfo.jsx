@@ -8,7 +8,7 @@ function FindInfo() {
     const loc = useLocation();
     const mount = useRef(true);
     const [info, setInfo] = useState({});
-
+    const [tab, setTab] = useState('home');
     
     useEffect(()=>{
         if (!mount.current) {}
@@ -83,20 +83,58 @@ function FindInfo() {
             console.log(err);
         });
     }
+    
+    const selectTab = (tab)=>{
+        setTab(tab);
+    }
 
     return (
         <div className='info'>
             <h1>{info.rstrName}</h1>
             <div className='rPhoto'>사진 (슬라이드)</div>
+
+            <div className='rInfo'>
+                <ul className='info-tab'>
+                    <li onClick={()=>selectTab("home")}>정보</li>
+                    <li onClick={()=>selectTab("menu")}>메뉴</li>
+                    <li onClick={()=>selectTab("photo")}>사진</li>
+                    <li onClick={()=>selectTab("review")}>리뷰</li>
+                </ul>
+
+                <div className='info-view'>
+                    {tab === "home" && (
+                        <div id="home">
+                            상세정보<br/>
+                            상세주소: {info.rstrLoc}<br/>
+                            영업시간 ...
+                        </div>
+                    )}
+                    {tab === "menu" && (
+                        <div id="menu">
+                            메뉴정보 (메뉴이름 + 가격)
+                        </div>
+                    )}
+                    {tab === "photo" && (
+                        <div id="photo">
+                            가게사진
+                        </div>
+                    )}
+                    {tab === "review" && (
+                        <div id='review'>
+                            리뷰 (list로 출력)<br/>
+                            ★★★★☆
+                            리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
+                        </div>
+                    )}
+                </div>
+                
+            </div>
+            
             <div className='rLocation'>
-                상세주소: {info.rstrLoc}
+                오시는 길
                 <div id='map'></div>
             </div>
-            <div className='rate'>
-                리뷰 (list로 출력)<br/>
-                ★★★★☆
-                리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
-            </div>
+            
         </div>
     )
 }
