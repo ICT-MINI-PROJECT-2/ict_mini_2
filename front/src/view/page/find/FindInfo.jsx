@@ -8,8 +8,9 @@ function FindInfo() {
     const loc = useLocation();
     const mount = useRef(true);
     const [info, setInfo] = useState({});
-
-    
+    const [menu_list, setMenu_list] = useState([]);
+    const [img_list, setImg_list] = useState([]);
+    const [info_list, setInfo_list] = useState([]);
     useEffect(()=>{
         if (!mount.current) {}
         else {
@@ -32,9 +33,24 @@ function FindInfo() {
             var places = new kakao.maps.services.Places();
             
             var cb = (res, stat) => {
-                console.log(res);
+                res.forEach(item => {
+                    let addr_list = item.address_name.split(' ');
+                    let cnt = 0;
+                    addr_list.forEach(a => {
+                        if(info.rstrLoc.indexOf(a) !== -1) cnt++;
+                    })
+                    if(cnt >= addr_list.length-1 ) { //검색 점포명의 주소와 일치하는 카카오맵의 검색 결과
+                        axios.get('http://localhost:9977/tech/jsoup?place_id='+item.id)
+                        .then(res =>{
+                            console.log(res.data);
+                            setImg_list(res.data.img_list);
+                            setMenu_list(res.data.menu_list);
+                            setInfo_list(res.data.info_list);
+                        }).catch(err=>console.log(err))
+                    }
+                })
             }
-            places.keywordSearch('아침햇참',cb);
+            places.keywordSearch(info.rstrName,cb);
 
             // 주소-좌표 변환 객체를 생성합니다
             var geocoder = new kakao.maps.services.Geocoder();
@@ -96,6 +112,33 @@ function FindInfo() {
                 리뷰 (list로 출력)<br/>
                 ★★★★☆
                 리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
+            </div>
+            <div>
+                {
+                    img_list.map((item) => {
+                        return(<div>
+                            <img src={item} width='200'/>
+                        </div>);
+                    })
+                }
+            </div>
+            <div>
+              {
+                    menu_list.map((item) => {
+                        return(<div>
+                            {item}
+                        </div>);
+                    })
+                }
+            </div>
+            <div>
+              {
+                    info_list.map((item) => {
+                        return(<div>
+                            {item}
+                        </div>);
+                    })
+                }
             </div>
         </div>
     )

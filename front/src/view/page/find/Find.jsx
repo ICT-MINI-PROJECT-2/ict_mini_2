@@ -39,8 +39,7 @@ function Find(){
             searchTag: tag
         })
         axios.post('http://localhost:9977/find/searchList', searchData)
-        .then(function(res){
-            console.log(searchData);
+        .then(async function(res){
             setList(res.data);
         })
         .catch(function(err){
