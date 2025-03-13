@@ -83,10 +83,6 @@ function FindInfo() {
             console.log(err);
         });
     }
-    
-    const selectTab = (tab)=>{
-        setTab(tab);
-    }
 
     return (
         <div className='info'>
@@ -95,10 +91,10 @@ function FindInfo() {
 
             <div className='rInfo'>
                 <ul className='info-tab'>
-                    <li onClick={()=>selectTab("home")}>정보</li>
-                    <li onClick={()=>selectTab("menu")}>메뉴</li>
-                    <li onClick={()=>selectTab("photo")}>사진</li>
-                    <li onClick={()=>selectTab("review")}>리뷰</li>
+                    <li onClick={()=>setTab("home")}>정보</li>
+                    <li onClick={()=>setTab("menu")}>메뉴</li>
+                    <li onClick={()=>setTab("photo")}>사진</li>
+                    <li onClick={()=>setTab("review")}>리뷰</li>
                 </ul>
 
                 <div className='info-view'>

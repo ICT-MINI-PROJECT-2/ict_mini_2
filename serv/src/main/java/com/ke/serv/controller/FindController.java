@@ -17,6 +17,10 @@ public class FindController {
 
     @PostMapping("/searchList")
     public List<RestaurantEntity> searchList(@RequestBody PagingEntity pe) {
+        pe.setTotalRecord(service.totalRecord(pe));
+
+        System.out.println(pe);
+
         List<RestaurantEntity> list = service.findListSelect(pe.getSearchWord());
         System.out.println(pe.getSearchWord() + ", " + pe.getSearchTag());
 
