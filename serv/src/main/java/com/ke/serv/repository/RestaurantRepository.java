@@ -10,4 +10,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, In
     RestaurantEntity findById(int id);
 
     List<RestaurantEntity> findByNameContaining(String searchWord, PageRequest pageRequest);
+
+    int countIdBy();
+    int countIdByNameContaining(String searchWord);
 }

@@ -1,5 +1,6 @@
 package com.ke.serv.service;
 
+import com.ke.serv.entity.PagingEntity;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +23,12 @@ public class RestaurantService {
     }
 
     public void addRestaurantByAPI(RestaurantEntity re) {repository.save(re);}
+
+    public int totalRecord(PagingEntity pe) {
+        if (pe.getSearchWord() == null || pe.getSearchWord().isEmpty()){
+            return repository.countIdBy();
+        } else {
+            return repository.countIdByNameContaining(pe.getSearchWord());
+        }
+    }
 }
