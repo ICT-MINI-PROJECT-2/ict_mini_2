@@ -1,19 +1,25 @@
+// BoardPage.js
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function BoardPage() {
     const [boardData, setBoardData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [searchWord, setSearchWord] = useState('');
+    const location = useLocation();
+    const [activeCategory, setActiveCategory] = useState('EVENT');
+
 
     useEffect(() => {
-        getBoardPage(0); // 함수 이름 변경
-    }, []);
+        const category = new URLSearchParams(location.search).get('category') || 'EVENT';
+        setActiveCategory(category);
+        getBoardPage(0, category);
+    }, [location]);
 
-    function getBoardPage(page) { // 함수 이름 변경
-        let url = `http://localhost:9977/board/boardpage?page=${page}`; // URL 변경
+    function getBoardPage(page, category = activeCategory) {
+        let url = `http://localhost:9977/board/boardpage?page=${page}&category=${category}`;
         if (searchWord) {
             url += `&searchWord=${searchWord}`;
         }
@@ -24,6 +30,7 @@ function BoardPage() {
                 setBoardData(response.data.list);
                 setCurrentPage(response.data.page);
                 setTotalPages(response.data.totalPages);
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -33,14 +40,15 @@ function BoardPage() {
     function searchWordChange(event) {
         setSearchWord(event.target.value);
     }
-     function renderPagination() {
+
+    function renderPagination() {
         const pageNumbers = [];
         for (let i = 0; i < totalPages; i++) {
-          pageNumbers.push(
-            <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
-              <a className="page-link" onClick={() => getBoardPage(i)}>{i + 1}</a>
-            </li>
-          );
+            pageNumbers.push(
+                <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
+                    <a className="page-link" onClick={() => getBoardPage(i)}>{i + 1}</a>
+                </li>
+            );
         }
 
         return (
@@ -54,37 +62,65 @@ function BoardPage() {
                 </li>
             </ul>
         );
-      }
+    }
 
     return (
-        <div className="container" style={{position:"absolute"}}>
-            <h1>게시판 목록</h1>
-            <div className="row">
-                <input type="text" placeholder="검색어 입력" name="searchWord" style={{ width: '200px' }}
-                    value={searchWord}
-                    onChange={searchWordChange}
-                />
-                <button style={{ width: '100px' }} onClick={() => getBoardPage(0)}>Search</button> {/*함수 호출 변경*/}
+        <div className="container" style={{ width: '60%', paddingTop: '10%', margin: '0 auto', position: 'relative' }}>
+            <div className="row" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+                {['EVENT', 'INQUIRY', 'NOTICE', 'FAQ'].map(category => (
+                    <div key={category} className={`p-2 ${activeCategory === category ? 'active' : ''}`} style={{ margin: '0 10px', cursor: 'pointer' }}>
+                        <Link to={`?category=${category}`} style={{ textDecoration: 'none', color: activeCategory === category ? 'black' : '#ccc', fontWeight: activeCategory === category ? 'bold' : 'normal' }}>
+                            {category}
+                        </Link>
+                    </div>
+                ))}
             </div>
 
-            <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex' }}>
-            <div className="col-sm-1 p-2">번호</div>
-            <div className="col-sm-6 p-2">제목</div>
-            <div className="col-sm-1 p-2">작성자</div>
-            <div className="col-sm-1 p-2">조회수</div>
-            <div className="col-sm-3 p-2">등록일</div>
-          </div>
-          {boardData.map((record) => (
-            <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex' }} key={record.id}>
+            <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
+                <div className="col-sm-1 p-2">번호</div>
+                <div className="col-sm-4 p-2">제목</div>
+                <div className="col-sm-2 p-2">작성자</div>
+                <div className="col-sm-2 p-2">조회수</div>
+                <div className="col-sm-3 p-2">등록일</div>
+            </div>
+
+            {boardData.map((record) => (
+                <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between' }} key={record.id}>
                     <div className="col-sm-1 p-2"><Link to={`/boardView/${record.id}`}>{record.id}</Link></div>
-                    <div className="col-sm-6 p-2"><Link to={`/boardView/${record.id}`}>{record.subject}</Link></div>
-                    {/* <div className="col-sm-1 p-2">{record.getUserid()}</div> */}
-                    <div className="col-sm-1 p-2"><Link to={`/boardView/${record.id}`}>{record.hit}</Link></div>
-                    <div className="col-sm-3 p-2"><Link to={`/boardView/${record.id}`}>{record.createDate.substring(0, 10)}</Link></div>
+                    <div className="col-sm-4 p-2">
+                        <Link to={`/boardView/${record.id}`}>
+                            <img src={record.thumbnail} alt="썸네일" style={{ width: '100px', height: '100px', marginRight: '10px' }} />
+                            {record.subject}
+                            {/* 파일 목록 (간단하게) */}
+                            {record.files && record.files.length > 0 && (
+                                <div>
+                                    <strong>첨부 파일:</strong>
+                                    <ul>
+                                        {record.files.map((file) => (
+                                            <li key={file.id}>
+                                                {/* 파일 이름만 표시,  다운로드 링크 X */}
+                                                {/* {file.originalFileName}  */}
+                                                {/* 파일 이름 및 다운로드 링크 */}
+                                                <a href={file.fileUrl} download={file.originalFileName}>
+                                                    {file.originalFileName} ({file.fileSize} bytes)
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </Link>
+                    </div>
+                    <div className="col-sm-2 p-2">{record.user ? record.user.userid : '알 수 없음'}</div>
+                    <div className="col-sm-2 p-2">{record.hit}</div>
+                    <div className="col-sm-3 p-2">{record.createDate ? record.createDate.substring(0, 10) : ''}</div>
                 </div>
             ))}
 
-            {sessionStorage.getItem("logStatus") === 'Y' && (<p><Link to="/boardwrite">글쓰기</Link></p>)}
+
+
+            {/* 관리자 확인 수정 */}
+            {sessionStorage.getItem("loginId") === 'admin1234' && (<p><Link to="/boardwrite?category=EVENT">글쓰기</Link></p>)}
             {renderPagination()}
         </div>
     );
