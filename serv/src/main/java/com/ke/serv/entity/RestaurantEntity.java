@@ -37,4 +37,7 @@ public class RestaurantEntity {
 
     @Column(columnDefinition = "float")
     private float area;
+
+    @Column(nullable = false, columnDefinition = "float default 0.0")
+    private float rating;
 }
