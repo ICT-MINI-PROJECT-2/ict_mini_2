@@ -30,8 +30,7 @@ public class ReviewController {
     private final RestaurantService rest_service;
     @GetMapping("/list")
     public List<ReviewImgVO> list(String restid){
-        RestaurantEntity re = new RestaurantEntity();
-        re.setId(Integer.parseInt(restid));
+        RestaurantEntity re = rest_service.restaurantSelect(Integer.parseInt(restid));
         List<ReviewEntity> review_list = service.selectReviewList(re);
         List<ReviewImgVO> result= new ArrayList<>();
         float rating = 0;
