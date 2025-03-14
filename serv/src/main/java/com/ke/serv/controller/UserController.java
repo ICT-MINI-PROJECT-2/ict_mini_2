@@ -3,6 +3,7 @@ package com.ke.serv.controller;
 import com.ke.serv.entity.UserEntity;
 import com.ke.serv.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,9 +26,16 @@ public class UserController {
     }
 
     @PostMapping("/loginChk")
-    public String loginchk(@RequestBody UserEntity entity) {
-        if(service.idChk(entity) == null) return "0";
-        if(service.pwChk(entity) == null) return "1";
-        return service.idChk(entity).getUsername();
+    public UserEntity loginchk(@RequestBody UserEntity entity) {
+        UserEntity ue = new UserEntity();
+        if(service.idChk(entity) == null) {
+            ue.setId(-1);
+            return ue;
+        }
+        if(service.pwChk(entity) == null) {
+            ue.setId(-2);
+            return ue;
+        }
+        return service.idChk(entity);
     }
 }

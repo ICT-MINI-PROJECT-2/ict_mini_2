@@ -6,6 +6,8 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import Review from './Review';
+
 const {kakao} = window;
 
 function FindInfo() {
@@ -130,29 +132,6 @@ function FindInfo() {
         dotsClass: 'dots_custom'
     };
 
-    function makeReview(){
-        let reviewList = [{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'}];
-        const listItems = reviewList.map((item) =>
-            (
-            <li className="review-chat-box"><div className="container-msg">
-                <div className='message-who'>{item.name}</div>
-                <div className="message-container">
-                  <div className='message-box'>
-                    <ul>
-                        <li className="message-date">
-                            {item.date}
-                        </li>
-                        <li className="message-text">
-                            {item.contents}
-                        </li>
-                    </ul>
-                  </div>
-                </div>
-              </div></li>
-        ));
-        return (listItems);
-    }
-
     return (
         <div className='info'>
             <h1>{info.rstrName}</h1>
@@ -212,20 +191,7 @@ function FindInfo() {
                         </div>
                     )}
                     {tab === "review" && (
-                        <div id='review'>
-                            <div className="review-body">
-                                <ol>
-                                    {makeReview()}
-                                </ol>
-                            </div>
-                                <div className='review-input-box'>
-                                    제목<input type='text' name='subject' className='review-input-subject'/><br/>
-                                    내용<textarea name='content' className='review-input-content'></textarea><br/>
-                                    평점<input type='text' name='rating' className='review-input-rating'/><br/>
-                                    사진첨부<input type='file' name='review_files' className='review-input-image'/><br/>
-                                    <button className='review-input-button'>등록</button>
-                                </div>
-                        </div>
+                        <Review/>
                     )}
                 </div>
                 
