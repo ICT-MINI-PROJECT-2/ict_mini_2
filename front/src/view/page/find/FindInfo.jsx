@@ -6,6 +6,8 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import Review from './Review';
+
 const {kakao} = window;
 
 function FindInfo() {
@@ -189,11 +191,7 @@ function FindInfo() {
                         </div>
                     )}
                     {tab === "review" && (
-                        <div id='review'>
-                            리뷰 (list로 출력)<br/>
-                            ★★★★☆
-                            리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
-                        </div>
+                        <Review/>
                     )}
                 </div>
                 
