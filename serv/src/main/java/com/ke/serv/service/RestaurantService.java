@@ -1,6 +1,6 @@
 package com.ke.serv.service;
 
-import com.ke.serv.entity.PagingEntity;
+import com.ke.serv.vo.PagingVO;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,8 @@ import java.util.List;
 public class RestaurantService {
     private final RestaurantRepository repository;
 
-    public List<RestaurantEntity> findListSelect(PagingEntity pe) {
-        return repository.findByNameContaining(pe.getSearchWord(), PageRequest.of(pe.getNowPage() -1, pe.getOnePageRecord()));
+    public List<RestaurantEntity> findListSelect(PagingVO pvo) {
+        return repository.findByNameContaining(pvo.getSearchWord(), PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord()));
     }
 
     public RestaurantEntity restaurantSelect(int id) {
@@ -24,11 +24,11 @@ public class RestaurantService {
 
     public void addRestaurantByAPI(RestaurantEntity re) {repository.save(re);}
 
-    public int totalRecord(PagingEntity pe) {
-        if (pe.getSearchWord() == null || pe.getSearchWord().isEmpty()){
+    public int totalRecord(PagingVO pvo) {
+        if (pvo.getSearchWord() == null || pvo.getSearchWord().isEmpty()){
             return repository.countIdBy();
         } else {
-            return repository.countIdByNameContaining(pe.getSearchWord());
+            return repository.countIdByNameContaining(pvo.getSearchWord());
         }
     }
 }

@@ -56,18 +56,18 @@ function Find(){
             setList(res.data.list);
 
             setPageNumber([]);
-            let pe = res.data.pe;
+            let pvo = res.data.pvo;
             
-            for (let p = pe.startPageNum; p < pe.startPageNum + pe.onePageCount; p++) {
-                if (p <= pe.totalPage) {
+            for (let p = pvo.startPageNum; p < pvo.startPageNum + pvo.onePageCount; p++) {
+                if (p <= pvo.totalPage) {
                     setPageNumber((prev)=>{
                         return [...prev, p];
                     });
                 }
             }
 
-            setNowPage(pe.nowPage);
-            setTotalPage(pe.totalPage);
+            setNowPage(pvo.nowPage);
+            setTotalPage(pvo.totalPage);
         })
         .catch(function(err){
             console.log(err);
@@ -310,24 +310,27 @@ function Find(){
                 {
                     (function(){
                         if (nowPage > 1){
-                            return (<li className="page-item">
-                                        <a className="page-link" onClick={()=>setNowPage(nowPage - 1)}>◁</a>
-                                    </li>)
+                            return (<a className="page-link" onClick={()=>setNowPage(nowPage - 1)}>
+                                        <li className="page-item">◁</li>
+                                    </a>)
                         }
                     })()
                 }
                 {
                     pageNumber.map(function(pg){
-                        if (nowPage == pg);
-                        return <li style={{color: "#b21848"}}><a className="page-link">{pg}</a></li>
+                        var activeStyle = 'page-item';
+                        if (nowPage == pg) var activeStyle = 'page-item active';
+                        return (<a className="page-link" onClick={()=>setNowPage(pg)}>
+                                    <li className={activeStyle}>{pg}</li>
+                                </a>)
                     })
                 }
                 {
                     (function(){
                         if (nowPage < totalPage){
-                            return (<li className="page-item">
-                                        <a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>▷</a>
-                                    </li>)
+                            return (<a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>
+                                        <li className="page-item">▷</li>
+                                    </a>)
                         }
                     })()
                 }

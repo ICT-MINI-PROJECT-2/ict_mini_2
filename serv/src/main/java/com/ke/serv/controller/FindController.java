@@ -1,6 +1,6 @@
 package com.ke.serv.controller;
 
-import com.ke.serv.entity.PagingEntity;
+import com.ke.serv.vo.PagingVO;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +18,18 @@ public class FindController {
     private final RestaurantService service;
 
     @PostMapping("/searchList")
-    public Map searchList(@RequestBody PagingEntity pe) {
-        pe.setTotalRecord(service.totalRecord(pe));
+    public Map searchList(@RequestBody PagingVO pvo) {
+        pvo.setTotalRecord(service.totalRecord(pvo));
 
-        List<RestaurantEntity> list = service.findListSelect(pe);
-        System.out.println(pe.getSearchWord() + ", " + pe.getSearchTag());
+        List<RestaurantEntity> list = service.findListSelect(pvo);
 
-        String[] tagList = pe.getSearchTag().split("#");
+        String[] tagList = pvo.getSearchTag().split("#");
         for (String s: tagList) {
             System.out.println(s);
         }
 
         Map map = new HashMap();
-        map.put("pe", pe);
+        map.put("pvo", pvo);
         map.put("list", list);
 
         return map;
