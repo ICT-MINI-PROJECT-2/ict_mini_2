@@ -3,8 +3,8 @@ package com.ke.serv.controller;
 
 import com.ke.serv.entity.EventEntity;
 import com.ke.serv.entity.EventEntity.BoardCategory;
-import com.ke.serv.repository.BoardRepository;
 import com.ke.serv.service.BoardService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,29 +20,32 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*") // 모든 출처 허용 (보안상 주의) - 개발용
+@CrossOrigin(origins = "*")
 @RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping("/boardpage")
+    @GetMapping("/boardPage")
     public ResponseEntity<Map<String, Object>> boardPage(
             @RequestParam(defaultValue = "EVENT") BoardCategory category, // 기본값 EVENT
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            HttpServletRequest req
     ) {
+        System.out.println("BoardController - Category: " + category); // 로그 추가
         Page<EventEntity> boardPage = boardService.getBoardList(category, pageable);
 
+        System.out.println("BoardController - BoardPage: " + boardPage);
+
         Map<String, Object> response = new HashMap<>();
-        response.put("list", boardPage.getContent());  //게시글 목록
-        response.put("page", boardPage.getNumber());     //현재 페이지 번호
-        response.put("totalPages", boardPage.getTotalPages()); // 전체 페이지 수
-        response.put("totalElements", boardPage.getTotalElements()); //전체 게시글 수
+        response.put("list", boardPage.getContent());
+        response.put("page", boardPage.getNumber());
+        response.put("totalPages", boardPage.getTotalPages());
+        response.put("totalElements", boardPage.getTotalElements());
 
         return ResponseEntity.ok(response);
     }
-
 
     @PostMapping("/eventWriteOk")
     public ResponseEntity<String> eventWriteOk(
@@ -51,26 +54,26 @@ public class BoardController {
             @RequestParam("event_startdate") String startDate,
             @RequestParam("event_enddate") String endDate,
             @RequestParam("mf") MultipartFile thumbnail,
-            @RequestParam(value = "files", required = false) List<MultipartFile> files, // 여러 파일 받기, 필수는 아님
-            @RequestParam("user_id") String userId  // user_id 받기
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam("user_id") String userId,
+            @RequestParam("category") BoardCategory category,
+            HttpServletRequest request
     ) {
         try {
+            // 디버깅 로그 추가
+            System.out.println("Title: " + title);
+            System.out.println("Content: " + content);
+            System.out.println("Start Date: " + startDate);
+            System.out.println("End Date: " + endDate);
+            System.out.println("Thumbnail: " + thumbnail.getOriginalFilename());
+            System.out.println("Files: " + files.size());
+            System.out.println("User ID: " + userId);
+            System.out.println("Category: " + category);
 
-            boardService.saveEvent(title, content, startDate, endDate, thumbnail, files, userId); //files 파라미터
+            boardService.saveEvent(title, content, startDate, endDate, thumbnail, files, userId, category, request);
             return ResponseEntity.ok("Event created successfully");
         } catch (IOException e) {
-            e.printStackTrace();// 오류 스택 트레이스 출력 (로깅으로 변경 권장)
             return ResponseEntity.status(500).body("Error creating event: " + e.getMessage());
         }
-    }
-    // 아래는 আপাতত 사용하지 않음
-    @GetMapping("/boardModifie")
-    public String boardModifie() {
-        return null;
-    }
-
-    @GetMapping("/boardCreate")
-    public String boardCreate() {
-        return null;
     }
 }

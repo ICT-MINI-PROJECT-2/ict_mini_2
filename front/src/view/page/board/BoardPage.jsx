@@ -1,129 +1,109 @@
-// BoardPage.js
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+"use client"
+
+import { useEffect, useState, Suspense } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import InquiryList from "./../board/InquiryList"
+import EventList from "./EventPage"
+import "./EventPage.css"
+
+// 로딩 컴포넌트
+const LoadingFallback = () => (
+  <div
+    style={{
+      textAlign: "center",
+      padding: "50px 0",
+      minHeight: "600px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    <div>
+      <div
+        style={{
+          width: "40px",
+          height: "40px",
+          border: "4px solid #f3f3f3",
+          borderTop: "4px solid #3498db",
+          borderRadius: "50%",
+          margin: "0 auto 20px",
+          animation: "spin 1s linear infinite",
+        }}
+      ></div>
+      <p>로딩 중...</p>
+    </div>
+  </div>
+)
 
 function BoardPage() {
-    const [boardData, setBoardData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
-    const [searchWord, setSearchWord] = useState('');
-    const location = useLocation();
-    const [activeCategory, setActiveCategory] = useState('EVENT');
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+  const queryParams = new URLSearchParams(location.search)
+  const activeCategory = queryParams.get("category") || "INQUIRY"
 
-
-    useEffect(() => {
-        const category = new URLSearchParams(location.search).get('category') || 'EVENT';
-        setActiveCategory(category);
-        getBoardPage(0, category);
-    }, [location]);
-
-    function getBoardPage(page, category = activeCategory) {
-        let url = `http://localhost:9977/board/boardpage?page=${page}&category=${category}`;
-        if (searchWord) {
-            url += `&searchWord=${searchWord}`;
-        }
-
-        axios.get(url)
-            .then(function (response) {
-                console.log("response.data.list:", response.data.list);
-                setBoardData(response.data.list);
-                setCurrentPage(response.data.page);
-                setTotalPages(response.data.totalPages);
-
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+  // 해시 라우팅(#) 문제 해결을 위한 useEffect
+  useEffect(() => {
+    // URL에 해시(#)가 있는지 확인
+    if (location.hash && location.hash.includes("#/boardpage")) {
+      // 해시를 제거하고 올바른 경로로 리다이렉트
+      const newPath = location.hash.replace("#", "")
+      navigate(newPath)
     }
 
-    function searchWordChange(event) {
-        setSearchWord(event.target.value);
+    // 페이지 로딩 상태 관리
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 300) // 짧은 지연 시간 설정
+
+    return () => clearTimeout(timer)
+  }, [location, navigate])
+
+  // 카테고리 컴포넌트 선택
+  const renderCategoryComponent = () => {
+    switch (activeCategory) {
+      case "EVENT":
+        return <EventList />
+      case "INQUIRY":
+        return <InquiryList />
+      case "NOTICE":
+        return <div>공지사항 목록이 표시됩니다.</div>
+      case "FAQ":
+        return <div>FAQ 목록이 표시됩니다.</div>
+      default:
+        return <div>카테고리를 선택해주세요.</div>
     }
+  }
 
-    function renderPagination() {
-        const pageNumbers = [];
-        for (let i = 0; i < totalPages; i++) {
-            pageNumbers.push(
-                <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
-                    <a className="page-link" onClick={() => getBoardPage(i)}>{i + 1}</a>
-                </li>
-            );
-        }
+  return (
+    <div className="container" style={{ width: "80%", paddingTop: "5%", margin: "0 auto", position: "relative" }}>
+      <div className="row" style={{ marginBottom: "20px", display: "flex", justifyContent: "center" }}>
+        {["EVENT", "INQUIRY", "NOTICE", "FAQ"].map((category) => (
+          <div
+            key={category}
+            className={`p-2 ${activeCategory === category ? "active" : ""}`}
+            style={{ margin: "0 10px", cursor: "pointer" }}
+          >
+            <Link
+              to={`/boardpage?category=${category}`}
+              style={{
+                textDecoration: "none",
+                color: activeCategory === category ? "black" : "#ccc",
+                fontWeight: activeCategory === category ? "bold" : "normal",
+              }}
+            >
+              {category}
+            </Link>
+          </div>
+        ))}
+      </div>
 
-        return (
-            <ul className="pagination">
-                <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
-                    <a className="page-link" onClick={() => getBoardPage(currentPage - 1)}>Previous</a>
-                </li>
-                {pageNumbers}
-                <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" onClick={() => getBoardPage(currentPage + 1)}>Next</a>
-                </li>
-            </ul>
-        );
-    }
-
-    return (
-        <div className="container" style={{ width: '60%', paddingTop: '10%', margin: '0 auto', position: 'relative' }}>
-            <div className="row" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-                {['EVENT', 'INQUIRY', 'NOTICE', 'FAQ'].map(category => (
-                    <div key={category} className={`p-2 ${activeCategory === category ? 'active' : ''}`} style={{ margin: '0 10px', cursor: 'pointer' }}>
-                        <Link to={`?category=${category}`} style={{ textDecoration: 'none', color: activeCategory === category ? 'black' : '#ccc', fontWeight: activeCategory === category ? 'bold' : 'normal' }}>
-                            {category}
-                        </Link>
-                    </div>
-                ))}
-            </div>
-
-            <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
-                <div className="col-sm-1 p-2">번호</div>
-                <div className="col-sm-4 p-2">제목</div>
-                <div className="col-sm-2 p-2">작성자</div>
-                <div className="col-sm-2 p-2">조회수</div>
-                <div className="col-sm-3 p-2">등록일</div>
-            </div>
-
-            {boardData.map((record) => (
-                <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between' }} key={record.id}>
-                    <div className="col-sm-1 p-2"><Link to={`/boardView/${record.id}`}>{record.id}</Link></div>
-                    <div className="col-sm-4 p-2">
-                        <Link to={`/boardView/${record.id}`}>
-                            <img src={record.thumbnail} alt="썸네일" style={{ width: '100px', height: '100px', marginRight: '10px' }} />
-                            {record.subject}
-                            {/* 파일 목록 (간단하게) */}
-                            {record.files && record.files.length > 0 && (
-                                <div>
-                                    <strong>첨부 파일:</strong>
-                                    <ul>
-                                        {record.files.map((file) => (
-                                            <li key={file.id}>
-                                                {/* 파일 이름만 표시,  다운로드 링크 X */}
-                                                {/* {file.originalFileName}  */}
-                                                {/* 파일 이름 및 다운로드 링크 */}
-                                                <a href={file.fileUrl} download={file.originalFileName}>
-                                                    {file.originalFileName} ({file.fileSize} bytes)
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </Link>
-                    </div>
-                    <div className="col-sm-2 p-2">{record.user ? record.user.userid : '알 수 없음'}</div>
-                    <div className="col-sm-2 p-2">{record.hit}</div>
-                    <div className="col-sm-3 p-2">{record.createDate ? record.createDate.substring(0, 10) : ''}</div>
-                </div>
-            ))}
-
-
-
-            {/* 관리자 확인 수정 */}
-            {sessionStorage.getItem("loginId") === 'admin1234' && (<p><Link to="/boardwrite?category=EVENT">글쓰기</Link></p>)}
-            {renderPagination()}
-        </div>
-    );
+      {/* Suspense와 로딩 상태를 사용하여 컴포넌트 렌더링 */}
+      <Suspense fallback={<LoadingFallback />}>{isLoading ? <LoadingFallback /> : renderCategoryComponent()}</Suspense>
+    </div>
+  )
 }
 
-export default BoardPage;
+export default BoardPage
+

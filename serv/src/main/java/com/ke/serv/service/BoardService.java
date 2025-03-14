@@ -1,3 +1,4 @@
+// BoardService.java
 package com.ke.serv.service;
 
 import com.ke.serv.entity.EventEntity;
@@ -7,7 +8,9 @@ import com.ke.serv.entity.EventEntity.BoardCategory;
 import com.ke.serv.repository.BoardRepository;
 import com.ke.serv.repository.FileRepository;
 import com.ke.serv.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +27,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
+@Slf4j
 //@Transactional // 클래스 레벨 대신 메서드 레벨로 변경
 public class BoardService {
 
@@ -37,26 +40,35 @@ public class BoardService {
     @Value("${file.upload.path}")
     private String uploadPath;
 
-    @Transactional(readOnly = true) // 읽기 전용 트랜잭션
+
+    @Transactional(readOnly = true)
     public Page<EventEntity> getBoardList(BoardCategory category, Pageable pageable) {
-        //  return boardRepository.findByCategory(category, pageable);
-
-        //  fetch join 사용하지 않고,  page<EventEntity> 가져온 후, 각 EventEntity에 대해 연관된 FileEntity들을 로딩.
         Page<EventEntity> boardPage = boardRepository.findByCategory(category, pageable);
-
-        // (수정)
+        System.out.println(boardPage);
+        //여기서 fileUrl을 재정의 한다
         boardPage.forEach(event -> {
+            UserEntity user = event.getUser();
+            if (user != null) {
+                userRepository.findByUserid(user.getUserid());//이부분은 수정하지 않아도 된다.
+            }
+
             List<FileEntity> files = fileRepository.findByEvent(event);
-            event.setFiles(files); // 명시적으로 설정 (LAZY 로딩),  N+1 발생.  해결하려면 다른 방법(EntityGraph, DTO) 사용해야함.
+            files.forEach(file -> { //files에서 fileUrl를 재정의
+                String fileUrl = "/uploads/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
+
+                file.setFileUrl(fileUrl);
+            });//files에서 fileUrl를 재정의
+            event.setFiles(files);
         });
+
         return boardPage;
     }
 
     @Transactional // 쓰기 트랜잭션
     public void saveEvent(String title, String content, String startDate, String endDate,
-                          MultipartFile thumbnail, List<MultipartFile> files, String userId) throws IOException {
+                          MultipartFile thumbnail, List<MultipartFile> files, String userId, BoardCategory category,
+                          HttpServletRequest request) throws IOException {
 
-        // UserEntity 가져오기 (null 체크)
         UserEntity user = userRepository.findByUserid(userId);
         if (user == null) {
             throw new IllegalArgumentException("Invalid user ID: " + userId);
@@ -65,57 +77,64 @@ public class BoardService {
         EventEntity event = new EventEntity();
         event.setSubject(title);
         event.setContent(content);
-        event.setCategory(EventEntity.BoardCategory.EVENT); // 카테고리
+        event.setCategory(category);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        //startDate가 null 또는 ""이 아니면,
-        if(startDate != null && !startDate.isEmpty()){
+        if (startDate != null && !startDate.isEmpty()) {
             event.setCreateDate(LocalDateTime.parse(startDate, formatter));
         }
-        //endDate가 null 또는 ""이 아니면,
-        if(endDate != null && !endDate.isEmpty()) {
+        if (endDate != null && !endDate.isEmpty()) {
             event.setModifiedDate(LocalDateTime.parse(endDate, formatter));
         }
 
-        // 썸네일 처리 (FileEntity 사용)
         if (thumbnail != null && !thumbnail.isEmpty()) {
-            FileEntity thumbnailFile = saveUploadedFile(thumbnail, event); // 별도 메서드로 분리
-            event.addFile(thumbnailFile); // addFile 메서드 사용 (EventEntity에 추가)
-            //event.setThumbnail(thumbnailFile.getFileUrl()); // thumbnail 제거
+            FileEntity thumbnailFile = saveUploadedFile(thumbnail, event, user.getId(), request);
+            event.addFile(thumbnailFile);
         }
 
-        // 파일 처리 (FileEntity 사용)
-        if(files != null && !files.isEmpty()){
+        if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
-                if (!file.isEmpty()) { // 빈 파일이 아닌 경우에만 처리
-                    FileEntity fileEntity = saveUploadedFile(file, event); // 별도 메서드
+                if (!file.isEmpty()) {
+                    FileEntity fileEntity = saveUploadedFile(file, event, user.getId(), request);
                     event.addFile(fileEntity);
                 }
             }
         }
-
-
-        boardRepository.save(event); // 게시글 저장 (cascade로 FileEntity도 함께 저장)
+        System.out.println("확인해볼게!!!!!" +  user);
+        event.setUser(user);
+        boardRepository.save(event);
     }
-    // 파일 저장 로직을 별도 메서드로 분리 (DRY 원칙)
-    private FileEntity saveUploadedFile(MultipartFile file, EventEntity event) throws IOException {
-        String originalFilename = file.getOriginalFilename(); // 원래 파일 이름
-        String fileName = System.currentTimeMillis() + "_" + originalFilename; // 고유한 파일 이름 생성
-        String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1); // 확장자
-        long fileSize = file.getSize(); // 파일 크기
-        Path filePath = Paths.get(uploadPath, fileName); // 저장 경로
-        Files.write(filePath, file.getBytes());
-        String fileUrl = "/uploads/" + fileName; // URL (또는 상대 경로)
 
+    // 수정된 saveUploadedFile 메서드 (디렉토리 생성)
+    private FileEntity saveUploadedFile(MultipartFile file, EventEntity event, int boardId, HttpServletRequest request) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        String userFolder = "Board/UserId"; // 사용자별 폴더 경로 설정
+//        String fileName = boardId + "_" + System.currentTimeMillis() + "_" + originalFilename; //UserId를 파일 이름에 추가
+        String fileName =  boardId + "_" + System.currentTimeMillis() + "_" + originalFilename;
+        String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        long fileSize = file.getSize();
+
+
+        // 실제 경로 설정 (uploadPath 사용)
+        Path filePath = Paths.get(uploadPath,  String.valueOf(boardId), fileName);
+
+        // 파일 경로가 존재하지 않으면 생성
+        Files.createDirectories(filePath.getParent());
+
+        Files.write(filePath, file.getBytes());
+
+//        String fileUrl = "/uploads/" + userFolder + "/" + fileName; // 수정: userFolder 사용 안 함, boardId 사용
+        String fileUrl = "/uploads/" + boardId + "/" + fileName; // fileUrl 생성 로직 수정
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
         fileEntity.setFileExt(fileExt);
         fileEntity.setFileSize(fileSize);
-        fileEntity.setFileUrl(fileUrl);  // URL 저장
-        fileEntity.setEvent(event); // EventEntity 설정
-        fileEntity.setOriginalFileName(originalFilename); //원본 파일 명
+        fileEntity.setFileUrl(fileUrl);
+        fileEntity.setEvent(event);
+        fileEntity.setOriginalFileName(originalFilename);
         fileEntity.setContentType(file.getContentType());
+        fileEntity.setExtName(fileExt);
 
-        return fileRepository.save(fileEntity); // FileEntity 저장 후 반환
+        return fileRepository.save(fileEntity);
     }
 }

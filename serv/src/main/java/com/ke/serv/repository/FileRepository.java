@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository; // @Repository 추가!
 
 import java.util.List;
 
+@Repository // 추가
 public interface FileRepository extends JpaRepository<FileEntity, Long> { // Long 또는 Integer (FileEntity의 id 타입)
 
     // 특정 EventEntity에 속하는 모든 FileEntity 찾기

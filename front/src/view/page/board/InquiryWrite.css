@@ -1,0 +1,71 @@
+/* InquiryWrite.css */
+
+.inquiry-write-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.inquiry-write-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.inquiry-write-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inquiry-write-table th,
+.inquiry-write-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.inquiry-write-table th {
+    width: 150px; /* 작성자, 내용, 비밀번호 라벨 너비 */
+    font-weight: bold;
+}
+
+.inquiry-write-input,
+.inquiry-write-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* padding, border 포함하여 width 계산 */
+    font-size: 16px;
+}
+
+.inquiry-write-textarea {
+    resize: vertical; /* 세로 크기 조절 가능 */
+}
+
+.button-container {
+    text-align: right;
+    margin-top: 20px;
+}
+/* 버튼 스타일 */
+.btn-style {
+	background: linear-gradient(45deg, #00bcd4, #0288d1); /* 파란색과 바다색 그라데이션 */
+	color: white;
+	border: none;
+	padding: 12px 24px;
+    font-size: 16px;
+	cursor: pointer;
+	border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-decoration: none; /* a태그에 스타일 상속 방지 */
+    display: inline-block; /* a태그에서 버튼처럼 사용하기 위해 */
+}
+
+.btn-style:hover {
+    background: linear-gradient(45deg, #0288d1, #01579b); /* hover 시 더 짙은 파란색과 네이비 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}

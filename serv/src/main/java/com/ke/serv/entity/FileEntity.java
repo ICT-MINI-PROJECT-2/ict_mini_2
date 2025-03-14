@@ -52,4 +52,7 @@ public class FileEntity {
 
     @Column
     private String contentType; // MIME 타입 (예: image/jpeg)
+
+    @Column(nullable = false, length = 255)
+    private String extName; // ext_name 필드 추가
 }

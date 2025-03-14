@@ -8,13 +8,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository // 추가
 public interface BoardRepository extends JpaRepository<EventEntity, Integer> {
 
     @Query("SELECT COUNT(e) FROM EventEntity e WHERE (:category IS NULL OR e.category = :category)")
     int countByCategory(@Param("category") BoardCategory category);
 
-    // JOIN FETCH를 사용하여 EventEntity와 UserEntity를 함께 로드
-    @Query("SELECT e FROM EventEntity e LEFT JOIN FETCH e.user WHERE (:category IS NULL OR e.category = :category)")
+    @Query("SELECT e FROM EventEntity e LEFT JOIN FETCH e.user")
     Page<EventEntity> findByCategory(@Param("category") BoardCategory category, Pageable pageable);
+
 }

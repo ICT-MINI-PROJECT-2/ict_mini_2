@@ -1,7 +1,6 @@
-// BoardWrite.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './BoardWrite.css';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './EventWrite.css';
 
 function BoardWrite() {
     const [title, setTitle] = useState('');
@@ -11,6 +10,15 @@ function BoardWrite() {
     const [thumbnail, setThumbnail] = useState(null);
     const [files, setFiles] = useState([]); // 파일 목록을 배열로 관리
     const navigate = useNavigate();
+    const location = useLocation();
+    const [category, setCategory] = useState('EVENT');
+
+    useEffect(() => {
+        const categoryParam = new URLSearchParams(location.search).get('category');
+        if (categoryParam) {
+            setCategory(categoryParam);
+        }
+    }, [location]);
 
     const handleTitleChange = (e) => setTitle(e.target.value);
     const handleContentChange = (e) => setContent(e.target.value);
@@ -18,7 +26,6 @@ function BoardWrite() {
     const handleEndDateChange = (e) => setEndDate(e.target.value);
     const handleThumbnailChange = (e) => setThumbnail(e.target.files[0]);
     const handleFilesChange = (e) => setFiles(Array.from(e.target.files)); // 여러 파일 처리
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -44,21 +51,27 @@ function BoardWrite() {
         //     return;
         // }
 
+        // EventWrite.jsx - handleSubmit 함수 수정
+
+
         const formData = new FormData();
         formData.append('event_title', title);
         formData.append('event_content', content);
         formData.append('event_startdate', startDate);
         formData.append('event_enddate', endDate);
         formData.append('mf', thumbnail); // 썸네일
+        
 
         // 여러 파일 처리
         for (let i = 0; i < files.length; i++) {
             formData.append('files', files[i]); // 'files'라는 이름으로 여러 파일 추가
         }
 
-        const userId = sessionStorage.getItem('loginId') || 'admin1234'; // 임시 ID (실제 로그인 구현 필요)
-        formData.append('user_id', userId);
 
+
+        const userId = sessionStorage.getItem('loginId') || 'admin1234'; // 임시 ID (실제 로그인 구현 필요)
+        formData.append('category', category); // category 추가
+        formData.append('user_id', userId);
 
         fetch('http://localhost:9977/board/eventWriteOk', { // URL 확인
             method: 'POST',
@@ -73,7 +86,7 @@ function BoardWrite() {
             .then(data => {
                 console.log('Success:', data);
                 alert('글이 등록되었습니다.');
-                navigate('/boardpage?category=EVENT');
+                navigate(`/boardpage?category=EVENT`);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -123,7 +136,7 @@ function BoardWrite() {
                     </tbody>
                 </table>
                 <div style={{ textAlign: 'right', marginTop: '10px' }}>
-                    <button type="button" onClick={() => navigate('/boardpage?category=EVENT')} className="btn-style">목록</button>
+                    <button type="button" onClick={() => navigate(`/boardpage?category=EVENT`)} className="btn-style">목록</button>
                     <button type="submit" className="btn-style">저장</button>
                 </div>
             </form>

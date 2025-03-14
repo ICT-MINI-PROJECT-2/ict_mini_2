@@ -1,82 +1,66 @@
-// EventEntity.java
+// EventEntity.java (전체 코드 - @JsonIgnore 어노테이션 추가)
 package com.ke.serv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // JsonIgnore 어노테이션 import 추가
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Event") // 테이블 이름 확인
-@EntityListeners(AuditingEntityListener.class) // Auditing 활성화
+@NoArgsConstructor
+@Builder
+@ToString(exclude = "user")
 public class EventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Board_ID") // 컬럼 이름 확인
     private int id;
-
-    @Column(nullable = false, length = 100)
     private String subject;
 
-    @Column(nullable = false, length = 1000) // 텍스트가 길어질 수 있다면 length 늘리기, 또는 @Lob
+    @Lob
     private String content;
+    private int hit;
 
-    @CreatedDate // 자동 생성
-    @Column(updatable = false)
+    @CreationTimestamp
     private LocalDateTime createDate;
-
-    @LastModifiedDate // 자동 생성
     private LocalDateTime modifiedDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private BoardCategory category;
-
-
-    // UserEntity와의 관계 설정 (ManyToOne)
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY 로딩
-    @JoinColumn(name = "user_no") // 외래 키 컬럼 이름 확인
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id") // 실제 컬럼 이름
     private UserEntity user;
 
-    private int hit = 0;
-
-
-    //    @Column(nullable = true) // 썸네일은 null 허용
-    //    private String thumbnail; // 썸네일 이미지 URL (또는 파일 경로)
-
-    // 썸네일은 FileEntity를 통해 관리
-    // (thumbnail 필드 제거 또는 주석 처리)
-
-    // FileEntity와의 관계 (One-to-Many)
+    // CascadeType.ALL: EventEntity가 저장, 수정, 삭제될 때 FileEntity도 함께 처리
+    // orphanRemoval = true: EventEntity에서 FileEntity가 제거되면 DB에서도 삭제
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    // 1:N 관계에서는 mappedBy 필수, cascade, orphanRemoval 설정
-    private List<FileEntity> files = new ArrayList<>(); // FileEntity 리스트
+    @JsonIgnore // @JsonIgnore 어노테이션 추가: files 속성을 JSON 직렬화에서 제외
+    private List<FileEntity> files = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING) //추가
+    private BoardCategory category; // 카테고리 필드
 
-    // enum 타입 정의 (카테고리)
-    public enum BoardCategory {
-        EVENT, INQUIRY, NOTICE, FAQ
-    }
-
-    // FileEntity 추가/제거를 위한 편의 메서드 (선택 사항)
+    // 파일 추가 헬퍼 메서드
     public void addFile(FileEntity file) {
         files.add(file);
         file.setEvent(this);
     }
 
+    // 파일 삭제 헬퍼 메서드 (필요한 경우)
     public void removeFile(FileEntity file) {
         files.remove(file);
         file.setEvent(null);
+    }
+
+    public enum BoardCategory {
+        EVENT, // 이벤트 게시판
+        NOTICE, // 공지 게시판
+        FAQ, // FAQ 게시판
+        INQUIRY // 문의 게시판
     }
 }
