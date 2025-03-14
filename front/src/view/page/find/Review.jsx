@@ -74,12 +74,16 @@ function Review({getReview, review_list, restaurant_id}){
         .then(err=>{console.log(err)});
     }
 
-    return(<div id='review'>
-        <div className="review-body">
-            <ol>
-                {makeReview()}
-            </ol>
-        </div>
+    return(
+        <div id='review'>
+        {
+            review_list.length !== 0 ?
+            (<div className="review-body">
+                <ol>
+                    {makeReview()}
+                </ol>
+            </div>) : <div>등록된 리뷰가 없습니다.</div>
+        }
             <div className='review-input-box'>
                 제목<input type='text' name='subject' className='review-input-subject' onChange={changeData}/><br/>
                 내용<textarea name='comment' className='review-input-content' onChange={changeData}></textarea><br/>
