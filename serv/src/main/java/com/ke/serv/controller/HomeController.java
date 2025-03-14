@@ -6,11 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
@@ -20,10 +24,12 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class HomeController {
     private final RestaurantService rest_service;
+
     @GetMapping("/")
     public String home(){
         return "index";
     }
+
     @GetMapping("/api")
     public String setAPI(){
         String result="";
@@ -55,10 +61,49 @@ public class HomeController {
                         } catch(Exception ee){
                             System.out.println("!");
                         }
+                        String cat = (String) ((JSONObject) infoArr.get(j)).get("UPTAENM");
+                        if(cat.contains("한식")||cat.contains("냉면집")||cat.contains("식육(숯불구이)")||cat.contains("횟집")||cat.contains("탕류")) {
+                            re.setCategory_1("한식");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("패스트푸드")||cat.contains("치킨")||cat.contains("피자")) {
+                            re.setCategory_1("패스트푸드");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("일식") || cat.contains("초밥")) {
+                            re.setCategory_1("일식");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("중국식")) {
+                            re.setCategory_1("중식");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("인도")||cat.contains("태국")) {
+                            re.setCategory_1("아시아음식");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("소주")||cat.contains("호프")||cat.contains("주점")) {
+                            re.setCategory_1("주점");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("김밥")||cat.contains("도시락")||cat.contains("분식")) {
+                            re.setCategory_1("분식");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("뷔페")) {
+                            re.setCategory_1("뷔페");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("패밀리")||cat.contains("레스토랑")) {
+                            re.setCategory_1("패밀리레스토랑");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.isEmpty() ||cat.contains("기타")) {
+                            re.setCategory_1("기타");
+                            re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
                         re.setTel((String) ((JSONObject) infoArr.get(j)).get("SITETEL"));
                         re.setPostno((String) ((JSONObject) infoArr.get(j)).get("SITEPOSTNO"));
-                        re.setCategory_1((String) ((JSONObject) infoArr.get(j)).get("UPTAENM"));
-                        re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
                         re.setId(i*1000+j+1);
                         rest_service.addRestaurantByAPI(re);
                     }

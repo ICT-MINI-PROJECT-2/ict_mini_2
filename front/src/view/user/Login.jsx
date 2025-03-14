@@ -18,10 +18,11 @@ function Login(){
         }
     });
 
-    const doLogin = (username) => {
+    const doLogin = (dt) => {
         sessionStorage.setItem("loginStatus", "Y");
-        sessionStorage.setItem("loginName",username);
-        sessionStorage.setItem("loginId",data.userid);
+        sessionStorage.setItem("loginName",dt.username);
+        sessionStorage.setItem("loginId",dt.userid);
+        sessionStorage.setItem("id", dt.id);
 
         window.location.href = "/";
     }
@@ -47,10 +48,10 @@ function Login(){
                 userid:userid,
                 userpw:userpw
             }).then(res => {
-                if(res.data===0){
+                if(res.data.id===-1){
                     alert_id.innerHTML = "Invalid ID";
                     alert_id.style.opacity = 1;
-                } else if(res.data===1){
+                } else if(res.data.id===-2){
                     alert_pw.innerHTML = "Invalid PW";
                     alert_pw.style.opacity = 1;
                 } else{

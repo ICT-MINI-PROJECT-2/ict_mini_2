@@ -50,7 +50,7 @@ function Menu(){
                 <Link to="/find">음식점 찾기</Link>
                 </li>
                 <li>
-                <Link to="/">자유게시판</Link>
+                <Link to="/BoardPage">자유게시판</Link>
                 </li>
                 <li>
                 <Link to="/">맛집 추천</Link>

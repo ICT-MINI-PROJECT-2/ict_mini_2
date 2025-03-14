@@ -17,6 +17,10 @@ function MainPage(){
         .catch(err => console.log(err));
     }
 
+    const testCrolling = () => {
+      window.location.href="#/test";
+    }
+
     const settings = {
           dots: true,
           infinite: true,
@@ -65,6 +69,7 @@ function MainPage(){
                 <br/><br/><br/><br/><br/><br/>
                 <div className="main-content-title">▶ <p>KICK!</p> 오늘의 맛집</div>
                 <button onClick={setAPI} style={{marginTop:'300px'}}>절대 클릭 [X] api테스트용</button>
+                <button onClick={testCrolling} style={{marginTop:'100px'}}>크롤링 테스트용</button>
                 {tt}
             </div>
         </Faded>
