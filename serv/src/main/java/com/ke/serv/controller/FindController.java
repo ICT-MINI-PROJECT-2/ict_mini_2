@@ -1,12 +1,14 @@
 package com.ke.serv.controller;
 
-import com.ke.serv.entity.PagingEntity;
+import com.ke.serv.vo.PagingVO;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -16,19 +18,21 @@ public class FindController {
     private final RestaurantService service;
 
     @PostMapping("/searchList")
-    public List<RestaurantEntity> searchList(@RequestBody PagingEntity pe) {
-        pe.setTotalRecord(service.totalRecord(pe));
+    public Map searchList(@RequestBody PagingVO pvo) {
+        pvo.setTotalRecord(service.totalRecord(pvo));
 
-        System.out.println(pe);
+        List<RestaurantEntity> list = service.findListSelect(pvo);
 
-        List<RestaurantEntity> list = service.findListSelect(pe.getSearchWord());
-        System.out.println(pe.getSearchWord() + ", " + pe.getSearchTag());
-
-        String[] tagList = pe.getSearchTag().split("#");
+        String[] tagList = pvo.getSearchTag().split("#");
         for (String s: tagList) {
             System.out.println(s);
         }
-        return list;
+
+        Map map = new HashMap();
+        map.put("pvo", pvo);
+        map.put("list", list);
+
+        return map;
     }
 
     @PostMapping("/findInfo")

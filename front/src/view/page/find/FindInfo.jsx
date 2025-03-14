@@ -6,6 +6,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import marker from '../../../img/marker.png';
 import Review from './Review';
 
 const {kakao} = window;
@@ -58,7 +59,14 @@ function FindInfo() {
                 };  
     
             // 지도를 생성합니다    
-            var map = new kakao.maps.Map(mapContainer, mapOption); 
+            var map = new kakao.maps.Map(mapContainer, mapOption);
+            
+            var imageSrc = marker, // 마커이미지의 주소입니다    
+                imageSize = new kakao.maps.Size(40, 40), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(20, 50)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+                
+            // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
     
             var places = new kakao.maps.services.Places();
             
@@ -95,27 +103,32 @@ function FindInfo() {
                     // 결과값으로 받은 위치를 마커로 표시합니다
                     var marker = new kakao.maps.Marker({
                         map: map,
-                        position: coords
+                        position: coords,
+                        image: markerImage
                     });
     
                     // 인포윈도우로 장소에 대한 설명을 표시합니다
                     var infowindow = new kakao.maps.InfoWindow({
-                        content: `<div style="width:150px;text-align:center;padding:6px 0;">${info.rstrName}</div>`
+                        content: `<div style="width:150px;text-align:center;padding:3px;font-size:0.9em;">
+                                    ${info.rstrName}
+                                </div>`
                     });
                     infowindow.open(map, marker);
     
                     // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
                     map.setCenter(coords);
+
+                    // map.setDraggable(false);
+                    map.setZoomable(false);
+                    map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
                 } 
             }); 
         }
     },[info]);
 
-
     const getInfo = ()=> {
         axios.post(`http://localhost:9977/find/findInfo`, {id: loc.state.id})
         .then(res=>{
-            // console.log(res.data);
             setInfo({
                 id: res.data.id,
                 rstrName: res.data.name,
@@ -165,7 +178,6 @@ function FindInfo() {
                     })
                 }
                 </Slider>
-                
             </div>
 
             <div className='rInfo'>
@@ -191,11 +203,12 @@ function FindInfo() {
                     {tab === "menu" && (
                         <div id="menu">
                             {
-                                menu_list.map((item,idx) => {
-                                    return(<div key={idx}>
-                                        {item}
-                                    </div>);
-                                })
+                                menu_list.length !== 0?
+                                    menu_list.map((item) => {
+                                        return(<div>
+                                            {item}
+                                        </div>);
+                                    }):<div>정보없음</div>
                             }
                         </div>
                     )}
