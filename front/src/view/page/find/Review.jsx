@@ -1,24 +1,43 @@
-import {useState} from 'react';
+import {useState , useEffect, useRef} from 'react';
 import axios from 'axios';
-function Review(){
+function Review({getReview, review_list, restaurant_id}){
+    const review_mount = useRef(false);
+
+    useEffect(() => {
+        if(review_mount.current) {}
+        else {
+            review_mount.current = true;
+            console.log("review_mounted");
+        }    
+    },[]);
+
     const [data,setData] = useState({});
     const [file,setFile] = useState([]);
     function makeReview(){
-        let reviewList = [{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'},{name:'hh',contents:'gg'}];
-        const listItems = reviewList.map((item, idx) =>
+        const listItems = review_list.map((item, idx) =>
             (
             <li key={'review-' + idx} className="review-chat-box"><div className="container-msg">
-                <div className='message-who'>{item.name}</div>
+                <div className='message-who'>{item.entity.user.username}</div>
                 <div className="message-container">
                   <div className='message-box'>
                     <ul>
-                        <li className="message-date">
-                            {item.date}
-                        </li>
                         <li className="message-text">
-                            {item.contents}
+                            {item.entity.writedate}
+                        </li>
+                        <li>
+                            {item.entity.rating}
                         </li>
                     </ul>
+                    <div className='message-comment'>
+                        {item.entity.comment}
+                    </div>
+                    <img id='review-img' src={`http://localhost:9977/uploads/review/${item.entity.id}/${item.imgList[0].filename}`}/>
+                    {/*
+                        item.imgList.map((imgs,img_idx) => {
+                            return(<img key={'review-img-'+img_idx}width='100' src={`http://localhost:9977/uploads/review/${item.entity.id}/${imgs.filename}`}/>)
+                        })*/
+                    }
+                    
                   </div>
                 </div>
               </div></li>
@@ -41,6 +60,7 @@ function Review(){
     const doSubmit = () => {
         let formData = new FormData();
         formData.append("user", sessionStorage.getItem("id"));
+        formData.append("restaurant",restaurant_id);
         formData.append("subject",data.subject);
         formData.append("comment",data.comment);
         formData.append("rating",data.rating);
@@ -49,7 +69,7 @@ function Review(){
         }
         axios.post('http://192.168.1.146:9977/review/write', formData)
         .then(res => {
-            console.log(res.data);
+            getReview();
         })
         .then(err=>{console.log(err)});
     }
