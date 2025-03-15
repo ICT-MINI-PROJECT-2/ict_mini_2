@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
+"use client"
+
+import React, { useState, useEffect, useCallback } from 'react'; // useCallback import 추가
 import { useNavigate, useLocation } from 'react-router-dom';
 import './EventWrite.css';
+// queryClient import (경로 확인 및 수정 필요)
+import { queryClient } from './EventPage'; // ✅ import { queryClient } 로 수정 (소문자 q, c)
+
 
 function BoardWrite() {
     const [title, setTitle] = useState('');
@@ -27,6 +32,13 @@ function BoardWrite() {
     const handleThumbnailChange = (e) => setThumbnail(e.target.files[0]);
     const handleFilesChange = (e) => setFiles(Array.from(e.target.files)); // 여러 파일 처리
 
+    // ✅ getSearchKey 함수 복제 (EventList 컴포넌트와 동일하게 구현)
+    const getSearchKey = useCallback(() => {
+        const category = new URLSearchParams(location.search).get("category") || "EVENT";
+        return [`eventList`, category, 1, "제목내용", "", false]; // currentPage를 1로, 검색 조건은 기본값으로 설정
+    }, [location.search]);
+    // **⚠️ 실제 프로젝트에서는 getSearchKey 함수를 공유하는 방식으로 개선하는 것이 좋습니다.**
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -51,23 +63,17 @@ function BoardWrite() {
         //     return;
         // }
 
-        // EventWrite.jsx - handleSubmit 함수 수정
-
-
         const formData = new FormData();
         formData.append('event_title', title);
         formData.append('event_content', content);
         formData.append('event_startdate', startDate);
         formData.append('event_enddate', endDate);
         formData.append('mf', thumbnail); // 썸네일
-        
 
         // 여러 파일 처리
         for (let i = 0; i < files.length; i++) {
             formData.append('files', files[i]); // 'files'라는 이름으로 여러 파일 추가
         }
-
-
 
         const userId = sessionStorage.getItem('loginId') || 'admin1234'; // 임시 ID (실제 로그인 구현 필요)
         formData.append('category', category); // category 추가
@@ -86,6 +92,8 @@ function BoardWrite() {
             .then(data => {
                 console.log('Success:', data);
                 alert('글이 등록되었습니다.');
+                // **✅ 글 등록 성공 후 쿼리 캐시 무효화**
+                queryClient.invalidateQueries(getSearchKey()); // **이 줄 추가!**
                 navigate(`/boardpage?category=EVENT`);
             })
             .catch(error => {

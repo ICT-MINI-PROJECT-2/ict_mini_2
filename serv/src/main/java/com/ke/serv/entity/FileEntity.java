@@ -1,5 +1,6 @@
 package com.ke.serv.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @Table(name = "file_entity") // 테이블 이름 수정
 @EntityListeners(AuditingEntityListener.class) // Auditing 활성화
 public class FileEntity {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +39,7 @@ public class FileEntity {
 
     @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩
     @JoinColumn(name = "board_id") // 외래 키 컬럼 이름 (EventEntity 테이블의 기본 키 컬럼)
+    @JsonBackReference // ✅ @JsonBackReference 추가!
     private EventEntity event;   //어떤 게시글의 파일인지
 
     @CreatedDate

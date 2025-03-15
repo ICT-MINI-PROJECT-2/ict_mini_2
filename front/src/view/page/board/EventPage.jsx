@@ -6,7 +6,9 @@ import axios from "axios"
 import { QueryClient, QueryClientProvider, useQuery, keepPreviousData } from '@tanstack/react-query'
 
 // QueryClient 인스턴스를 EventList 컴포넌트 밖에서 생성
-const queryClient = new QueryClient();
+
+export const queryClient = new QueryClient(); // ✅ export const 를 파일 최상위 스코프 정의에 추가!
+
 
 // 이벤트 카드 컴포넌트 (memoized) - calculateRemainingTime prop 제거, onError 단순화, placeholder URL 단순화
 const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
@@ -16,6 +18,19 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
   if (hasThumbnail && event.files[0]) {
     thumbnailUrl = `http://localhost:9977${event.files[0].fileUrl}`
   }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "날짜 미정";
+    const date = new Date(dateString);
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
 
   return (
     <div className="event-card" style={{ marginBottom: "20px" }}>
@@ -63,10 +78,10 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
             textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
           }}
         >
-          <h3 style={{ fontSize: "28px", fontWeight: "bold", margin: "0 0 5px 0" }}>BIG SALE</h3>
           <p style={{ fontSize: "14px", margin: "0" }}>
-            {event.createDate ? new Date(event.createDate).toLocaleDateString() : "날짜 미정"} -
-            {event.modifiedDate ? new Date(event.modifiedDate).toLocaleDateString() : "날짜 미정"}
+            <p>시작일: {formatDate(event.startDate)}</p>
+            <p>종료일: {formatDate(event.endDate)}</p>
+
           </p>
         </div>
       </div>
@@ -98,11 +113,6 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
             <span>조회: </span>
             <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{event.hit}</span>
           </div>
-          {/* 삭제: 남은기간 관련 div */}
-          {/* <div>
-            <span>남은기간: </span>
-            <span>{calculateRemainingTime(event.modifiedDate)}</span>
-          </div> */}
         </div>
         <div style={{ fontSize: "12px", color: "#999", textAlign: "left", marginTop: "5px" }}>
           {event.createDate ? new Date(event.createDate).toLocaleDateString() : "날짜 미정"}
@@ -125,6 +135,9 @@ const EventList = memo(function EventList() {
   const [totalPages, setTotalPages] = useState(1)
   const [showOnlyWithImages, setShowOnlyWithImages] = useState(false)
   const location = useLocation()
+  
+
+  
 
   // 검색 파라미터 변경 감지를 위한 키 생성 (유지)
   const getSearchKey = useCallback(() => {
@@ -140,7 +153,7 @@ const EventList = memo(function EventList() {
         .get("http://localhost:9977/board/boardPage", {
           params: {
             category,
-            page: page - 1,
+            page: page - 1, // 페이지 값을 0부터 시작하도록 수정
             size: 6,
             searchType,
             searchTerm,
@@ -157,8 +170,8 @@ const EventList = memo(function EventList() {
   })
 
   const events = data?.list || []
+  console.log("Event Data:", events); // <-- 이 줄을 추가해주세요
   const loading = fetchStatus === "fetching"
-
 
   const handleSearch = useCallback(
     (e) => {
@@ -182,11 +195,11 @@ const EventList = memo(function EventList() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px", marginBottom: "30px" }}>
         {events.map((event) => (
           // 수정: calculateRemainingTime prop 제거
-          <MemoizedRenderEventCard key={event.id} event={event} /* 삭제: calculateRemainingTime={calculateRemainingTime} */ />
+          <MemoizedRenderEventCard key={event.id} event={event} />
         ))}
       </div>
     )
-  }, [loading, events /* 삭제: , calculateRemainingTime */]) // 의존성 배열에서 calculateRemainingTime 제거
+  }, [loading, events])
 
   // 페이지네이션 렌더링 최적화 (유지)
   const renderPagination = useCallback(() => {

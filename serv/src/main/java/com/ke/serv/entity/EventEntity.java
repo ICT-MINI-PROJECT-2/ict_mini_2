@@ -2,6 +2,7 @@
 package com.ke.serv.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore; // JsonIgnore 어노테이션 import 추가
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,14 +33,18 @@ public class EventEntity {
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
 
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id") // 실제 컬럼 이름
     private UserEntity user;
 
     // CascadeType.ALL: EventEntity가 저장, 수정, 삭제될 때 FileEntity도 함께 처리
     // orphanRemoval = true: EventEntity에서 FileEntity가 제거되면 DB에서도 삭제
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // @JsonIgnore 어노테이션 추가: files 속성을 JSON 직렬화에서 제외
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // LAZY 로 복원!
+    @JsonManagedReference // ✅ @JsonManagedReference 추가!
     private List<FileEntity> files = new ArrayList<>();
 
     @Enumerated(EnumType.STRING) //추가
