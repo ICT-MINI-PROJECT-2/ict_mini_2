@@ -192,36 +192,34 @@ function FindInfo() {
                     {tab === "home" && (
                         <div id="home">
                             {
+                                info_list.length !== 0 ?
                                 info_list.map((item,idx) => {
                                     return(<div key={idx} >
                                         {item}
                                     </div>);
-                                })
+                                }) : <div>상세정보가 없습니다.</div>
                             }
                         </div>
                     )}
                     {tab === "menu" && (
                         <div id="menu">
                             {
-                                menu_list.length !== 0?
+                                menu_list.length !== 0 ?
                                     menu_list.map((item) => {
                                         return(<div>
                                             {item}
                                         </div>);
-                                    }):<div>정보없음</div>
+                                    }) : <div>메뉴정보가 없습니다.</div>
                             }
                         </div>
                     )}
                     {tab === "photo" && (
-                        <div id="photo">
-                            {
-                                review_img_list.map((item,idx) => {
-                                    return(<div>
-                                        <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} width='100%'/>
-                                    </div>);
-                                })
-                            }
-                        </div>
+                        review_img_list.length !== 0 ?
+                        review_img_list.map((item,idx) => {
+                            return(<div id="photo">
+                                <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} width='100%'/>
+                            </div>);
+                        }) : <div>등록된 사진이 없습니다.</div>
                     )}
                     {(tab === "review") ? 
                         <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} isLogin={ sessionStorage.getItem("loginStatus") === 'Y' ? true : false}/> : <></>

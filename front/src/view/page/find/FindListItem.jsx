@@ -15,12 +15,12 @@ function FindListItem({restaurant}) {
 
     return (
         
-            <div className="find-list-item">
+            <div className="find-list-item" style={{position: 'relative'}}>
+                <div id="list-favorite" onClick={favorite}>♡</div>
                 <div className="list-item-img"
                     style={{background:`url(${'/img/find/'+restaurant.category_1+'.png'}) center / 100%`}}>
                 </div>
-                <div style={{position: 'relative'}}>
-                    <div id="list-favorite" onClick={favorite}>♡</div>
+                <div>
                     <Link to={'/findInfo'} state={{id: restaurant.id}}>
                         <div id="rstr-name">{restaurant.name}</div>
                     </Link>
