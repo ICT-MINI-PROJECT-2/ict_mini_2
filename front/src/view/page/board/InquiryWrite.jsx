@@ -5,13 +5,12 @@ import './InquiryWrite.css'; // CSS 파일 import
 
 function InquiryWrite() {
     const [content, setContent] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState(''); // ✅ 비밀번호 상태 추가
     const [userid, setUserId] = useState(''); // 사용자 ID 상태 추가
 
     const navigate = useNavigate();
     const location = useLocation();
     const [category, setCategory] = useState('INQUIRY');
-
 
     useEffect(() => {
         const categoryParam = new URLSearchParams(location.search).get('category');
@@ -24,29 +23,26 @@ function InquiryWrite() {
 
     }, [location]);
 
-
     const handleContentChange = (e) => setContent(e.target.value);
-    const handlePasswordChange = (e) => setPassword(e.target.value);
-
+    const handlePasswordChange = (e) => setPassword(e.target.value); // ✅ 비밀번호 입력 핸들러
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
 
         if (!content.trim()) {
             alert('문의 내용을 입력하세요.');
             return;
         }
-        if (!password.trim()) {
+        if (!password.trim()) { // ✅ 비밀번호 입력 검증 추가
             alert('비밀번호를 입력하세요.');
             return;
         }
 
         const formData = new FormData();
-        formData.append('subject', "1:1 문의"); // 제목은 고정
-        formData.append('content', content);
+        formData.append('event_title', "1:1 문의"); // 제목은 고정
+        formData.append('event_content', content);
         formData.append('user_id', userid); // 사용자 ID
-        formData.append('password', password);
+        formData.append('password', password); // ✅ 비밀번호 FormData 에 추가
         formData.append('category', category);
 
         fetch('http://localhost:9977/board/eventWriteOk', { // 백엔드 URL 확인
@@ -62,7 +58,7 @@ function InquiryWrite() {
         .then(data => {
             console.log('Success:', data);
             alert('문의가 등록되었습니다.');
-            navigate(`/boardpage?category=${category}`); // 문의 목록 페이지로 이동
+            navigate(`/boardPage?category=${category}`); // 문의 목록 페이지로 이동
         })
         .catch(error => {
             console.error('Error:', error);
@@ -95,7 +91,7 @@ function InquiryWrite() {
                             </td>
                         </tr>
                         <tr>
-                            <th>비밀번호</th>
+                            <th>비밀번호</th> {/* ✅ 비밀번호 입력 필드 추가 */}
                             <td>
                                 <input
                                     type="password"
@@ -109,7 +105,7 @@ function InquiryWrite() {
                     </tbody>
                 </table>
                 <div className="button-container">
-                     <button type="button" onClick={() => navigate(`/boardpage?category=${category}`)} className="btn-style">목록</button>
+                     <button type="button" onClick={() => navigate(`/boardPage?category=${category}`)} className="btn-style">목록</button>
                     <button type="submit" className='btn-style'>등록</button>
                 </div>
             </form>

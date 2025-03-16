@@ -15,7 +15,7 @@ function InquiryList() {
     }, []);
 
     function getBoardPage(page, category) {
-      let url = `http://localhost:9977/board/boardpage?page=${page}&category=${category}`;
+      let url = `http://localhost:9977/board/boardPage?page=${page}&category=${category}`;
       if(searchWord){
         url += `&searchWord=${searchWord}`;
       }
@@ -74,9 +74,9 @@ function InquiryList() {
 
             {boardData.map((record) => (
                 <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} key={record.id}>
-                    <div className="col-sm-1 p-2"><Link to={`/boardView/${record.id}`}>{record.id}</Link></div>
+                    <div className="col-sm-1 p-2"><Link to={`/inquiry/view/${record.id}`}>{record.id}</Link></div>
                     <div className="col-sm-4 p-2">
-                        <Link to={`/boardView/${record.id}`} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Link to={`/inquiry/view/${record.id}`} style={{ display: 'flex', alignItems: 'center' }}>
                             {record.files && record.files.length > 0 && (
                                 <img src={`http://localhost:9977${record.files[0].fileUrl}`} alt="썸네일" style={{ width: '100px', height: '100px', marginRight: '10px' }} />
                             )}

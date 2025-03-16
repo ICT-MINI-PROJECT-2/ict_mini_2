@@ -6,14 +6,12 @@ import axios from "axios"
 import { QueryClient, QueryClientProvider, useQuery, keepPreviousData } from '@tanstack/react-query'
 
 // QueryClient 인스턴스를 EventList 컴포넌트 밖에서 생성
+export const queryClient = new QueryClient();
 
-export const queryClient = new QueryClient(); // ✅ export const 를 파일 최상위 스코프 정의에 추가!
-
-
-// 이벤트 카드 컴포넌트 (memoized) - calculateRemainingTime prop 제거, onError 단순화, placeholder URL 단순화
+// 이벤트 카드 컴포넌트 (memoized)
 const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
   const hasThumbnail = event.files && event.files.length > 0
-  let thumbnailUrl = "/placeholder-simple.svg"; // 단순 placeholder URL 사용
+  let thumbnailUrl = "/placeholder-simple.svg";
 
   if (hasThumbnail && event.files[0]) {
     thumbnailUrl = `http://localhost:9977${event.files[0].fileUrl}`
@@ -30,7 +28,6 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
       minute: "2-digit",
     });
   };
-
 
   return (
     <div className="event-card" style={{ marginBottom: "20px" }}>
@@ -49,23 +46,35 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
         >
           EVENT
         </div>
-        <img
-          src={thumbnailUrl || "/placeholder-simple.svg"} // 단순 placeholder URL 사용
-          alt={event.subject}
-          style={{
-            width: "100%",
-            height: "200px",
-            objectFit: "cover",
-            borderRadius: "4px",
-          }}
-          onError={(e) => {
-            if (e.target.src !== window.location.origin + "/placeholder-simple.svg") {
-              console.log("Image load failed, using placeholder:", e.target.src);
-              e.target.src = "/placeholder-simple.svg";
-            }
-          }}
-          loading="lazy"
-        />
+        <div style={{ // Container div for the image to control object-fit and centering
+          width: "100%",
+          height: "200px", // Fixed height for the container
+          overflow: "hidden", // Clip any part of the image that overflows
+          borderRadius: "4px",
+          display: 'flex',         // ✅ Flexbox 활성화: 이미지 가운데 정렬을 위해
+          justifyContent: 'center', // ✅ 가로 방향 가운데 정렬
+          alignItems: 'center',     // ✅ 세로 방향 가운데 정렬 (필요에 따라)
+        }}>
+          <img
+            src={thumbnailUrl || "/placeholder-simple.svg"}
+            alt={event.subject}
+            style={{
+              width: "100%",
+              height: "100%",         // Image fills the container
+              objectFit: "contain",     // ✅ object-fit: contain 적용: 이미지 잘림 없이 카드에 맞춤
+              display: "block",         // Ensure no extra space below the image
+              maxWidth: '100%',        // ✅ 이미지 최대 너비 제한 (컨테이너 너비 초과 방지)
+              maxHeight: '100%',       // ✅ 이미지 최대 높이 제한 (컨테이너 높이 초과 방지)
+            }}
+            onError={(e) => {
+              if (e.target.src !== window.location.origin + "/placeholder-simple.svg") {
+                console.log("Image load failed, using placeholder:", e.target.src);
+                e.target.src = "/placeholder-simple.svg";
+              }
+            }}
+            loading="lazy"
+          />
+        </div>
         <div
           style={{
             position: "absolute",
@@ -81,7 +90,6 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
           <p style={{ fontSize: "14px", margin: "0" }}>
             <p>시작일: {formatDate(event.startDate)}</p>
             <p>종료일: {formatDate(event.endDate)}</p>
-
           </p>
         </div>
       </div>
@@ -117,9 +125,6 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
         <div style={{ fontSize: "12px", color: "#999", textAlign: "left", marginTop: "5px" }}>
           {event.createDate ? new Date(event.createDate).toLocaleDateString() : "날짜 미정"}
         </div>
-        <div style={{ textAlign: "right", fontSize: "12px", color: "#999" }}>
-          <span>👁️ {event.hit}</span>
-        </div>
       </div>
     </div>
   )
@@ -135,11 +140,8 @@ const EventList = memo(function EventList() {
   const [totalPages, setTotalPages] = useState(1)
   const [showOnlyWithImages, setShowOnlyWithImages] = useState(false)
   const location = useLocation()
-  
 
-  
-
-  // 검색 파라미터 변경 감지를 위한 키 생성 (유지)
+  // 검색 파라미터 변경 감지를 위한 키 생성
   const getSearchKey = useCallback(() => {
     const category = new URLSearchParams(location.search).get("category") || "EVENT"
     return [`eventList`, category, currentPage, searchType, searchTerm, showOnlyWithImages]
@@ -165,23 +167,31 @@ const EventList = memo(function EventList() {
     placeholderData: keepPreviousData,
     staleTime: 60 * 1000,
     cacheTime: 5 * 60 * 1000,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    onSuccess: (data) => { // onSuccess 콜백 추가
+      if (data && data.totalPages) { // 백엔드 응답에 totalPages가 포함되어 있다고 가정
+        setTotalPages(data.totalPages); // totalPages 상태 업데이트
+      } else {
+        setTotalPages(1); // totalPages 정보가 없으면 기본값 1로 설정 (페이지네이션 숨김)
+      }
+    },
   })
 
   const events = data?.list || []
-  console.log("Event Data:", events); // <-- 이 줄을 추가해주세요
+  console.log("Event Data:", events);
   const loading = fetchStatus === "fetching"
 
   const handleSearch = useCallback(
     (e) => {
       e.preventDefault()
+      console.log("handleSearch 실행됨", searchTerm, searchType);
       setCurrentPage(1)
     },
-    [],
+    [searchTerm, searchType], // searchTerm과 searchType을 의존성 배열에 추가
   )
 
-  // 이벤트 목록 렌더링 최적화 (useCallback 유지, calculateRemainingTime 제거)
+  // 이벤트 목록 렌더링 최적화
   const renderEventList = useCallback(() => {
     if (loading) {
       return <div style={{ textAlign: "center", padding: "50px 0" }}>로딩 중...</div>
@@ -194,14 +204,13 @@ const EventList = memo(function EventList() {
     return (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px", marginBottom: "30px" }}>
         {events.map((event) => (
-          // 수정: calculateRemainingTime prop 제거
           <MemoizedRenderEventCard key={event.id} event={event} />
         ))}
       </div>
     )
   }, [loading, events])
 
-  // 페이지네이션 렌더링 최적화 (유지)
+  // 페이지네이션 렌더링 최적화
   const renderPagination = useCallback(() => {
     if (totalPages <= 1) return null
     return (
@@ -210,7 +219,14 @@ const EventList = memo(function EventList() {
           <button
             key={page}
             onClick={() => setCurrentPage(page)}
-            style={{ /* ... */ }}
+            style={{
+              padding: "8px 12px",
+              margin: "0 5px",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              background: currentPage === page ? "#f0f0f0" : "white",
+              cursor: "pointer",
+            }}
           >
             {page}
           </button>
@@ -221,39 +237,56 @@ const EventList = memo(function EventList() {
 
   return (
     <div className="event-list-container">
-      {/* 검색 및 필터 영역 (유지) */}
+      {/* 검색 및 필터 영역 */}
       <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex" }}>
-          <select value={searchType} onChange={(e) => setSearchType(e.target.value)} style={{ /* ... */ }}>
+          <select value={searchType} onChange={(e) => setSearchType(e.target.value)} style={{
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid #ddd",
+            marginRight: "10px",
+          }}>
             <option value="제목내용">제목+내용</option>
             <option value="제목만">제목만</option>
             <option value="작성자">작성자</option>
           </select>
           <form onSubmit={handleSearch} style={{ display: "flex" }}>
-            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="검색어를 입력하세요" style={{ /* ... */ }} />
-            <button type="submit" style={{ /* ... */ }}>
+            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="검색어를 입력하세요" style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ddd",
+              marginRight: "5px",
+            }} />
+            <button type="submit" style={{
+              background: "#f8f9fa",
+              color: "#343a40",
+              padding: "8px 12px",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}>
               <span role="img" aria-label="search">🔍</span>
             </button>
           </form>
         </div>
-        <div>
-          <label style={{ display: "flex", alignItems: "center", fontSize: "14px" }}>
-            <input type="checkbox" checked={showOnlyWithImages} onChange={(e) => setShowOnlyWithImages(e.target.checked)} style={{ marginRight: "5px" }} />
-            첨부 파일이 있는 게시물만 검색하기
-          </label>
-        </div>
       </div>
 
-      {/* 이벤트 그리드 - 메모이제이션된 함수 사용 (유지) */}
+      {/* 이벤트 그리드 */}
       {renderEventList()}
 
-      {/* 페이지네이션 - 메모이제이션된 함수 사용 (유지) */}
+      {/* 페이지네이션 */}
       {renderPagination()}
 
-      {/* 글쓰기 버튼 (유지) */}
+      {/* 글쓰기 버튼 */}
       <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex" }}></div>
-        <Link to="/events/write" style={{ /* ... */ }}>글쓰기</Link>
+        <Link to="/events/write" style={{
+          padding: "10px 15px",
+          background: "#007bff",
+          color: "white",
+          textDecoration: "none",
+          borderRadius: "4px",
+        }}>글쓰기</Link>
       </div>
     </div>
   )

@@ -1,4 +1,3 @@
-// BoardService.java
 package com.ke.serv.service;
 
 import com.ke.serv.entity.EventEntity;
@@ -17,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,8 +24,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
+import java.math.BigInteger;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,26 +47,51 @@ public class BoardService {
     private String uploadPath;
 
 
-    @Transactional(readOnly = true) public Page<EventEntity> getBoardList(BoardCategory category, Pageable pageable) { Page<EventEntity> boardPage = boardRepository.findByCategory(category, pageable);
-        System.out.println(boardPage); //여기서 fileUrl을 재정의 한다
-        boardPage.forEach(event -> { UserEntity user = event.getUser(); if (user != null) { userRepository.findByUserid(user.getUserid());}
-            //이부분은 수정하지 않아도 된다. }
+    @Transactional(readOnly = true)
+    public Page<EventEntity> getBoardList(BoardCategory category, Pageable pageable, String searchType, String searchTerm) {
+        Page<EventEntity> boardPage;
+
+        if (StringUtils.hasText(searchTerm)) {
+            String keyword = searchTerm.trim();
+
+            if ("제목내용".equals(searchType)) {
+                boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCaseOrContentContainingIgnoreCase(
+                        category, keyword, keyword, pageable);
+            } else if ("제목만".equals(searchType)) {
+                boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCase(
+                        category, keyword, pageable);
+            } else if ("작성자".equals(searchType)) {
+                boardPage = boardRepository.findByCategoryAndUser_UsernameContainingIgnoreCase(
+                        category, keyword, pageable);
+            } else {
+                boardPage = boardRepository.findByCategory(category, pageable);
+            }
+        } else {
+            boardPage = boardRepository.findByCategory(category, pageable);
+        }
+
+        System.out.println(boardPage);
+        boardPage.forEach(event -> {
+            UserEntity user = event.getUser();
+            if (user != null) {
+                userRepository.findByUserid(user.getUserid());
+            }
 
             List<FileEntity> files = fileRepository.findByEvent(event);
-            files.forEach(file -> { //files에서 fileUrl를 재정의
+            files.forEach(file -> {
                 String fileUrl = "/uploads/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
 
                 file.setFileUrl(fileUrl);
-            });//files에서 fileUrl를 재정의
+            });
             event.setFiles(files);
         });
 
-            return boardPage;
-        }
+        return boardPage;
+    }
 
-    @Transactional // 트랜잭션 보장
-    public void saveEvent(String title, String content, String startDate, String endDate,
-                          MultipartFile thumbnail, List<MultipartFile> files, String userId, BoardCategory category,
+    @Transactional
+    public void saveEvent(Integer eventId, String title, String content, String startDate, String endDate,
+                          MultipartFile thumbnail, List<MultipartFile> contentImageFiles, String userId, BoardCategory category, String password,
                           HttpServletRequest request) throws IOException {
 
         UserEntity user = userRepository.findByUserid(userId);
@@ -69,12 +99,45 @@ public class BoardService {
             throw new IllegalArgumentException("Invalid user ID: " + userId);
         }
 
-        // 1️⃣ 이벤트 먼저 저장 (board_id 생성)
-        EventEntity event = new EventEntity();
+        EventEntity event;
+        List<FileEntity> existingFiles = new ArrayList<>();
+
+        if (eventId != null) {
+            Optional<EventEntity> existingEventOptional = boardRepository.findById(eventId);
+            if (existingEventOptional.isPresent()) {
+                event = existingEventOptional.get();
+                event.setModifiedDate(LocalDateTime.now());
+                existingFiles = event.getFiles();
+                event.getFiles().clear();
+
+                if (thumbnail != null && !thumbnail.isEmpty()) {
+                    FileEntity oldThumbnail = existingFiles.stream()
+                            .filter(file -> file.getContentType() != null && file.getContentType().startsWith("image/"))
+                            .findFirst().orElse(null);
+
+                    if (oldThumbnail != null) {
+                        fileRepository.delete(oldThumbnail);
+                    }
+                }
+
+
+            } else {
+                throw new IllegalArgumentException("Event not found with ID: " + eventId);
+            }
+        } else {
+            event = new EventEntity();
+        }
+
         event.setSubject(title);
         event.setContent(content);
         event.setCategory(category);
         event.setUser(user);
+        if (category == BoardCategory.INQUIRY && password != null && !password.isEmpty()) {
+            event.setPassword(hashPassword(password)); // SHA-256 hash
+        } else {
+            event.setPassword(null);
+        }
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         if (startDate != null && !startDate.isEmpty()) {
@@ -84,48 +147,50 @@ public class BoardService {
             event.setEndDate(LocalDateTime.parse(endDate, formatter));
         }
 
-        event = boardRepository.save(event); // ✅ 먼저 저장 (board_id 생성됨!)
+        List<FileEntity> newFiles = new ArrayList<>();
 
-// 2️⃣ 썸네일 저장
         if (thumbnail != null && !thumbnail.isEmpty()) {
             FileEntity thumbnailFile = saveUploadedFile(thumbnail, event, event.getId(), request);
-            event.addFile(thumbnailFile);
+            newFiles.add(thumbnailFile);
+        } else if (eventId != null) {
+            FileEntity oldThumbnail = existingFiles.stream()
+                    .filter(file -> file.getContentType() != null && file.getContentType().startsWith("image/"))
+                    .findFirst().orElse(null);
+            if(oldThumbnail != null){
+                newFiles.add(oldThumbnail);
+            }
         }
 
-// 3️⃣ 파일 리스트 저장
-        if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
+
+        if (contentImageFiles != null && !contentImageFiles.isEmpty()) {
+            for (MultipartFile file : contentImageFiles) {
                 if (!file.isEmpty()) {
                     FileEntity fileEntity = saveUploadedFile(file, event, event.getId(), request);
-                    event.addFile(fileEntity);
+                    newFiles.add(fileEntity);
                 }
             }
         }
 
-        boardRepository.save(event); // ✅ 업데이트 (파일 포함)
+        event.getFiles().addAll(newFiles);
+        boardRepository.save(event);
     }
 
 
-    // 수정된 saveUploadedFile 메서드 (디렉토리 생성)
     private FileEntity saveUploadedFile(MultipartFile file, EventEntity event, int boardId, HttpServletRequest request) throws IOException {
         String originalFilename = file.getOriginalFilename();
-        String userFolder = "Board/UserId"; // 사용자별 폴더 경로 설정
-//        String fileName = boardId + "_" + System.currentTimeMillis() + "_" + originalFilename; //UserId를 파일 이름에 추가
-        String fileName =  boardId + "_" + System.currentTimeMillis() + "_" + originalFilename;
+        String userFolder = "Board/UserId";
+        String fileName = boardId + "_" + System.currentTimeMillis() + "_" + originalFilename;
         String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
         long fileSize = file.getSize();
 
 
-        // 실제 경로 설정 (uploadPath 사용)
-        Path filePath = Paths.get(uploadPath,  String.valueOf(boardId), fileName);
+        Path filePath = Paths.get(uploadPath, String.valueOf(boardId), fileName);
 
-        // 파일 경로가 존재하지 않으면 생성
         Files.createDirectories(filePath.getParent());
 
         Files.write(filePath, file.getBytes());
 
-//        String fileUrl = "/uploads/" + userFolder + "/" + fileName; // 수정: userFolder 사용 안 함, boardId 사용
-        String fileUrl =  "/uploads/board/" + boardId + "/" + fileName;
+        String fileUrl = "/uploads/board/" + boardId + "/" + fileName;
 
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
@@ -140,11 +205,16 @@ public class BoardService {
         return fileRepository.save(fileEntity);
     }
 
-    @Transactional(readOnly = true)
-    public Optional<EventEntity> getEvent(int id) { // 반환 타입을 Optional<EventEntity> 로 변경!
-        Optional<EventEntity> eventOptional = boardRepository.findById(id); // findById 로 Optional 을 얻음
-        if (eventOptional.isPresent()) { // event 가 존재하는지 확인
-            EventEntity event = eventOptional.get(); // Optional 에서 EventEntity 를 꺼냄
+    @Transactional
+    public Optional<EventEntity> getEvent(int id) {
+        Optional<EventEntity> eventOptional = boardRepository.findById(id);
+
+        if (eventOptional.isPresent()) {
+            EventEntity event = eventOptional.get();
+
+            event.setHit(event.getHit() + 1);
+            boardRepository.save(event);
+
             UserEntity user = event.getUser();
             if (user != null) {
                 userRepository.findByUserid(user.getUserid());
@@ -156,9 +226,132 @@ public class BoardService {
                 file.setFileUrl(fileUrl);
             });
             event.setFiles(files);
-            return eventOptional; // Optional 에 담긴 event 를 반환
+
+            return Optional.of(event);
+        }
+        return Optional.empty();
+    }
+
+    private boolean isThumbnailUpdated(HttpServletRequest request) {
+        return false;
+    }
+
+    @Transactional
+    public void deleteEvent(int id) {
+        log.info("deleteEvent 메서드 시작 - Event ID: {}", id);
+
+        Optional<EventEntity> eventOptional = boardRepository.findById(id);
+        if (eventOptional.isPresent()) {
+            EventEntity event = eventOptional.get();
+
+            log.info("EventEntity 찾음 - ID: {}, Subject: {}", event.getId(), event.getSubject());
+
+            try {
+                List<FileEntity> files = fileRepository.findByEvent(event);
+                log.info("첨부 파일 목록 조회 - 파일 수: {}", files.size());
+                for (FileEntity file : files) {
+                    try {
+                        fileRepository.delete(file);
+                        log.info("FileEntity 삭제 성공 - File ID: {}", file.getId());
+                    } catch (Exception fileDeleteEx) {
+                        log.error("FileEntity 삭제 중 오류 발생 - File ID: {}", file.getId(), fileDeleteEx);
+                        throw fileDeleteEx;
+                    }
+                }
+            } catch (Exception fileLoopEx) {
+                log.error("첨부 파일 삭제 루프 전체 오류 발생", fileLoopEx);
+                throw fileLoopEx;
+            }
+
+
+            try {
+                log.info("boardRepository.delete(event) 호출 전 - Event ID: {}", event.getId());
+                boardRepository.delete(event);
+                log.info("boardRepository.delete(event) 호출 후 - Event ID: {}", event.getId());
+                log.info("EventEntity 삭제 성공 - Event ID: {}", event.getId());
+            } catch (Exception boardDeleteEx) {
+                log.error("boardRepository.delete(event) 삭제 중 오류 발생 - Event ID: {}", event.getId(), boardDeleteEx);
+                throw boardDeleteEx;
+            }
+
+
         } else {
-            return Optional.empty(); // event 가 없을 경우 빈 Optional 반환
+            log.warn("삭제할 EventEntity 없음 - Event ID: {}", id);
+            throw new IllegalArgumentException("Event not found with ID: " + id);
+        }
+        log.info("deleteEvent 메서드 종료 - Event ID: {}", id);
+    }
+
+    @Transactional
+    public void updateHitCount(int id) {
+        boardRepository.incrementHitCount(id);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Optional<EventEntity> getEventWithPasswordCheck(int id, String password) {
+        Optional<EventEntity> eventOptional = boardRepository.findById(id);
+
+        if (eventOptional.isPresent()) {
+            EventEntity event = eventOptional.get();
+
+            if (event.getCategory() != BoardCategory.INQUIRY || event.getPassword() == null) {
+                return Optional.of(event);
+            }
+
+            if (checkPassword(password, event.getPassword())) {
+                event.setHit(event.getHit() + 1);
+                boardRepository.save(event);
+
+                UserEntity user = event.getUser();
+                if (user != null) {
+                    userRepository.findByUserid(user.getUserid());
+                }
+
+                List<FileEntity> files = fileRepository.findByEvent(event);
+                files.forEach(file -> {
+                    String fileUrl = "/uploads/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
+                    file.setFileUrl(fileUrl);
+                });
+                event.setFiles(files);
+
+                return Optional.of(event);
+            } else {
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    // ✅ SHA-256 해시 함수
+    private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(encodedhash);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
         }
     }
+
+    // ✅ SHA-256 해시값 비교 함수
+    private boolean checkPassword(String inputPassword, String hashedPassword) {
+        String hashedInputPassword = hashPassword(inputPassword);
+        return hashedInputPassword != null && hashedInputPassword.equals(hashedPassword);
+    }
+
+
+    // ✅ byte[] to hex string 변환 함수
+    private String bytesToHex(byte[] hash) {
+        BigInteger number = new BigInteger(1, hash);
+        StringBuilder hexString = new StringBuilder(number.toString(16));
+        while (hexString.length() < 32) {
+            hexString.insert(0, '0');
+        }
+        return hexString.toString();
+    }
+
+
 }

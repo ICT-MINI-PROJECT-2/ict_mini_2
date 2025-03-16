@@ -15,7 +15,7 @@ import MyPage from "./user/MyPage";
 import FindInfo from "./page/find/FindInfo";
 import Test from "./Test";
 import InquiryList from "./page/board/InquiryPage"; // 중복된 import 정리 ✅
-
+import EventEdit from "./page/board/EventEdit"; // ✅ EventEdit 컴포넌트 import 추가!
 
 function Body() {
   return (
@@ -30,12 +30,16 @@ function Body() {
       <Route path="/boardpage" element={<Board />} />
       <Route path="/events/write" element={<BoardWrite />} />
       <Route path="/events/:id" element={<EventView />} />
+      <Route path="/events/edit/:id" element={<EventEdit />} />
 
       {/* 문의 게시판 (Inquiry) */}
       <Route path="/inquiry" element={<InquiryPage />} />
       <Route path="/inquiry/list" element={<InquiryList />} /> {/* 문의 리스트 ✅ */}
       <Route path="/inquiry/write" element={<InquiryWrite />} /> {/* 글쓰기 ✅ */}
       <Route path="/inquiry/view/:id" element={<InquiryView />} /> {/* 글 보기 ✅ */}
+
+      {/* 추가된 경로 */}
+      <Route path="/boardwrite" element={<InquiryWrite />} /> {/* 추가된 경로 ✅ */}
 
       {/* 기타 */}
       <Route path="/find" element={<Find />} />

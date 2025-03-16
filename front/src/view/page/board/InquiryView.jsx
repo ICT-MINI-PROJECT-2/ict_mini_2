@@ -13,31 +13,36 @@ function InquiryView() {
     const [reply, setReply] = useState(''); // 답변 내용
     const navigate = useNavigate();
 
-
-
     useEffect(() => {
-        // 처음 로드될 때는 비밀번호 확인 없이 데이터만 가져옴 (제목, 작성자 등)
-        axios.get(`http://localhost:8080/board/boardpage/${id}`) // 백엔드 URL 확인
-            .then(response => {
-                setInquiry(response.data);
-                console.log(response.data)
-            })
-            .catch(error => {
-                console.error('Error fetching inquiry:', error);
-                setError('문의 내용을 불러오는 데 실패했습니다.');
-            });
+        // 컴포넌트가 처음 로드될 때, 비밀번호 확인 상태를 false 로 초기화 (비밀번호 입력 폼 표시)
+        setIsPasswordCorrect(false);
+        setInquiry(null); // inquiry 데이터 초기화
     }, [id]);
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
-        // 비밀번호 확인 로직 (백엔드와 연동)
-        if (inquiry && password === inquiry.password) { //가져온 데이터의 password와 사용자가 입력한 password 비교
-            setIsPasswordCorrect(true);
-            setError('');
-        } else {
-            setIsPasswordCorrect(false);
-            setError('비밀번호가 일치하지 않습니다.');
-        }
+        setError(''); // 에러 메시지 초기화
+        // 비밀번호 확인 요청 (백엔드 API 호출)
+        axios.get(`http://localhost:9977/board/inquiryView/${id}?password=${password}`) // ✅ 백엔드 비밀번호 검증 API 호출
+            .then(response => {
+                setInquiry(response.data); // 문의 내용 설정
+                setIsPasswordCorrect(true); // 비밀번호 일치 상태로 변경
+                setError(''); // 에러 메시지 초기화
+            })
+            .catch(error => {
+                console.error('Error verifying password:', error);
+                setIsPasswordCorrect(false); // 비밀번호 불일치 상태 유지
+                setInquiry(null); // inquiry 데이터 초기화
+                if (error.response && error.response.status === 401) { // 401 Unauthorized 에러 (비밀번호 불일치)
+                    setError('비밀번호가 일치하지 않습니다.');
+                } else {
+                    setError('문의 내용을 불러오는 데 실패했습니다.'); // 다른 오류
+                }
+            });
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
     };
 
     const handleReplyChange = (e) => {
@@ -50,11 +55,10 @@ function InquiryView() {
             alert('답변 내용을 입력하세요.');
             return;
         }
-        // 답변 등록 로직 (백엔드와 연동)
-        axios.post(`http://localhost:8080/board/addReply/${id}`, { reply: reply,  userId: sessionStorage.getItem("loginId") }) // 백엔드 URL, 형식 확인
+        // 답변 등록 로직 (백엔드와 연동) - 기존 코드 유지
+        axios.post(`http://localhost:9977/board/addReply/${id}`, { reply: reply,  userId: sessionStorage.getItem("loginId") })
             .then(response => {
                 alert('답변이 등록되었습니다.');
-                // 답변 등록 후 필요한 작업 (예: 페이지 새로고침)
                 window.location.reload();
             })
             .catch(error => {
@@ -63,8 +67,8 @@ function InquiryView() {
             });
     };
 
-     // 날짜 포맷팅 함수 추가 (시작일과 종료일)
-     function formatDateTime(dateTimeString) {
+    // 날짜 포맷팅 함수 (기존 코드 유지)
+    function formatDateTime(dateTimeString) {
         if (!dateTimeString) {
           return '';
         }
@@ -79,30 +83,31 @@ function InquiryView() {
         return `${year}-${month}-${day}`;
     }
 
-    if (!inquiry) {
-        return <div>Loading...</div>; // 데이터 로딩 중
+    if (!inquiry && isPasswordCorrect) { // 데이터 로딩 중 (비밀번호 확인 후)
+        return <div>Loading Inquiry Content...</div>;
     }
 
     return (
         <div className="inquiry-view-container">
             <h1>1:1 문의 내용</h1>
 
-            {!isPasswordCorrect && ( // 비밀번호 입력 폼
+            {!isPasswordCorrect && ( // 비밀번호 입력 폼 (비밀번호 확인 안 된 경우)
                 <form onSubmit={handlePasswordSubmit} className="password-form">
                     <label htmlFor="password">비밀번호:</label>
                     <input
                         type="password"
                         id="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                         className="password-input"
+                        placeholder="비밀번호를 입력하세요" // placeholder 추가
                     />
                     <button type="submit" className='btn-style'>확인</button>
                     {error && <p className="error-message">{error}</p>}
                 </form>
             )}
 
-            {isPasswordCorrect && ( // 비밀번호가 맞으면 내용 표시
+            {isPasswordCorrect && inquiry && ( // 비밀번호가 맞고, 문의 내용이 로딩되었으면 내용 표시
                 <>
                     <table className='inquiry-view-table'>
                         <tbody>
@@ -123,28 +128,27 @@ function InquiryView() {
                                 <td>{inquiry.content}</td>
                             </tr>
                         </tbody>
-
                     </table>
 
-                    {/* 관리자 답변 폼 */
-                        sessionStorage.getItem('loginId') === 'admin1234' && (
-                            <form onSubmit={handleReplySubmit} className="reply-form">
-                                <h2>답변 작성</h2>
-                                <textarea
-                                    value={reply}
-                                    onChange={handleReplyChange}
-                                    placeholder="답변 내용을 입력하세요..."
-                                    rows={5}
-                                    className="reply-textarea"
-                                />
-                                <button type="submit" className='btn-style'>답변 등록</button>
-                            </form>
-                        )
-                    }
+                    {/* 관리자 답변 폼 (기존 코드 유지) */}
+                    {sessionStorage.getItem('loginId') === 'admin1234' && (
+                        <form onSubmit={handleReplySubmit} className="reply-form">
+                            <h2>답변 작성</h2>
+                            <textarea
+                                value={reply}
+                                onChange={handleReplyChange}
+                                placeholder="답변 내용을 입력하세요..."
+                                rows={5}
+                                className="reply-textarea"
+                            />
+                            <button type="submit" className='btn-style'>답변 등록</button>
+                        </form>
+                    )}
                 </>
             )}
+
              <div className="button-container">
-                    <button type="button" onClick={() => navigate(`/boardpage?category=INQUIRY`)} className="btn-style">목록</button>
+                    <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="btn-style">목록</button>
                 </div>
         </div>
     );

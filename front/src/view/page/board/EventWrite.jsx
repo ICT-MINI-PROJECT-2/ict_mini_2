@@ -93,7 +93,7 @@ function BoardWrite() {
                 console.log('Success:', data);
                 alert('글이 등록되었습니다.');
                 // **✅ 글 등록 성공 후 쿼리 캐시 무효화**
-                queryClient.invalidateQueries(getSearchKey()); // **이 줄 추가!**
+                queryClient.invalidateQueries(["eventList", category]); 
                 navigate(`/boardpage?category=EVENT`);
             })
             .catch(error => {

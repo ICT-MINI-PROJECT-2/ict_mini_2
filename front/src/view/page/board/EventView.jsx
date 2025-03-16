@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import "./EventView.css"
+import { queryClient } from './EventPage'; // ✅ EventPage 컴포넌트에서 queryClient import
 
 function EventView() {
   const { id } = useParams()
@@ -112,7 +113,7 @@ function EventView() {
                     e.target.src = "/placeholder-simple.svg"
                   }}
                 />
-                <p className="file-name" style={{ fontSize: '0.9em', color: '#777', marginTop: '5px' }}>{file.originalFileName || `파일 ${index + 1}`}</p> {/* 파일 이름 스타일 조정 */}
+                {/* <p className="file-name" style={{ fontSize: '0.9em', color: '#777', marginTop: '5px' }}>{file.originalFileName || `파일 ${index + 1}`}</p> */}
               </div>
             ))}
         </div>
@@ -121,12 +122,19 @@ function EventView() {
       {/* 첨부 파일 표시 섹션 제거 */}
 
       <div className="event-actions">
-        <button onClick={() => navigate("/boardpage?category=EVENT")} className="btn-list">
+      <button
+          onClick={() => {
+            queryClient.invalidateQueries(['eventList']); // ✅ 목록 페이지 데이터 새로 불러오기
+            navigate("/boardpage?category=EVENT");
+          }}
+          className="btn-list"
+        >
           목록
         </button>
         {sessionStorage.getItem("loginId") === event.user?.userid && (
           <div className="author-actions">
-            <button onClick={() => navigate(`/events/edit/${id}`)} className="btn-edit">
+            <button onClick={() => navigate(`/events/edit/${id}`)} className="btn-edit"> {/* 수정 버튼 클릭 시 EventEdit 페이지로 이동 */}
+
               수정
             </button>
             <button
@@ -142,6 +150,7 @@ function EventView() {
                     }
 
                     alert("삭제되었습니다.")
+                    queryClient.invalidateQueries({ queryKey: ['eventList'] }); // ✅ 삭제 후 캐시 무효화
                     navigate("/boardpage?category=EVENT")
                   } catch (error) {
                     console.error("삭제 중 오류 발생:", error)
