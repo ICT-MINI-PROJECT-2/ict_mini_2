@@ -33,6 +33,7 @@ function FindInfo() {
         }
     }, []);
     const getReview = () => {
+        console.log("!!");
         axios.get('http://localhost:9977/review/list?restid='+loc.state.id)
         .then(res => {
             setReview_list(res.data);

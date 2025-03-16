@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function FindListItem({restaurant}) {
+function FindListItem({rating_size, restaurant}) {
 
     const wait = (ms) => {
         return new Promise(res=>setTimeout(res,ms));
@@ -14,18 +14,19 @@ function FindListItem({restaurant}) {
     }
 
     return (
-        
             <div className="find-list-item" style={{position: 'relative'}}>
                 <div id="list-favorite" onClick={favorite}>♡</div>
                 <div className="list-item-img"
-                    style={{background:`url(${'/img/find/'+restaurant.category_1+'.png'}) center / 100%`}}>
+                    style={{background:`url(${'/img/find/'+restaurant.categoryOne+'.png'}) center / 100%`}}>
                 </div>
                 <div>
                     <Link to={'/findInfo'} state={{id: restaurant.id}}>
                         <div id="rstr-name">{restaurant.name}</div>
                     </Link>
                     <div>{restaurant.location.substring(6)}</div>
-                    <div>평점 ★★★★☆</div>
+                    <div><span className='star-rating'>
+                            <span style ={{width:`${restaurant.rating*20}%`}}></span>
+                            </span>&nbsp;{rating_size}명 참여</div>
                     <div>조회수 352</div>
                 </div>
             </div>

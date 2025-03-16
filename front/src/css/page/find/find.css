@@ -183,7 +183,7 @@
     line-height: 40px;
     background-color: #b21848;
     margin: auto;
-    margin-top:1%;
+    margin-top:9%;
     border-radius: 10px;
     color:white;
     transition: all 0.5s;
@@ -202,7 +202,7 @@
     width:100%;
     height: 100%;
     text-align: center;
-    font-weight: 700;
+    font-weight: 400;
 }
 
 #list-area, #list-category {
@@ -214,10 +214,12 @@
 #list-area {
     grid-template-columns: repeat(5,1fr);
     padding: 3px;
+    margin-bottom: 20px;
 }
 
 #list-area>li, #list-category>li{
-    padding:3px;
+    padding:2px;
+    z-index: 100;
 }
 #list-area>li:hover, #list-category>li:hover{
     transition: all 0.3s;
@@ -260,6 +262,7 @@
     color: #b21848;
     font-size: 2em;
     transition: all 0.5s;
+    cursor: pointer;
 }
 .rPhoto, .rLocation, .rInfo {
     width: 70%;
@@ -334,7 +337,7 @@
     margin-top:0px;
     border-radius: 15px;
     height:600px;
-    padding: 20px 20px 10px 20px;
+    padding: 20px;
 }
 
 .review-body {
@@ -552,6 +555,24 @@ position: absolute;
     font-size:18px;
     line-height: 18px;
 }
+
+.no-review {
+    font-family: "Gowun Dodum", sans-serif;
+    padding-top: 200px;
+    text-align: center;
+    height:200px;
+}
+
+.review-err-msg {
+    position: absolute;
+    right:1%;
+    top:0%;
+    font-family: "Gowun Dodum", sans-serif; 
+    text-align: right;
+    font-weight: bold;
+    color:rgb(255, 0, 0);
+}
+
 @media(max-width:970px) {
     .two-button{
         flex-direction: column;
@@ -563,5 +584,8 @@ position: absolute;
     }
     .review-input-button{
         margin-left:0px;
+    }
+    .review-err-msg {
+        font-size:14px;
     }
 }
