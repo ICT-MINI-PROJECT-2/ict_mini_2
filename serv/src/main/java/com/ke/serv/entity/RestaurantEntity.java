@@ -31,10 +31,15 @@ public class RestaurantEntity {
 
     private String postno;
 
-    private String category_1;
+    @Column(name= "category_1")
+    private String categoryOne;
 
-    private String category_2;
+    @Column(name= "category_2")
+    private String categoryTwo;
 
     @Column(columnDefinition = "float")
     private float area;
+
+    @Column(nullable = false, columnDefinition = "float default 0.0")
+    private float rating;
 }

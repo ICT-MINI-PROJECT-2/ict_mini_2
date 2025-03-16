@@ -61,10 +61,49 @@ public class HomeController {
                         } catch(Exception ee){
                             System.out.println("!");
                         }
+                        String cat = (String) ((JSONObject) infoArr.get(j)).get("UPTAENM");
+                        if(cat.contains("한식")||cat.contains("냉면집")||cat.contains("식육(숯불구이)")||cat.contains("횟집")||cat.contains("탕류")) {
+                            re.setCategoryOne("한식");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("패스트푸드")||cat.contains("치킨")||cat.contains("피자")) {
+                            re.setCategoryOne("패스트푸드");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("일식") || cat.contains("초밥")) {
+                            re.setCategoryOne("일식");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("중국식")) {
+                            re.setCategoryOne("중식");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("인도")||cat.contains("태국")) {
+                            re.setCategoryOne("아시아음식");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("소주")||cat.contains("호프")||cat.contains("주점")) {
+                            re.setCategoryOne("주점");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("김밥")||cat.contains("도시락")||cat.contains("분식")) {
+                            re.setCategoryOne("분식");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("뷔페")) {
+                            re.setCategoryOne("뷔페");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.contains("패밀리")||cat.contains("레스토랑")) {
+                            re.setCategoryOne("패밀리레스토랑");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
+                        else if(cat.isEmpty() ||cat.contains("기타")) {
+                            re.setCategoryOne("기타");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
                         re.setTel((String) ((JSONObject) infoArr.get(j)).get("SITETEL"));
                         re.setPostno((String) ((JSONObject) infoArr.get(j)).get("SITEPOSTNO"));
-                        re.setCategory_1((String) ((JSONObject) infoArr.get(j)).get("UPTAENM"));
-                        re.setCategory_2((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
                         re.setId(i*1000+j+1);
                         rest_service.addRestaurantByAPI(re);
                     }

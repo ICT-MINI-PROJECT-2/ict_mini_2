@@ -2,6 +2,13 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import marker from '../../../img/marker.png';
+import Review from './Review';
+
 const {kakao} = window;
 
 function FindInfo() {
@@ -12,14 +19,38 @@ function FindInfo() {
     const [menu_list, setMenu_list] = useState([]);
     const [img_list, setImg_list] = useState([]);
     const [info_list, setInfo_list] = useState([]);
+
+    const [review_img_list,setReview_img_list] = useState([]);
+
+    const [review_list, setReview_list] = useState([]);
+
     useEffect(()=>{
         if (!mount.current) {}
         else {
             mount.current = false;
             getInfo();
+            getReview();
         }
     }, []);
-    
+    const getReview = () => {
+        console.log("!!");
+        axios.get('http://localhost:9977/review/list?restid='+loc.state.id)
+        .then(res => {
+            setReview_list(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    useEffect(()=> {
+        let x = [];
+        review_list.forEach((item) => {
+            item.imgList.forEach((imgs) => {
+                x.push({filename:imgs.filename, id:imgs.review.id});
+            })
+        });
+        setReview_img_list(x);
+    },[review_list]);
     useEffect(()=> {
         if (info.rstrLoc != undefined) {
             var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -29,7 +60,14 @@ function FindInfo() {
                 };  
     
             // 지도를 생성합니다    
-            var map = new kakao.maps.Map(mapContainer, mapOption); 
+            var map = new kakao.maps.Map(mapContainer, mapOption);
+            
+            var imageSrc = marker, // 마커이미지의 주소입니다    
+                imageSize = new kakao.maps.Size(40, 40), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(20, 50)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+                
+            // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
     
             var places = new kakao.maps.services.Places();
             
@@ -43,10 +81,9 @@ function FindInfo() {
                     if(cnt >= addr_list.length-1 ) { //검색 점포명의 주소와 일치하는 카카오맵의 검색 결과
                         axios.get('http://localhost:9977/tech/jsoup?place_id='+item.id)
                         .then(res =>{
-                            console.log(res.data);
-                            setImg_list(res.data.img_list);
                             setMenu_list(res.data.menu_list);
                             setInfo_list(res.data.info_list);
+                            setImg_list(res.data.img_list);
                         }).catch(err=>console.log(err))
                     }
                 })
@@ -58,7 +95,6 @@ function FindInfo() {
 
             // 주소로 좌표를 검색합니다
             geocoder.addressSearch(info.rstrLoc, function(result, status) {
-                console.log(result);
     
                 // 정상적으로 검색이 완료됐으면 
                 if (status === kakao.maps.services.Status.OK) {
@@ -68,27 +104,32 @@ function FindInfo() {
                     // 결과값으로 받은 위치를 마커로 표시합니다
                     var marker = new kakao.maps.Marker({
                         map: map,
-                        position: coords
+                        position: coords,
+                        image: markerImage
                     });
     
                     // 인포윈도우로 장소에 대한 설명을 표시합니다
                     var infowindow = new kakao.maps.InfoWindow({
-                        content: `<div style="width:150px;text-align:center;padding:6px 0;">${info.rstrName}</div>`
+                        content: `<div style="width:150px;text-align:center;padding:3px;font-size:0.9em;">
+                                    ${info.rstrName}
+                                </div>`
                     });
                     infowindow.open(map, marker);
     
                     // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
                     map.setCenter(coords);
+
+                    // map.setDraggable(false);
+                    map.setZoomable(false);
+                    map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
                 } 
             }); 
         }
     },[info]);
 
-
     const getInfo = ()=> {
         axios.post(`http://localhost:9977/find/findInfo`, {id: loc.state.id})
         .then(res=>{
-            // console.log(res.data);
             setInfo({
                 id: res.data.id,
                 rstrName: res.data.name,
@@ -101,10 +142,44 @@ function FindInfo() {
         });
     }
 
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        appendDots: (dots) => (
+          <div
+            style={{
+              width: '100%',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <ul> {dots} </ul>
+          </div>
+        ),
+        dotsClass: 'dots_custom'
+    };
+
     return (
         <div className='info'>
             <h1>{info.rstrName}</h1>
-            <div className='rPhoto'>사진 (슬라이드)</div>
+            <div className='rPhoto'>
+                <Slider {...settings}>
+                {
+                    img_list.map((item, idx) => {
+                        return(<div>
+                            <img key={idx} src={item} style={{width:'100%', height:'30%'}}/>
+                        </div>);
+                    })
+                }
+                </Slider>
+            </div>
 
             <div className='rInfo'>
                 <ul className='info-tab'>
@@ -117,28 +192,39 @@ function FindInfo() {
                 <div className='info-view'>
                     {tab === "home" && (
                         <div id="home">
-                            상세정보<br/>
-                            상세주소: {info.rstrLoc}<br/>
-                            영업시간 ...
+                            {
+                                info_list.length !== 0 ?
+                                info_list.map((item,idx) => {
+                                    return(<div key={idx} >
+                                        {item}
+                                    </div>);
+                                }) : <div>상세정보가 없습니다.</div>
+                            }
                         </div>
                     )}
                     {tab === "menu" && (
                         <div id="menu">
-                            메뉴정보 (메뉴이름 + 가격)
+                            {
+                                menu_list.length !== 0 ?
+                                    menu_list.map((item) => {
+                                        return(<div>
+                                            {item}
+                                        </div>);
+                                    }) : <div>메뉴정보가 없습니다.</div>
+                            }
                         </div>
                     )}
                     {tab === "photo" && (
-                        <div id="photo">
-                            가게사진
-                        </div>
+                        review_img_list.length !== 0 ?
+                        review_img_list.map((item,idx) => {
+                            return(<div id="photo">
+                                <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} width='100%'/>
+                            </div>);
+                        }) : <div>등록된 사진이 없습니다.</div>
                     )}
-                    {tab === "review" && (
-                        <div id='review'>
-                            리뷰 (list로 출력)<br/>
-                            ★★★★☆
-                            리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
-                        </div>
-                    )}
+                    {(tab === "review") ? 
+                        <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} isLogin={ sessionStorage.getItem("loginStatus") === 'Y' ? true : false}/> : <></>
+                    }
                 </div>
                 
             </div>
@@ -146,38 +232,6 @@ function FindInfo() {
             <div className='rLocation'>
                 오시는 길
                 <div id='map'></div>
-            </div>
-            <div className='rate'>
-                리뷰 (list로 출력)<br/>
-                ★★★★☆
-                리뷰내용: 클릭시 리뷰 상세 모달(사진, 내용, 작성자 아이디, 날짜)
-            </div>
-            <div>
-                {
-                    img_list.map((item) => {
-                        return(<div>
-                            <img src={item} width='200'/>
-                        </div>);
-                    })
-                }
-            </div>
-            <div>
-              {
-                    menu_list.map((item) => {
-                        return(<div>
-                            {item}
-                        </div>);
-                    })
-                }
-            </div>
-            <div>
-              {
-                    info_list.map((item) => {
-                        return(<div>
-                            {item}
-                        </div>);
-                    })
-                }
             </div>
         </div>
     )
