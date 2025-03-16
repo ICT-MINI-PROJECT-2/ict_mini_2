@@ -8,6 +8,8 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     const [isReviewWrite, setIsReviewWrite] = useState(false);
 
+    const [msg, setMsg] = useState('');
+
     useEffect(() => {
         axios.get('http://localhost:9977/review/getReviewById?id='+sessionStorage.getItem("id"))
         .then(res => {
@@ -63,7 +65,6 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
             removeTarget.remove();
 
             var curFileCnt = dataTransfer.files.length; //현재 선택된 첨부파일 개수
-            console.log(curFileCnt+"!!");
         })
         }
     }
@@ -132,35 +133,46 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
     }
 
     const doSubmit = () => {
-        let formData = new FormData();
-        formData.append("user", sessionStorage.getItem("id"));
-        formData.append("restaurant",restaurant_id);
-        formData.append("comment",comment);
-        formData.append("rating",starwid/20);
-        console.log(file);
-        for(var i=0;i<file.length;i++) {
-            formData.append("files",file[i]);
+        if(comment.length === 0) {
+            setMsg('내용을 작성해주세요');
+        } else if(starwid === 0) {
+            setMsg('별점을 체크해주세요');
+        } else if(file_id.length < 1) {
+            setMsg('리뷰 사진을 1개 이상 등록해주세요');
+        } else if(file_id.length > 5) {
+            setMsg('리뷰 사진을 5개 이하 등록해주세요');
         }
-        
-        axios.post('http://192.168.1.146:9977/review/write', formData)
-        .then(res => {
-            getReview();
-            setStarWid(0);
-            setComment('');
-            file_id.forEach((item) => {
-                 console.log(item);
-                 document.getElementById(item).remove();
+        else {
+            setMsg('');
+            let formData = new FormData();
+            formData.append("user", sessionStorage.getItem("id"));
+            formData.append("restaurant",restaurant_id);
+            formData.append("comment",comment);
+            formData.append("rating",starwid/20);
+            for(var i=0;i<file.length;i++) {
+                formData.append("files",file[i]);
+            }
+            
+            axios.post('http://192.168.1.146:9977/review/write', formData)
+            .then(res => {
+                getReview();
+                setStarWid(0);
+                setComment('');
+                file_id.forEach((item) => {
+                    document.getElementById(item).remove();
+                })
+                setFile_id([]);
+                setFile([]);
+                const files = document.querySelector('#review_files').files;
+                document.querySelector('#preview').innerHTML='';
+                Array.from(files)
+                .forEach(file => {
+                    dataTransfer.items.remove(file);
+                });
             })
-            setFile_id([]);
-            setFile([]);
-            const files = document.querySelector('#review_files').files;
-            Array.from(files)
-            .forEach(file => {
-                dataTransfer.items.remove(file);
-            });
-        })
-        .then(err=>{console.log(err)});
-        getReview();
+            .then(err=>{console.log(err)});
+            getReview();
+        }
     }
 
     const doNaN = () => {
@@ -175,13 +187,17 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                 <ol>
                     {makeReview()}
                 </ol>
-            </div>) : <div>등록된 리뷰가 없습니다.</div>
+            </div>) : <div className='no-review'>등록된 리뷰가 없습니다.</div>
         }
+        
             <div className='review-input-box'>
                 <div className='input-star'>
                 <span id='st'className='star-rating' style ={{float:"left",cursor:'pointer',marginTop:'5px'}} onClick={ isLogin && !isReviewWrite ? clickRating.bind(this):doNaN()}>
                 <span style ={{width:starwid+"%", cursor:'pointer'}}></span></span>{starwid/20}
                 </div>
+                <span className='review-err-msg'>
+                    {msg}
+                </span>
                 <div className='boxes'>
                     { isLogin ?
                     <textarea name='comment' className='review-input-content' onChange={changeComment} value={isReviewWrite ? '이미 리뷰를 작성하셨습니다.':comment}></textarea> :
