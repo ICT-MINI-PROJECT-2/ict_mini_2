@@ -38,20 +38,22 @@ public class ReviewController {
         float sum = 0;
         for(ReviewEntity review : review_list) {
             sum+=review.getRating();
+            System.out.println(review.getRating()+"!");
             List<ReviewFileEntity> file_list = service.selectReviewFileList(review);
             ReviewImgVO rivo = new ReviewImgVO(file_list, review);
             result.add(rivo);
         }
         rating = sum/review_list.size();
-        if(review_list.isEmpty()) rest_service.addRestaurantByAPI(re);
+        if(!review_list.isEmpty()) {
+            re.setRating(rating);
+            rest_service.addRestaurantByAPI(re);
+        }
         return result;
     }
 
     @PostMapping("/write")
     @Transactional(rollbackFor = {RuntimeException.class, SQLException.class})
     public String write(ReviewEntity re, MultipartFile[] files, HttpServletRequest req) {
-        System.out.println(re);
-        System.out.println(files.length);
         List<File> file_list =null;
         try{
             ReviewEntity res_review = service.insert(re);
