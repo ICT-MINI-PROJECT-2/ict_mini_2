@@ -3,6 +3,7 @@ package com.ke.serv.controller;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.ReviewFileEntity;
+import com.ke.serv.entity.UserEntity;
 import com.ke.serv.service.RestaurantService;
 import com.ke.serv.service.ReviewService;
 import com.ke.serv.vo.ReviewImgVO;
@@ -42,8 +43,7 @@ public class ReviewController {
             result.add(rivo);
         }
         rating = sum/review_list.size();
-        re.setRating(rating);
-        rest_service.addRestaurantByAPI(re);
+        if(review_list.isEmpty()) rest_service.addRestaurantByAPI(re);
         return result;
     }
 
@@ -95,6 +95,10 @@ public class ReviewController {
             return "fail";
         }
         return "ok";
+    }
+    @GetMapping("/getReviewById")
+    public List<ReviewEntity> getReviewById(UserEntity entity) {
+        return service.selectReviewListByUser(entity);
     }
 
 }

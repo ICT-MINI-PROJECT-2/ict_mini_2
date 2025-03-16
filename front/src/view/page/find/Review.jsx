@@ -1,10 +1,27 @@
 import {useState , useEffect, useRef} from 'react';
 import axios from 'axios';
-function Review({getReview, review_list, restaurant_id}){
+function Review({getReview, review_list, restaurant_id, isLogin}){
     const review_mount = useRef(false);
     const dataTransfer = new DataTransfer();
 
     const [file_id,setFile_id] = useState([]);
+
+    const [isReviewWrite, setIsReviewWrite] = useState(false);
+
+    useEffect(() => {
+        axios.get('http://localhost:9977/review/getReviewById?id='+sessionStorage.getItem("id"))
+        .then(res => {
+            res.data.forEach((item) => {
+                if(restaurant_id === item.restaurant.id) {
+                    setIsReviewWrite(true); 
+                    return;
+                }
+            });
+        })
+        .catch(err => {
+            
+        })
+    }, [review_list])
 
     const handler = {
         init() {
@@ -146,6 +163,10 @@ function Review({getReview, review_list, restaurant_id}){
         getReview();
     }
 
+    const doNaN = () => {
+
+    }
+
     return(<div id='review'>
         <div className="review-body">
             <ol>
@@ -154,15 +175,21 @@ function Review({getReview, review_list, restaurant_id}){
         </div>
             <div className='review-input-box'>
                 <div className='input-star'>
-                <span id='st'className='star-rating' style ={{float:"left",cursor:'pointer',marginTop:'5px'}} onClick={clickRating.bind(this)}>
+                <span id='st'className='star-rating' style ={{float:"left",cursor:'pointer',marginTop:'5px'}} onClick={ isLogin && !isReviewWrite ? clickRating.bind(this):doNaN()}>
                 <span style ={{width:starwid+"%", cursor:'pointer'}}></span></span>{starwid/20}
                 </div>
                 <div className='boxes'>
-                    <textarea name='comment' className='review-input-content' onChange={changeComment} value={comment}></textarea><br/>
+                    { isLogin ?
+                    <textarea name='comment' className='review-input-content' onChange={changeComment} value={isReviewWrite ? '이미 리뷰를 작성하셨습니다.':comment}></textarea> :
+                    <textarea name='comment' className='review-input-content' value = { '로그인 후 리뷰 작성이 가능합니다.'} readOnly></textarea> 
+                    }
                     <div className='two-button'>
-                        <label className="input-file-button" htmlFor="review_files"/>
+                        { isLogin && !isReviewWrite ?
+                        <label className="input-file-button" htmlFor="review_files"/>:
+                        <label className="input-file-button" htmlFor=""/>
+                        }
                         <input type='file' style={{display:'none'}} id='review_files' name='review_files' className='review-input-image' onChange={changeFile} multiple/>
-                        <button className='review-input-button' onClick={doSubmit}>리뷰작성</button>
+                        <button className='review-input-button' onClick={isLogin && !isReviewWrite ? doSubmit : doNaN}>리뷰작성</button>
                     </div>
                 </div>
                 <div id="preview"></div>

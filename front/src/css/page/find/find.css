@@ -347,7 +347,7 @@
     border: 2px solid gray;
     backdrop-filter: blur(20px);
     height:70%;
-    width:100%;
+    width:99.5%;
     margin: 0 auto;
     margin-bottom:0px;
     overflow-y: scroll;
@@ -435,7 +435,7 @@ position: absolute;
 }
 .message-box > ul > li:nth-child(2) {
     float:right;
-    padding-left:25%;
+    padding-left:33%;
     width:40%;
     white-space: nowrap;
 }
