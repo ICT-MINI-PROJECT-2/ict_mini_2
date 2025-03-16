@@ -221,9 +221,9 @@ function FindInfo() {
                             </div>);
                         }) : <div>등록된 사진이 없습니다.</div>
                     )}
-                    {tab === "review" && (
-                        <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} />
-                    )}
+                    {(tab === "review") ? 
+                        <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} isLogin={ sessionStorage.getItem("loginStatus") === 'Y' ? true : false}/> : <></>
+                    }
                 </div>
                 
             </div>

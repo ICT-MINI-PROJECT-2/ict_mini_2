@@ -18,9 +18,6 @@ public class ReviewEntity {
     private int id;
 
     @Column(nullable = false)
-    private String subject;
-
-    @Column(nullable = false)
     private String comment;
 
     @Column(nullable = false, columnDefinition = "float default 0.0")
