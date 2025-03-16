@@ -329,7 +329,7 @@
 }
 .page-item:hover {
     color:#bd3c63;
-
+}
 #review {
     font-family: "Sunflower", serif;
     font-weight: 300;
@@ -347,7 +347,7 @@
     border: 2px solid gray;
     backdrop-filter: blur(20px);
     height:70%;
-    width:100%;
+    width:99.5%;
     margin: 0 auto;
     margin-bottom:0px;
     overflow-y: scroll;
@@ -370,19 +370,12 @@
     border-radius: 8px;
 }
 
-.review-input-box {
-    height:25%;
-    margin:0 auto;
-    margin-top:20px;
-    border-radius: 0px 0px 8px 8px;
-    border: 2px solid gray;
-}
-
 .container-msg {
-display: flex;
-width: 100%;
-height: 100%;
-align-items: center;
+    display: flex;
+    width: 95%;
+    height: 100%;
+    align-items: center;
+    border-bottom: 1px solid rgb(170,170,170);
 }
 
 .message-container {
@@ -396,14 +389,14 @@ align-items: center;
 
 
 .message-box {
-    color:white;
+    color:black;
     font-family: "Gowun Dodum", sans-serif;
-    width: 90%;
+    width: 460px;
     height: 70%;
-    background:rgba(66, 66, 66, 0.6);
-    border-radius: 15px;
+    border-radius: 10px;
     margin-left:2vw;
     position: relative;
+    border: 2px solid gray;
 }
 
 
@@ -413,19 +406,18 @@ position: absolute;
 
 .message-who {
     font-family: "Gowun Dodum", sans-serif;
-    margin-left:20px;
-    background:rgba(117, 117, 117, 0.4);
+    margin-left:5%;
+    background:#B21848;
+    color:white;
     font-weight: 400;
     font-style: normal;
-    font-size:20px;
-    line-height:20px;
+    font-size:17px;
     text-align:center;
     border-radius:8px;
     padding: 10px 0px 10px 0px;
     width:7vw;
     max-width:120px;
     min-width:80px;
-    color:#121212;
 }
 
 .message-box > ul {
@@ -434,17 +426,28 @@ position: absolute;
 }
 .message-box > ul > li {
     float:left;
-    border-bottom: 1px solid rgb(170, 170, 170);
+    border-bottom: 1px solid #c4c4c4;
 }
 .message-box > ul > li:nth-child(1) {
-    width:65%;
+    width:60%;
     padding-left:10px;
+    white-space: nowrap;
 }
 .message-box > ul > li:nth-child(2) {
-    width:33%;
+    float:right;
+    padding-left:33%;
+    width:40%;
+    white-space: nowrap;
 }
 .message-comment {
+    padding-top:10px;
     padding-left: 10px;
+    width:70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 #review-img{
     position: absolute;
@@ -452,4 +455,118 @@ position: absolute;
     width:80px;
     height:80px;
     top:40px;
+    border-radius: 5px;
+}
+
+.star-rating { width:88px; }
+.star-rating,.star-rating span { display:inline-block; height:16.5px; overflow:hidden; background:url('./star.png')no-repeat; }
+.star-rating span{ background-position:left bottom; line-height:0; vertical-align:top;}
+
+.input-star{
+    font-family: "Gowun Dodum", sans-serif;
+    margin-bottom:10px;
+}
+.review-input-box {
+    position: relative;
+    height:25%;
+    margin:0 auto;
+    margin-top:20px;
+    padding-left: 40px;
+    padding-top:15px;
+    border-radius: 0px 0px 8px 8px;
+    border: 2px solid gray;
+}
+.boxes{
+    display:flex;
+}
+.two-button{
+    position: absolute;
+    top:60px;
+    right:3%;
+    float:left;
+    display:flex;
+    flex-direction: row;
+}
+.review-input-content{
+    width:60%;
+    height:80px;
+    float:left;
+    resize: none;
+    border-radius: 5px;
+    font-family: "Gowun Dodum", sans-serif;
+    padding-left:5px;
+    padding-top:5px;
+}
+.input-file-button{
+    width:60px;
+    height:60px;
+    display: block;
+    background: url('../../../img/camera.png') no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-color: #B21848;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.input-file-button:hover, .review-input-button:hover{
+    background-color:#bd3c63;
+}
+.review-input-button{
+    margin-left:40px;
+    display: block;
+    width:100px;
+    height:60px;
+    font-family: "Gowun Dodum", sans-serif;
+    font-size:18px;
+    background-color: #B21848;
+    border:none;
+    border-radius: 10px;
+    color:white;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+#preview{
+    font-family: "Gowun Dodum", sans-serif;
+    display: inline-block;
+    position: absolute;
+    top:138px;
+    width:60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#preview > p {
+    display: inline;
+}
+
+#r-file-name{
+    display: inline-block;
+    width:80px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 18px;
+}
+
+.file-remove {
+    cursor: pointer;
+    display: inline-block;
+    background-color: transparent;
+    font-size:18px;
+    line-height: 18px;
+}
+@media(max-width:970px) {
+    .two-button{
+        flex-direction: column;
+        top:20px;
+    }
+    .input-file-button{
+        margin-bottom: 10px;
+        margin-left:20px;
+    }
+    .review-input-button{
+        margin-left:0px;
+    }
 }

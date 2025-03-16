@@ -223,9 +223,9 @@ function FindInfo() {
                             }
                         </div>
                     )}
-                    {tab === "review" && (
-                        <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} />
-                    )}
+                    {(tab === "review") ? 
+                        <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} isLogin={ sessionStorage.getItem("loginStatus") === 'Y' ? true : false}/> : <></>
+                    }
                 </div>
                 
             </div>
