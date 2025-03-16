@@ -167,12 +167,16 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     }
 
-    return(<div id='review'>
-        <div className="review-body">
-            <ol>
-                {makeReview()}
-            </ol>
-        </div>
+    return(
+        <div id='review'>
+        {
+            review_list.length !== 0 ?
+            (<div className="review-body">
+                <ol>
+                    {makeReview()}
+                </ol>
+            </div>) : <div>등록된 리뷰가 없습니다.</div>
+        }
             <div className='review-input-box'>
                 <div className='input-star'>
                 <span id='st'className='star-rating' style ={{float:"left",cursor:'pointer',marginTop:'5px'}} onClick={ isLogin && !isReviewWrite ? clickRating.bind(this):doNaN()}>

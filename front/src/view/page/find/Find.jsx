@@ -76,9 +76,12 @@ function Find(){
     
     const mount = useRef(true);
 
-    const [area,setArea] = useState(['성동구','강남구','냠냠구','구구구','어어구','칠칠구']);
-    const [category,setCategory] = useState(['한식','양식','일식','중식']);
-    const [detailCategory,setDetailCategory] = useState([['찌개','족발'],['스테이크','파스타'],['초밥','덮밥'],['중화요리','사천요리']]);
+    const [area,setArea] = useState(["종로구", "중구", "용산구", "성동구", "광진구", "동대문구", "중랑구", "성북구", "강북구", 
+                                    "도봉구", "노원구", "은평구", "서대문구", "마포구", "양천구", "강서구", "구로구", 
+                                    "금천구", "영등포구", "동작구", "관악구", "서초구", "강남구", "송파구", "강동구"]);
+    const [category,setCategory] = useState(['한식','패스트푸드','일식','중식','아시아음식','양식','주점','분식','뷔페','기타']);
+    const [detailCategory,setDetailCategory] = useState([['한식','냉면집','식육(숯불구이)','횟집','탕류(보신용)'],['패스트푸드','통닭'],['일식'],['중식'],
+                                ['인도음식','태국음식'],['경양식'],['정종/대포집/소주방','호프','감성주점'],['김밥','분식'],['뷔페'],['기타']]);
     const [dc, setDc] = useState([]);
     const [tag, setTag] = useState('');
 
@@ -196,7 +199,7 @@ function Find(){
 
     const clickCategory = (e) => {
         let items = [];
-        for(var i=0;i<4;i++) {
+        for(var i=0;i<10;i++) {
             items.push(document.getElementById('category-'+i));
             items[i].style.fontWeight='400';
             items[i].style.color='black';
@@ -259,33 +262,34 @@ function Find(){
                 <div id="modal-mini-title">원하시는 카테고리를 선택해주세요</div>
                 <div id="modal-list">
                     <ul className='modal-list-title'>
-                        <li>지역</li>
-                        <li>분류</li>
-                        <li>세부 분류</li>
+                        <li>지역
+                            <ul id="list-area">
+                                {
+                                    area.map((item,idx)=> {
+                                        return(<li key={idx} value={-1} id={'area-'+idx} name='area' onClick={clickArea}>{item}</li>) }
+                                    )
+                                }
+                            </ul>
+                        </li>
+                        <li>분류
+                            <ul id="list-category">
+                                {
+                                    category.map((item, idx)=> {
+                                        return(<li key={idx} value={-1} id={'category-'+idx} onClick={clickCategory}>{item}</li>) }
+                                    )
+                                }
+                            </ul>
+                        </li>
+                        <li>세부 분류
+                            <ul id="list-category">
+                                {
+                                    dc.map((item, idx)=> {
+                                        return(<li key={idx} value={-1} id={'detailcategory-'+idx} name='detailcategory' onClick={clickDetailCategory}>{item}</li>) }
+                                    )
+                                }
+                            </ul>
+                        </li>
                     </ul>
-                    <div className='modal-list-item'>
-                        <ul id="list-area">
-                            {
-                                area.map((item,idx)=> {
-                                    return(<li key={idx} value={-1} id={'area-'+idx} name='area' onClick={clickArea}>{item}</li>) }
-                                )
-                            }
-                        </ul>
-                        <ul id="list-category">
-                            {
-                                category.map((item, idx)=> {
-                                    return(<li key={idx} value={-1} id={'category-'+idx} onClick={clickCategory}>{item}</li>) }
-                                )
-                            }
-                        </ul>
-                        <ul id="list-category">
-                            {
-                                dc.map((item, idx)=> {
-                                    return(<li key={idx} value={-1} id={'detailcategory-'+idx} name='detailcategory' onClick={clickDetailCategory}>{item}</li>) }
-                                )
-                            }
-                        </ul>
-                    </div>
                 </div>
                 <div id="modal-submit" onClick={()=>submitModal()}>카테고리 등록</div>
             </div>
