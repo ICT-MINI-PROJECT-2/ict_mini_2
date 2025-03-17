@@ -1,5 +1,6 @@
 package com.ke.serv.controller;
 
+import com.ke.serv.config.WebConfig;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.ReviewFileEntity;
@@ -9,7 +10,9 @@ import com.ke.serv.service.ReviewService;
 import com.ke.serv.vo.ReviewImgVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,7 @@ import java.util.Objects;
 public class ReviewController {
     private final ReviewService service;
     private final RestaurantService rest_service;
+
     @GetMapping("/list")
     public List<ReviewImgVO> list(String restid){
         RestaurantEntity re = rest_service.restaurantSelect(Integer.parseInt(restid));
