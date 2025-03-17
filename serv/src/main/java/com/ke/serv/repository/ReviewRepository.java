@@ -12,4 +12,8 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     List<ReviewEntity> findAllByRestaurantOrderByIdDesc(RestaurantEntity re);
 
     List<ReviewEntity> findAllByUser(UserEntity ue);
+
+    ReviewEntity findById(int id);
+
+    void deleteById(int id);
 }

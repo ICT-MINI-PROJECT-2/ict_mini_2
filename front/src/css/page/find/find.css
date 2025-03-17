@@ -619,12 +619,9 @@ position: absolute;
     font-weight: 400;
     font-style: normal;
 	position:fixed;
-    max-width:800px;
-    max-height:600px;
-    min-width:680px;
-    min-height:550px;
-	width:50%;
-    height:30vw;
+
+	width:720px;
+    height:580px;
 	background-color:white;
 	border-radius:15px;
 
@@ -694,6 +691,68 @@ position: absolute;
     font-weight: 800;
     transition: all 0.5s;
     cursor:pointer;
+
+#review-modal-title{
+    text-align: center;
+    font-size: 22px;
+    margin-top:10px;
+}
+
+#review-modal-star{
+    margin-top:20px;
+    margin-left:62px;
+}
+
+#review-modal-who, #review-modal-cat{
+    margin-top:8px;
+    margin-left:62px;
+    display: inline-block;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+#review-modal-comment{
+    margin-top:15px;
+    margin-left:62px;
+    padding:5px;
+    display: inline-block;
+    white-space: pre-wrap;
+    width:79%;
+    height:200px;
+    overflow-y: scroll;
+    border:1px solid #d8d8d8;
+}
+
+#review-modal-comment::-webkit-scrollbar{
+    display:none;
+}
+
+#review-modal-img {
+    margin-top:20px;
+    border-radius: 10px;
+    margin-left:34px;
+    width:100px;
+    height:100px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 10;
+}
+#review-modal-img:hover{
+    scale: 4;
+    border-radius: 3px;
+}
+
+#review-del-button {
+    position: absolute;
+    bottom:32px;
+    right:120px;
+    font-size:20px;
+    cursor: pointer;
+}
+
+#review-del-button:hover {
+    font-weight: 700;
 }
 
 @media(max-width:970px) {

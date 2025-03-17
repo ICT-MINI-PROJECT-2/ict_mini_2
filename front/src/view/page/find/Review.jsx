@@ -13,7 +13,11 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     const [msg, setMsg] = useState('');
 
-    const [reviewModal, setReviewModal] = useState(false);
+    const [reviewModal, setReviewModal] = useState({
+        isOpen: false,
+        selected:0
+    });
+
 
     useEffect(() => {
         axios.get('http://localhost:9977/review/getReviewById?id='+sessionStorage.getItem("id"))
@@ -66,8 +70,8 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
              });
              setFile_id(f_id);
             document.querySelector('#review_files').files = dataTranster.files;
-            
-            removeTarget.remove();
+            if(removeTarget && removeTarget !== undefined)
+                removeTarget.remove();
 
             var curFileCnt = dataTransfer.files.length; //현재 선택된 첨부파일 개수
         })
@@ -101,7 +105,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
             <li key={'review-' + idx} className="review-chat-box"><div className="container-msg">
                 <div className='message-who'>{item.entity.user.username}</div>
                 <div className="message-container">
-                  <div className='message-box' onClick={()=>setReviewModal(true)}>
+                  <div className='message-box' onClick={()=>setReviewModal({isOpen:true, selected:item.entity.id})}>
                     <ul>
                         <li className="message-text">
                             {item.entity.writedate}
@@ -186,7 +190,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     return(
         <div id='review'>
-            {reviewModal && <ReviewModal setReviewModal={setReviewModal}/>}
+            {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
         {
             review_list.length !== 0 ?
             (<div className="review-body">
