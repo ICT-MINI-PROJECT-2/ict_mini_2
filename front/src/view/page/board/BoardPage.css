@@ -1,0 +1,26 @@
+/* 이 파일은 이미 존재하는 파일에 추가할 CSS입니다 */
+
+/* 스피너 애니메이션 */
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* 페이드 인 트랜지션 스타일 */
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    min-height: 600px;
+  }
+  
+  .fade-in-section.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  

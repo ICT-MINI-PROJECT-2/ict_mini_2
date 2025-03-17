@@ -1,0 +1,99 @@
+/* InquiryView.css */
+
+.inquiry-view-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.inquiry-view-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.password-form label {
+    margin-bottom: 5px;
+}
+
+.password-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 300px; /* 최대 너비 제한 */
+    box-sizing: border-box;
+}
+.inquiry-view-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inquiry-view-table th,
+.inquiry-view-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.inquiry-view-table th {
+    width: 150px;
+    font-weight: bold;
+}
+.reply-form {
+    margin-top: 30px;
+}
+
+.reply-form h2 {
+    margin-bottom: 10px;
+}
+
+.reply-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+/* 버튼 스타일 */
+.btn-style {
+	background: linear-gradient(45deg, #00bcd4, #0288d1); /* 파란색과 바다색 그라데이션 */
+	color: white;
+	border: none;
+	padding: 12px 24px;
+    font-size: 16px;
+	cursor: pointer;
+	border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-decoration: none; /* a태그에 스타일 상속 방지 */
+    display: inline-block; /* a태그에서 버튼처럼 사용하기 위해 */
+}
+
+.btn-style:hover {
+    background: linear-gradient(45deg, #0288d1, #01579b); /* hover 시 더 짙은 파란색과 네이비 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.button-container {
+    text-align: right;
+    margin-top: 20px;
+}
