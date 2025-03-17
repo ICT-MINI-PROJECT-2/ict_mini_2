@@ -1,11 +1,22 @@
-import { useEffect, useRef } from "react";
-
-function ReviewModal({setReviewModal}){
+import { useEffect, useRef,useState } from "react";
+import axios from 'axios';
+function ReviewModal({reviewModal, setReviewModal}){
     const mount = useRef(true);
-    
+    const [review, setReview] = useState({});
+    const [img_list,setImg_list] = useState([]);
     useEffect(()=>{
         if(!mount.current) mount.current = false;
         else {
+            console.log("!!!");
+            axios.get('http://localhost:9977/review/selectReview?id='+reviewModal.selected)
+            .then(res =>{
+                console.log(res.data);
+                setReview(res.data.review);
+                setImg_list(res.data.img_list);
+            })
+            .catch(err => {
+                console.log(err);
+            })
             let modal=document.getElementById("review-modal");
 
             modal.style.opacity=1;
@@ -27,7 +38,7 @@ function ReviewModal({setReviewModal}){
 
             document.addEventListener('keyup', (e)=>{
                 if(e.key ==='Escape') {
-                    setReviewModal(false);
+                    setReviewModal({...reviewModal, isOpen:false});
                 }
             })
 
@@ -91,9 +102,38 @@ function ReviewModal({setReviewModal}){
         
         return result;
     }
+
+    const delReview = () => {
+        setReviewModal({...reviewModal, isOpen:false});
+        axios.get('http://localhost:9977/review/deleteReview?id='+review.id)
+        .then(res => {
+            window.location.reload(true);
+        })
+        .catch(err => console.log(err))
+    }
+
     return(<div id='review-modal'>
-        <div id="review-modal-exit" onClick={()=>setReviewModal(false)}>X</div>
-        hi
+        <div id="review-modal-exit" onClick={()=>setReviewModal({...reviewModal, isOpen:false})}>X</div>
+        { review.restaurant !==undefined &&
+        <div className='review-modal-box'>
+            <div id='review-modal-title'>{review.restaurant.name}</div>
+            <div id='review-modal-star'>
+            <span className='star-rating'>
+            <span style ={{width:`${review.rating*20}%`}}></span>
+            </span> {review.rating}
+            </div>
+            <span id='review-modal-who'>{review.user.username} / {review.writedate}</span><br/>
+            <span id='review-modal-cat'>{review.restaurant.categoryOne} / {review.restaurant.location}</span><br/>
+            <span id='review-modal-comment'>{review.comment}</span><br/>
+            {
+                img_list.map((item) => {
+                    return(<img id='review-modal-img' src={`http://localhost:9977/uploads/review/${item.review.id}/${item.filename}`}/>)
+                })
+            }
+            <br/>
+            { (sessionStorage.getItem('id') == review.user.id) && <span id='review-del-button' onClick={()=> delReview()}>삭제</span>}
+        </div>
+        }
     </div>);
 }
 

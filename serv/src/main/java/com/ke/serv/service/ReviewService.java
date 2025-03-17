@@ -23,4 +23,14 @@ public class ReviewService {
     public List<ReviewEntity> selectReviewList(RestaurantEntity re) {return repo.findAllByRestaurantOrderByIdDesc(re);}
     public List<ReviewFileEntity> selectReviewFileList(ReviewEntity re) {return f_repo.findAllByReview(re);}
     public List<ReviewEntity> selectReviewListByUser(UserEntity ue) {return repo.findAllByUser(ue);}
+
+    public ReviewEntity selectReview(ReviewEntity entity) {
+        return repo.findById(entity.getId());
+    }
+
+    public void reviewDelete(ReviewEntity entity) {
+        List<ReviewFileEntity> file_list = f_repo.findAllByReview(entity);
+        for(ReviewFileEntity file : file_list) f_repo.delete(file);
+        repo.deleteById(entity.getId());
+    }
 }
