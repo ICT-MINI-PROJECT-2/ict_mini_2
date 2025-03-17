@@ -287,6 +287,8 @@
 .info-tab {
     height: 50px;
     margin: 0 auto;
+    font-weight: 600;
+    cursor: pointer;
 }
 .info-tab>li {
     width: 25%;
@@ -333,9 +335,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: #444;
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
 }
+
 .pagination {
     width: 100%;
     line-height: 30px;
@@ -381,28 +384,32 @@
     overflow-y: scroll;
     padding:0;
 }
+.review-body>ol {
+    padding: 0;
+}
 
 .review-body::-webkit-scrollbar {
-    height: 10px;
-    border-radius: 0px 8px 0px 0px;
+    width: 10px;
+    border-radius: 0px 10px 0px 0px;
     background:transparent;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.4),
     7px 7px 20px 0px rgba(0,0,0,.3),
     4px 4px 5px 0px rgba(0,0,0,.3);
 }
 
 .review-body::-webkit-scrollbar-thumb {
-    background:rgba(121, 121, 121, 0.733);
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+    background:rgba(155, 155, 155, 0.733);
+    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.4),
     7px 7px 20px 0px rgba(0,0,0,.3),
     4px 4px 5px 0px rgba(0,0,0,.3);
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .container-msg {
     display: flex;
     width: 95%;
     height: 100%;
+    margin: 0 auto;
     align-items: center;
     border-bottom: 1px solid rgb(170,170,170);
 }
@@ -410,7 +417,7 @@
 .message-container {
 flex-shrink: 1;
 height: 180px;
-width: 500px;
+width: 80%;
 display: flex;
 justify-content: center;
 align-items: center;
@@ -420,7 +427,7 @@ align-items: center;
 .message-box {
     color:black;
     font-family: "Gowun Dodum", sans-serif;
-    width: 460px;
+    width: 95%;
     height: 70%;
     border-radius: 10px;
     margin-left:2vw;
@@ -428,7 +435,6 @@ align-items: center;
     border: 2px solid gray;
     cursor: pointer;
 }
-
 
 .message-box-next {
 position: absolute;
@@ -464,9 +470,9 @@ position: absolute;
     white-space: nowrap;
 }
 .message-box > ul > li:nth-child(2) {
-    float:right;
-    padding-left:33%;
     width:40%;
+    padding-right: 10px;
+    text-align: right;
     white-space: nowrap;
 }
 .message-comment {
@@ -606,7 +612,7 @@ position: absolute;
     color:rgb(255, 0, 0);
 }
 
-#review-modal{
+#review-modal {
     padding:10px;
     color:#2c0813;
     font-family: "Gowun Dodum", sans-serif;
@@ -623,8 +629,50 @@ position: absolute;
     border:2px solid gray;
 	cursor:grab;
 }
+#review-image-modal {
+    padding:10px;
+    color:#2c0813;
+    font-family: "Gowun Dodum", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+	position:fixed;
+    max-width:800px;
+    min-width:630px;
+    height:630px;
+	width:50%;
+	background-color:white;
+	border-radius:15px;
 
-
+	transition: opacity 0.4s;
+    border:2px solid gray;
+	cursor:grab;
+}
+.gallery-box {
+    padding-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.gallery-box>img {
+    width: 90%;
+    height: 160px;
+    object-fit: cover;
+    margin: 0 auto;
+    padding: 10px;
+}
+.gallery-page-button {
+    position: absolute;
+    top: 600px;
+    left: calc(50% - 60px);
+    width: 100px;
+    text-align: center;
+    padding: 10px;
+    color: #333;
+}
+.gallery-page-button>div {
+    display: inline;
+    padding: 10px;
+    cursor: pointer;
+}
 #review-modal-exit{
 	position:absolute;
 	top:15px;
@@ -634,6 +682,15 @@ position: absolute;
     transition: all 0.5s;
     cursor:pointer;
 }
+#review-image-modal-exit{
+	position:absolute;
+	top: 0;
+    right:20px;
+    padding: 5px;
+    font-size:2.5em;
+    font-weight: 800;
+    transition: all 0.5s;
+    cursor:pointer;
 
 #review-modal-title{
     text-align: center;
