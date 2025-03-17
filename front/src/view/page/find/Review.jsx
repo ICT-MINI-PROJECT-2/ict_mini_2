@@ -153,7 +153,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                 formData.append("files",file[i]);
             }
             
-            axios.post('http://192.168.1.146:9977/review/write', formData)
+            axios.post('http://localhost:9977/review/write', formData)
             .then(res => {
                 getReview();
                 setStarWid(0);
@@ -199,9 +199,16 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                     {msg}
                 </span>
                 <div className='boxes'>
-                    { isLogin ?
-                    <textarea name='comment' className='review-input-content' onChange={changeComment} value={isReviewWrite ? '이미 리뷰를 작성하셨습니다.':comment}></textarea> :
-                    <textarea name='comment' className='review-input-content' value = { '로그인 후 리뷰 작성이 가능합니다.'} readOnly></textarea> 
+                    { 
+                        isLogin ? (
+                            isReviewWrite ? (
+                                <textarea name='comment' className='review-input-content' value='이미 리뷰를 작성하셨습니다.' disabled/>
+                            ) : (
+                                <textarea name='comment' className='review-input-content' onChange={changeComment} value={comment}/>
+                            )
+                        ) : (
+                            <textarea name='comment' className='review-input-content' value = { '로그인 후 리뷰 작성이 가능합니다.'} disabled/> 
+                        )
                     }
                     <div className='two-button'>
                         { isLogin && !isReviewWrite ?

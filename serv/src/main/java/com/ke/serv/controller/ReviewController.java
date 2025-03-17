@@ -48,6 +48,7 @@ public class ReviewController {
             re.setRating(rating);
             rest_service.addRestaurantByAPI(re);
         }
+        System.out.println(result);
         return result;
     }
 
@@ -55,6 +56,7 @@ public class ReviewController {
     @Transactional(rollbackFor = {RuntimeException.class, SQLException.class})
     public String write(ReviewEntity re, MultipartFile[] files, HttpServletRequest req) {
         List<File> file_list =null;
+        System.out.println(re);
         try{
             ReviewEntity res_review = service.insert(re);
             file_list = new ArrayList<File>();
