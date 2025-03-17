@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import marker from '../../../img/marker.png';
 import Review from './Review';
+import ImageModal from './ImageModal';
 
 const {kakao} = window;
 
@@ -19,6 +20,7 @@ function FindInfo() {
     const [menu_list, setMenu_list] = useState([]);
     const [img_list, setImg_list] = useState([]);
     const [info_list, setInfo_list] = useState([]);
+    const [imageModal, setImageModal] = useState(false);
 
     const [review_img_list,setReview_img_list] = useState([]);
 
@@ -168,6 +170,7 @@ function FindInfo() {
 
     return (
         <div className='info'>
+            {imageModal && <ImageModal imageList={review_img_list}/>}
             <h1>{info.rstrName}</h1>
             <div className='rPhoto'>
                 <Slider {...settings}>
@@ -195,7 +198,7 @@ function FindInfo() {
                             {
                                 info_list.length !== 0 ?
                                 info_list.map((item,idx) => {
-                                    return(<div key={idx} >
+                                    return(<div key={idx}>
                                         {item}
                                     </div>);
                                 }) : <div>상세정보가 없습니다.</div>
@@ -206,8 +209,8 @@ function FindInfo() {
                         <div id="menu">
                             {
                                 menu_list.length !== 0 ?
-                                    menu_list.map((item) => {
-                                        return(<div>
+                                    menu_list.map((item,idx) => {
+                                        return(<div key={idx}>
                                             {item}
                                         </div>);
                                     }) : <div>메뉴정보가 없습니다.</div>
@@ -215,12 +218,23 @@ function FindInfo() {
                         </div>
                     )}
                     {tab === "photo" && (
-                        review_img_list.length !== 0 ?
-                        review_img_list.map((item,idx) => {
-                            return(<div id="photo">
-                                <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} width='100%'/>
-                            </div>);
-                        }) : <div>등록된 사진이 없습니다.</div>
+                        <div id="photo">
+                            {
+                                review_img_list.length !== 0 ? 
+                                    review_img_list.slice(0,4).map((item, idx) => {
+                                        if (idx < 3) {
+                                            return <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} />;
+                                        } else {
+                                            return <div>
+                                                        <img id="moreImage" key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} 
+                                                            onClick={()=>setImageModal(true)}/>
+                                                        <div id="moreText">더보기</div>
+                                                    </div>
+                                        }
+                                    }) 
+                                    : <div style={{width: '170px', padding: '5px 0'}}>등록된 사진이 없습니다.</div>
+                            }
+                        </div>
                     )}
                     {(tab === "review") ? 
                         <Review getReview={getReview} review_list={review_list} restaurant_id={loc.state.id} isLogin={ sessionStorage.getItem("loginStatus") === 'Y' ? true : false}/> : <></>
