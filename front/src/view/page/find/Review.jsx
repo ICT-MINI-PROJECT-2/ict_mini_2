@@ -153,7 +153,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                 formData.append("files",file[i]);
             }
             
-            axios.post('http://192.168.1.146:9977/review/write', formData)
+            axios.post('http://localhost:9977/review/write', formData)
             .then(res => {
                 getReview();
                 setStarWid(0);

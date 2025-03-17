@@ -95,25 +95,25 @@ public class BoardController {
     }
 
     @GetMapping("/view/{id}") // ✅ 이 엔드포인트 추가!
-    @Transactional(readOnly = false) // 🔥 변경
-    public ResponseEntity<?> viewEvent(@PathVariable("id") int id) {
-        Optional<EventEntity> eventOptional = boardService.getEvent(id); // 새로운 service 메소드 호출
-        if (eventOptional.isPresent()) {
-            return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
-        } else {
-            return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
+        @Transactional(readOnly = false) // 🔥 변경
+        public ResponseEntity<?> viewEvent(@PathVariable("id") int id) {
+            Optional<EventEntity> eventOptional = boardService.getEvent(id); // 새로운 service 메소드 호출
+            if (eventOptional.isPresent()) {
+                return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
+            } else {
+                return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
+            }
         }
-    }
 
-    @GetMapping("/view/edit/{id}") // ✅ 수정용 엔드포인트 추가!
-    @Transactional(readOnly = true) // ✅ 읽기 전용 트랜잭션 적용 (수정 폼 조회)
-    public ResponseEntity<?> editEvent(@PathVariable("id") int id) {
-        Optional<EventEntity> eventOptional = boardService.getEvent(id); // 기존 getEvent 메소드 재활용
-        if (eventOptional.isPresent()) {
-            return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
-        } else {
-            return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
-        }
+        @GetMapping("/view/edit/{id}") // ✅ 수정용 엔드포인트 추가!
+        @Transactional(readOnly = true) // ✅ 읽기 전용 트랜잭션 적용 (수정 폼 조회)
+        public ResponseEntity<?> editEvent(@PathVariable("id") int id) {
+            Optional<EventEntity> eventOptional = boardService.getEvent(id); // 기존 getEvent 메소드 재활용
+            if (eventOptional.isPresent()) {
+                return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
+            } else {
+                return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
+            }
     }
 
     @DeleteMapping("/delete/{id}") // ✅ 삭제 엔드포인트 추가
@@ -154,7 +154,6 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 삭제 중 오류 발생: " + e.getMessage());
         }
     }
-
 
 
 }

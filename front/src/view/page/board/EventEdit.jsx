@@ -16,31 +16,43 @@ function EventEdit() {
     const location = useLocation();
     const { id } = useParams();
     const [category, setCategory] = useState('EVENT');
-    const [isNewThumbnailUploaded, setIsNewThumbnailUploaded] = useState(false);
     const [initialFiles, setInitialFiles] = useState([]);
     const [thumbnailUrl, setThumbnailUrl] = useState('');
     const [contentImageUrls, setContentImageUrls] = useState([]);
+    const [newContentImageNames, setNewContentImageNames] = useState([]);
+    const [deletedFileIds, setDeletedFileIds] = useState([]);
 
     useEffect(() => {
         const categoryParam = new URLSearchParams(location.search).get('category');
-        if (categoryParam) {
-            setCategory(categoryParam);
-        }
+        if (categoryParam) { setCategory(categoryParam); }
 
         const fetchEventData = async () => {
             try {
                 const response = await fetch(`http://localhost:9977/board/view/edit/${id}`);
-                if (!response.ok) {
-                    throw new Error("이벤트 수정 데이터를 불러오는데 실패했습니다.");
-                }
+                if (!response.ok) { throw new Error("이벤트 수정 데이터를 불러오는데 실패했습니다."); }
+
                 const eventData = await response.json();
-                console.log("불러온 이벤트 데이터:", eventData);
+                console.log("Fetched event data:", eventData);
+
                 setTitle(eventData.subject);
                 setContent(eventData.content);
                 setStartDate(formatDateTimeForInput(eventData.startDate));
                 setEndDate(formatDateTimeForInput(eventData.endDate));
-                setInitialFiles(eventData.files || []); // initialFiles 에 모든 파일 정보 저장
+                setInitialFiles(eventData.files || []);
 
+                // 첫 번째 파일을 썸네일로 처리
+                const thumbnailFile = eventData.files && eventData.files[0];
+                if (thumbnailFile) {
+                    console.log("Setting thumbnail URL:", thumbnailFile);
+                    setThumbnailUrl(`http://localhost:9977${thumbnailFile.fileUrl}`);
+                }
+
+                // 나머지 파일들을 내용 이미지로 처리
+                if (eventData.files && eventData.files.length > 1) {
+                    const contentUrls = eventData.files.slice(1).map(file => `http://localhost:9977${file.fileUrl}`);
+                    console.log("Setting content URLs:", contentUrls);
+                    setContentImageUrls(contentUrls);
+                }
             } catch (error) {
                 console.error("이벤트 데이터 불러오기 오류:", error);
                 alert("이벤트 수정 데이터를 불러오는데 실패했습니다.");
@@ -51,83 +63,94 @@ function EventEdit() {
         fetchEventData();
     }, [id, location, navigate]);
 
-
     const formatDateTimeForInput = (dateTimeString) => {
-        if (!dateTimeString) return '';
-        const date = new Date(dateTimeString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+        return dateTimeString ? new Date(dateTimeString).toISOString().slice(0, 16) : '';
     };
-
 
     const handleTitleChange = (e) => setTitle(e.target.value);
     const handleContentChange = (e) => setContent(e.target.value);
     const handleStartDateChange = (e) => setStartDate(e.target.value);
     const handleEndDateChange = (e) => setEndDate(e.target.value);
+
     const handleThumbnailChange = (e) => {
-        setThumbnail(e.target.files[0]);
-        setIsNewThumbnailUploaded(true);
-        setThumbnailUrl(URL.createObjectURL(e.target.files[0])); // 썸네일 미리보기 URL 설정
-    };
-    const handleContentImagesChange = (e) => {
-        const files = Array.from(e.target.files);
-        setContentImages(files);
-        setContentImageUrls(files.map(file => URL.createObjectURL(file))); // 내용 이미지 미리보기 URL 설정
+        const file = e.target.files[0];
+        if (file) {
+            console.log("New thumbnail selected:", file);
+            setThumbnail(file);
+            setThumbnailUrl(URL.createObjectURL(file));
+
+            // 기존 썸네일이 있으면 삭제 목록에 추가
+            if (initialFiles.length > 0) {
+                const oldThumbnailId = initialFiles[0].id;
+                console.log("Adding old thumbnail to delete list:", oldThumbnailId);
+                setDeletedFileIds(prev => [...prev, oldThumbnailId]);
+            }
+        }
     };
 
+    const handleContentImagesChange = (e) => {
+        const files = Array.from(e.target.files);
+        console.log("New content images selected:", files);
+        setContentImages(files);
+    
+        // 미리보기 URL 생성
+        const urls = files.map(file => URL.createObjectURL(file));
+        setContentImageUrls(urls);
+        
+        // 새 파일 이름 설정 (files 배열에서 직접 가져옴)
+        setNewContentImageNames(files.map(file => file.name));
+    
+        // 기존 내용 이미지들 삭제 목록에 추가
+        if (initialFiles.length > 1) {
+            const contentFileIds = initialFiles.slice(1).map(file => file.id);
+            console.log("Adding content files to delete list:", contentFileIds);
+            setDeletedFileIds(prev => [...prev, ...contentFileIds]);
+        }
+    };
+
+    const handleDeleteFile = async (fileId, fileType, fileIndex = -1) => {
+        if (!window.confirm("파일을 삭제하시겠습니까?")) return;
+
+        try {
+            if (fileId) {
+                console.log("Deleting existing file:", fileId, fileType);
+                const response = await fetch(`http://localhost:9977/board/file/delete/${fileId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('파일 삭제에 실패했습니다.');
+
+                setInitialFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
+                setDeletedFileIds(prev => [...prev, fileId]);
+
+                if (fileType === 'thumbnail') {
+                    setThumbnailUrl('');
+                    setThumbnail(null);
+                }
+            } else if (fileType === 'content' && fileIndex >= 0) {
+                console.log("Removing new content image:", fileIndex);
+                setContentImages(prev => prev.filter((_, i) => i !== fileIndex));
+                setContentImageUrls(prev => prev.filter((_, i) => i !== fileIndex));
+                setNewContentImageNames(prev => prev.filter((_, i) => i !== fileIndex));
+            }
+
+            alert('파일이 삭제되었습니다.');
+        } catch (error) {
+            console.error('파일 삭제 오류:', error);
+            alert('파일 삭제 중 오류가 발생했습니다.');
+        }
+    };
 
     const getSearchKey = useCallback(() => {
         const category = new URLSearchParams(location.search).get("category") || "EVENT";
         return [`eventList`, category, 1, "제목내용", "", false];
     }, [location.search]);
 
-    const handleDeleteFile = async (fileId, fileType) => {
-        if (window.confirm("파일을 삭제하시겠습니까?")) {
-            try {
-                const response = await fetch(`http://localhost:9977/board/file/delete/${fileId}`, { // 백엔드 파일 삭제 API 호출
-                    method: 'DELETE',
-                });
-
-                if (!response.ok) {
-                    throw new Error('파일 삭제에 실패했습니다.');
-                }
-
-                alert('파일이 삭제되었습니다.');
-                setInitialFiles(initialFiles.filter(file => file.id !== fileId)); // initialFiles 에서 삭제된 파일 제거
-
-                if (fileType === 'thumbnail') {
-                    setThumbnailUrl(''); // 썸네일 URL 초기화
-                } else if (fileType === 'content') {
-                    setContentImageUrls(contentImageUrls.filter(url => !initialFiles.find(file => file.fileUrl === url && file.id === fileId))); // 내용 이미지 URL 목록 업데이트 (URL 기반으로 삭제 - 정확도 높이기 위해 fileId 조건 추가 가능)
-                }
-
-            } catch (error) {
-                console.error('파일 삭제 오류:', error);
-                alert('파일 삭제 중 오류가 발생했습니다.');
-            }
-        }
-    };
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!title.trim()) {
-            alert('제목을 입력하세요.');
-            return;
-        }
-        if (!content.trim()) {
-            alert('내용을 입력하세요.');
-            return;
-        }
-        if (new Date(startDate) > new Date(endDate)) {
-            alert('종료 날짜는 시작 날짜 이후여야 합니다.');
-            return;
-        }
+        if (!title.trim()) { alert('제목을 입력하세요.'); return; }
+        if (!content.trim()) { alert('내용을 입력하세요.'); return; }
+        if (new Date(startDate) > new Date(endDate)) { alert('종료 날짜는 시작 날짜 이후여야 합니다.'); return; }
 
         const formData = new FormData();
         formData.append('event_id', id);
@@ -135,20 +158,23 @@ function EventEdit() {
         formData.append('event_content', content);
         formData.append('event_startdate', startDate);
         formData.append('event_enddate', endDate);
+        formData.append('category', category);
+        formData.append('user_id', sessionStorage.getItem('loginId') || 'admin1234');
+
         if (thumbnail) {
+            console.log("Adding new thumbnail to form data");
             formData.append('mf', thumbnail);
-        } else if (!isNewThumbnailUploaded && initialFiles.some(file => file.fileType === 'thumbnail')) {
-            // 썸네일 변경 없으면 기존 썸네일 유지 (백엔드에서 처리). initialFiles 에 썸네일이 있는지 확인
         }
 
+        contentImages.forEach((file, index) => {
+            console.log(`Adding content image ${index} to form data:`, file.name);
+            formData.append('files', file);
+        });
 
-        // contentImages (썸네일 제외 content 이미지) formData 에 추가
-        contentImages.forEach(file => formData.append('files', file));
-
-
-        const userId = sessionStorage.getItem('loginId') || 'admin1234';
-        formData.append('category', category);
-        formData.append('user_id', userId);
+        deletedFileIds.forEach(fileId => {
+            console.log("Adding deleted file ID to form data:", fileId);
+            formData.append('deletedFileIds', fileId);
+        });
 
         try {
             const response = await fetch('http://localhost:9977/board/eventWriteOk', {
@@ -156,12 +182,8 @@ function EventEdit() {
                 body: formData,
             });
 
-            if (!response.ok) {
-                throw new Error('이벤트 수정에 실패했습니다.');
-            }
+            if (!response.ok) throw new Error('이벤트 수정에 실패했습니다.');
 
-            const data = await response.text();
-            console.log('성공:', data);
             alert('글이 수정되었습니다.');
             queryClient.invalidateQueries(getSearchKey());
             navigate(`/events/${id}`);
@@ -202,47 +224,64 @@ function EventEdit() {
                             <th>종료 날짜</th>
                             <td><input type="datetime-local" name="event_enddate" value={endDate} onChange={handleEndDateChange} className="custom-input" /></td>
                         </tr>
-
                         <tr>
                             <th>현재 썸네일</th>
                             <td>
-                                {initialFiles.find(file => file.fileType === 'thumbnail') ? (
+                                {thumbnailUrl ? (
                                     <div>
-                                        <span>{initialFiles.find(file => file.fileType === 'thumbnail').originalFileName}</span> {/* 파일명 표시 */}
-                                        <button type="button" className="btn-delete-file" onClick={() => handleDeleteFile(initialFiles.find(file => file.fileType === 'thumbnail').id, 'thumbnail')}>삭제</button> {/* 삭제 버튼 */}
+                                        <span>{thumbnail ? thumbnail.name : (initialFiles[0]?.originalFileName || "")}</span>
+                                        <button type="button" className="btn-delete-file" onClick={() => handleDeleteFile(initialFiles[0]?.id, 'thumbnail')}>삭제</button>
+                                        <img src={thumbnailUrl} alt="썸네일 미리보기" style={{ maxWidth: '100px', marginTop: '5px' }} />
                                     </div>
                                 ) : (
                                     <div>등록된 썸네일 이미지 없음</div>
                                 )}
-                                {thumbnailUrl && <img src={thumbnailUrl} alt="새 썸네일 미리보기" style={{ maxWidth: '100px', marginTop: '5px' }} />} {/* 새 썸네일 미리보기 */}
                             </td>
                         </tr>
                         <tr>
                             <th>썸네일 업로드</th>
                             <td><input type="file" name="mf" onChange={handleThumbnailChange} className="custom-input" /></td>
                         </tr>
-
                         <tr>
                             <th>현재 내용 이미지</th>
                             <td>
-                                {initialFiles.filter(file => file.fileType === 'content').length > 0 ? (
-                                    initialFiles.filter(file => file.fileType === 'content').map((file, index) => (
-                                        <div key={file.id}>
-                                            <span>{file.originalFileName}</span> {/* 파일명 표시 */}
-                                            <button type="button" className="btn-delete-file" onClick={() => handleDeleteFile(file.id, 'content')}>삭제</button> {/* 삭제 버튼 */}
+                                {contentImageUrls.map((url, index) => {
+                                    // 파일 이름 결정 로직 수정
+                                    let fileName;
+                                    if (index < initialFiles.length - 1) {
+                                        // 기존 파일인 경우
+                                        fileName = initialFiles[index + 1]?.originalFileName;
+                                    } else {
+                                        // 새로 추가된 파일인 경우
+                                        const newFileIndex = index - (initialFiles.length - 1);
+                                        fileName = contentImages[newFileIndex]?.name || newContentImageNames[newFileIndex];
+                                    }
+
+                                    return (
+                                        <div key={index}>
+                                            <span>{fileName}</span>
+                                            <button 
+                                                type="button" 
+                                                className="btn-delete-file" 
+                                                onClick={() => handleDeleteFile(
+                                                    index < initialFiles.length - 1 ? initialFiles[index + 1]?.id : null,
+                                                    'content',
+                                                    index
+                                                )}
+                                            >삭제</button>
+                                            <img 
+                                                src={url} 
+                                                alt={`내용 이미지 ${index + 1}`} 
+                                                style={{ maxWidth: '100px', marginTop: '5px' }} 
+                                            />
                                         </div>
-                                    ))
-                                ) : (
-                                    <div>등록된 내용 이미지 없음</div>
-                                )}
-                                {contentImageUrls.length > 0 && contentImageUrls.map((url, index) => ( // 새 내용 이미지 미리보기
-                                    <img key={index} src={url} alt={`새 내용 이미지 미리보기 ${index + 1}`} style={{ maxWidth: '100px', margin: '5px' }} />
-                                ))}
+                                    );
+                                })}
                             </td>
                         </tr>
                         <tr>
                             <th>내용 이미지 업로드</th>
-                            <td><input type="file" name="files" multiple onChange={handleContentImagesChange} className="custom-input" /></td>
+                            <td><input type="file" name="files" onChange={handleContentImagesChange} className="custom-input" multiple /></td>
                         </tr>
                     </tbody>
                 </table>

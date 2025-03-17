@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -119,6 +120,7 @@ public class BoardService {
                             .findFirst().orElse(null);
 
                     if (oldThumbnail != null) {
+                        deleteLocalFile(oldThumbnail); // 로컬 파일 삭제 추가
                         fileRepository.delete(oldThumbnail);
                     }
                 }
@@ -207,6 +209,7 @@ public class BoardService {
         fileEntity.setOriginalFileName(originalFilename);
         fileEntity.setContentType(file.getContentType());
         fileEntity.setExtName(fileExt);
+        fileEntity.setFilePath(filePath.toString()); // 파일 경로 저장
 
         return fileRepository.save(fileEntity);
     }
@@ -228,7 +231,7 @@ public class BoardService {
 
             List<FileEntity> files = fileRepository.findByEvent(event);
             files.forEach(file -> {
-                String fileUrl = "/uploads/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
+                String fileUrl = "/uploads/board/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
                 file.setFileUrl(fileUrl);
             });
             event.setFiles(files);
@@ -257,7 +260,8 @@ public class BoardService {
                 log.info("첨부 파일 목록 조회 - 파일 수: {}", files.size());
                 for (FileEntity file : files) {
                     try {
-                        fileRepository.delete(file);
+                        deleteLocalFile(file); // 로컬 파일 삭제
+                        fileRepository.delete(file); // DB 삭제
                         log.info("FileEntity 삭제 성공 - File ID: {}", file.getId());
                     } catch (Exception fileDeleteEx) {
                         log.error("FileEntity 삭제 중 오류 발생 - File ID: {}", file.getId(), fileDeleteEx);
@@ -287,6 +291,26 @@ public class BoardService {
         }
         log.info("deleteEvent 메서드 종료 - Event ID: {}", id);
     }
+
+    private void deleteLocalFile(FileEntity fileEntity) {
+        if (fileEntity.getFilePath() != null) { // 파일 경로가 null이 아닌 경우에만 삭제 시도
+            Path filePath = Paths.get(fileEntity.getFilePath());
+            File localFile = filePath.toFile();
+            if (localFile.exists()) {
+                if (localFile.delete()) {
+                    log.info("로컬 파일 삭제 성공 - Path: {}", fileEntity.getFilePath());
+                } else {
+                    log.error("로컬 파일 삭제 실패 - Path: {}", fileEntity.getFilePath());
+                    throw new RuntimeException("로컬 파일 삭제 실패: " + fileEntity.getFilePath());
+                }
+            } else {
+                log.warn("로컬 파일이 존재하지 않음 - Path: {}", fileEntity.getFilePath());
+            }
+        } else {
+            log.warn("FileEntity에 파일 경로 정보가 없어 로컬 파일 삭제 생략 - File ID: {}", fileEntity.getId());
+        }
+    }
+
 
     @Transactional
     public void updateHitCount(int id) {
@@ -366,17 +390,7 @@ public class BoardService {
             FileEntity fileEntity = fileOptional.get();
 
             // 1. 실제 파일 스토리지에서 파일 삭제
-            Path filePath = Paths.get(uploadPath, String.valueOf(fileEntity.getEvent().getId()), fileEntity.getFileName());
-            try {
-                Files.deleteIfExists(filePath);
-                System.out.println("파일 삭제 성공: " + filePath.toString());
-            } catch (NoSuchFileException e) {
-                System.out.println("파일이 이미 존재하지 않습니다: " + filePath.toString()); // 파일이 이미 없는 경우 로그만 남기고 성공 처리
-            }
-            catch (IOException e) {
-                System.err.println("파일 삭제 실패: " + filePath.toString() + ", 오류: " + e.getMessage());
-                throw new RuntimeException("파일 삭제 실패: " + e.getMessage());
-            }
+            deleteLocalFile(fileEntity);
 
 
             // 2. 데이터베이스에서 파일 정보 삭제
