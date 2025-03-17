@@ -8,11 +8,12 @@ import FindListItem from './FindListItem';
 import axios from 'axios';
 
 function Find(){
-    let [list, setList] = useState([]);
-    let [searchWord, setSearchWord] = useState('');
-    let [pageNumber, setPageNumber] = useState([]);
-    let [nowPage, setNowPage] = useState(1);
-    let [totalPage, setTotalPage] = useState(1);
+    const [list, setList] = useState([]);
+    const [searchWord, setSearchWord] = useState('');
+    const [pageNumber, setPageNumber] = useState([]);
+    const [nowPage, setNowPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+    const [sort, setSort] = useState('id');
     
     const [rating_size,setRating_size] = useState([]);
     const firstSearch = useRef(false);
@@ -21,16 +22,13 @@ function Find(){
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
 
-    const page_mount = useRef(true);
-
-
-
     const searchList = ()=> {
         if(!firstSearch.current) firstSearch.current = true;
         let searchData = ({
             searchWord: searchWord,
             searchTag: tag,
-            nowPage: nowPage
+            nowPage: nowPage,
+            sort: sort
         })
 
         axios.post('http://localhost:9977/find/searchList', searchData)
@@ -63,7 +61,9 @@ function Find(){
         searchData = ({
             searchWord: searchWord,
             searchTag: tag,
-            nowPage: msg
+            nowPage: msg,
+            sort: sort
+            
         })
         axios.post('http://localhost:9977/find/drawList', searchData)
         .then(async function(res){
@@ -267,6 +267,7 @@ function Find(){
     const handleSearch = (e) => {
         if(e.key==='Enter') searchList();
     }
+    
 
     return(
         <Faded>
@@ -306,6 +307,10 @@ function Find(){
                     <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onKeyUp={(e) => handleSearch(e)} onChange={doSearch} name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
                     <div id="search-btn" onClick={() =>{searchList()}}><img src={searchImg} width='40'/></div>
+                    <div>정렬
+                        <div onClick={()=>{setSort("hit")}}>조회수 순</div>
+                        <div onClick={()=>{setSort("rating")}}>리뷰 순</div>
+                    </div>
                 </div>
                 <div className='find-list'>
                     {list.map((item,idx)=>

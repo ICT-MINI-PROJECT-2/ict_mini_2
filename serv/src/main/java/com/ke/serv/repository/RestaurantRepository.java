@@ -2,6 +2,7 @@ package com.ke.serv.repository;
 
 import com.ke.serv.entity.RestaurantEntity;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -54,7 +55,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, In
             "FROM restaurant r " +
             "WHERE r.restaurant_name LIKE %:keyword% " +
             "AND r.category_1 IN :categories " +
-            "AND SUBSTRING_INDEX(SUBSTRING_INDEX(r.location, '서울특별시 ', -1), ' ', 1) IN :locations",
+            "AND SUBSTRING_INDEX(SUBSTRING_INDEX(r.location, '서울특별시 ', -1), ' ', 1) IN :locations ",
             nativeQuery = true)
     List<RestaurantEntity> findRestaurants(@Param("keyword") String keyword,
                                            @Param("categories") List<String> categories,
@@ -63,7 +64,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, In
     @Query(value = "SELECT * " +
             "FROM restaurant r " +
             "WHERE r.restaurant_name LIKE %:keyword% " +
-            "AND r.category_1 IN :categories",
+            "AND r.category_1 IN :categories ",
             nativeQuery = true)
     List<RestaurantEntity> findRestaurantsByCat(@Param("keyword") String keyword,
                                                 @Param("categories") List<String> categories, PageRequest pageRequest);
@@ -71,7 +72,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, In
     @Query(value = "SELECT * " +
             "FROM restaurant r " +
             "WHERE r.restaurant_name LIKE %:keyword% " +
-            "AND SUBSTRING_INDEX(SUBSTRING_INDEX(r.location, '서울특별시 ', -1), ' ', 1) IN :locations",
+            "AND SUBSTRING_INDEX(SUBSTRING_INDEX(r.location, '서울특별시 ', -1), ' ', 1) IN :locations ",
             nativeQuery = true)
     List<RestaurantEntity> findRestaurantsByLoc(@Param("keyword") String keyword,
                                                 @Param("locations") List<String> locations, PageRequest pageRequest);

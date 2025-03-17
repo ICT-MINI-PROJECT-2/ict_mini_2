@@ -170,7 +170,7 @@ function FindInfo() {
 
     return (
         <div className='info'>
-            {imageModal && <ImageModal imageList={review_img_list}/>}
+            {imageModal && <ImageModal setImageModal= {setImageModal} imageList={review_img_list}/>}
             <h1>{info.rstrName}</h1>
             <div className='rPhoto'>
                 <Slider {...settings}>
@@ -186,10 +186,10 @@ function FindInfo() {
 
             <div className='rInfo'>
                 <ul className='info-tab'>
-                    <li onClick={()=>setTab("home")}>정보</li>
-                    <li onClick={()=>setTab("menu")}>메뉴</li>
-                    <li onClick={()=>setTab("photo")}>사진</li>
-                    <li onClick={()=>setTab("review")}>리뷰</li>
+                    <li onClick={()=>setTab("home")} style={tab == 'home' ? {color: '#b21848'} : {}}>정보</li>
+                    <li onClick={()=>setTab("menu")} style={tab == 'menu' ? {color: '#b21848'} : {}}>메뉴</li>
+                    <li onClick={()=>setTab("photo")} style={tab == 'photo' ? {color: '#b21848'}: {}}>사진</li>
+                    <li onClick={()=>setTab("review")} style={tab == 'review' ? {color: '#b21848'} : {}}>리뷰</li>
                 </ul>
 
                 <div className='info-view'>
@@ -198,6 +198,11 @@ function FindInfo() {
                             {
                                 info_list.length !== 0 ?
                                 info_list.map((item,idx) => {
+                                    if (idx === info_list.length - 1) {
+                                        return(<div key={idx}>
+                                            ☎ {item}
+                                        </div>);    
+                                    }
                                     return(<div key={idx}>
                                         {item}
                                     </div>);
@@ -210,7 +215,7 @@ function FindInfo() {
                             {
                                 menu_list.length !== 0 ?
                                     menu_list.map((item,idx) => {
-                                        return(<div key={idx}>
+                                        return(<div key={idx} style={{textAlign: 'center'}}>
                                             {item}
                                         </div>);
                                     }) : <div>메뉴정보가 없습니다.</div>

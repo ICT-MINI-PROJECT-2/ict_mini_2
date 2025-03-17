@@ -27,7 +27,7 @@ function FindListItem({rating_size, restaurant}) {
                     <div><span className='star-rating'>
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
                             </span>&nbsp;{rating_size}명 참여</div>
-                    <div>조회수 352</div>
+                    <div>조회수 {restaurant.hit}</div>
                 </div>
             </div>
         
