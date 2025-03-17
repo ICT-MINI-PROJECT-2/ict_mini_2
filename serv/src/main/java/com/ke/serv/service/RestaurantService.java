@@ -5,6 +5,8 @@ import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class RestaurantService {
     private final RestaurantRepository repository;
 
     public List<RestaurantEntity> findListSelect(PagingVO pvo) {
-        return repository.findByNameContaining(pvo.getSearchWord(), PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord()));
+        return repository.findByNameContaining(pvo.getSearchWord(), PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord(), Sort.by(Order.desc(pvo.getSort()))));
     }
 
     public List<RestaurantEntity> findListByTagLocation(PagingVO pvo){
@@ -61,11 +63,15 @@ public class RestaurantService {
     }
     public List<RestaurantEntity> findListByTag(PagingVO pvo, List<String> a, List<String> b) {
         if(a.isEmpty()) {
-            return repository.findRestaurantsByLoc(pvo.getSearchWord(), b,PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord()));
+            return repository.findRestaurantsByLoc(pvo.getSearchWord(), b,PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord(), Sort.by(Order.desc(pvo.getSort()))));
         }
         if(b.isEmpty()) {
-            return repository.findRestaurantsByCat(pvo.getSearchWord(), a,PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord()));
+            return repository.findRestaurantsByCat(pvo.getSearchWord(), a,PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord(), Sort.by(Order.desc(pvo.getSort()))));
         }
-        return repository.findRestaurants(pvo.getSearchWord(),a,b,PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord()));
+        return repository.findRestaurants(pvo.getSearchWord(),a,b,PageRequest.of(pvo.getNowPage() -1, pvo.getOnePageRecord(), Sort.by(Order.desc(pvo.getSort()))));
+    }
+
+    public void hitUpdate(RestaurantEntity entity) {
+        repository.save(entity);
     }
 }

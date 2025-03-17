@@ -20,6 +20,8 @@ public class FindController {
 
     @PostMapping("/searchList")
     public Map searchList(@RequestBody PagingVO pvo) {
+
+        System.out.println("========================" + pvo);
         List<RestaurantEntity> list = new ArrayList<>();
         pvo.setNowPage(1);
         if(pvo.getSearchTag().isEmpty()) {
@@ -85,6 +87,11 @@ public class FindController {
 
     @PostMapping("/findInfo")
     public RestaurantEntity getInfo(@RequestBody RestaurantEntity entity) {
-        return service.restaurantSelect(entity.getId());
+        RestaurantEntity updatedEntity = service.restaurantSelect(entity.getId());
+
+        updatedEntity.setHit(updatedEntity.getHit() + 1); // 조회수 증가
+        service.hitUpdate(updatedEntity);
+
+        return service.restaurantSelect(updatedEntity.getId());
     }
 }

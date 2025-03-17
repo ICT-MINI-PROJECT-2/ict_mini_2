@@ -108,7 +108,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                         </li>
                         <li>
                             <span className='star-rating'>
-                            <span style ={{width:`${item.entity.rating*20}%`}}></span>
+                            <span style ={{width:`${item.entity.rating*20}%`, float:"left"}}></span>
                             </span> {item.entity.rating}
                         </li>
                     </ul>
