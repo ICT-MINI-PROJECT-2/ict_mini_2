@@ -17,6 +17,7 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
     thumbnailUrl = `http://localhost:9977${event.files[0].fileUrl}`
   }
 
+  console.log(event.files);
   const formatDate = (dateString) => {
     if (!dateString) return "날짜 미정";
     const date = new Date(dateString);
@@ -143,10 +144,11 @@ const EventList = memo(function EventList() {
 
   // 검색 파라미터 변경 감지를 위한 키 생성
   const getSearchKey = useCallback(() => {
-    const category = new URLSearchParams(location.search).get("category") || "EVENT"
+    const category = "EVENT"; // ✅ category를 "EVENT"로 고정
     return [`eventList`, category, currentPage, searchType, searchTerm, showOnlyWithImages]
-  }, [location.search, currentPage, searchType, searchTerm, showOnlyWithImages])
+  }, [currentPage, searchType, searchTerm, showOnlyWithImages])
 
+  
   const { data, fetchStatus } = useQuery({
     queryKey: getSearchKey(),
     queryFn: ({ queryKey }) => {

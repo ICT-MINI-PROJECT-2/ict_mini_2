@@ -1,5 +1,8 @@
 import {useState , useEffect, useRef} from 'react';
 import axios from 'axios';
+
+import ReviewModal from './ReviewModal';
+
 function Review({getReview, review_list, restaurant_id, isLogin}){
     const review_mount = useRef(false);
     const dataTransfer = new DataTransfer();
@@ -9,6 +12,8 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
     const [isReviewWrite, setIsReviewWrite] = useState(false);
 
     const [msg, setMsg] = useState('');
+
+    const [reviewModal, setReviewModal] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:9977/review/getReviewById?id='+sessionStorage.getItem("id"))
@@ -96,7 +101,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
             <li key={'review-' + idx} className="review-chat-box"><div className="container-msg">
                 <div className='message-who'>{item.entity.user.username}</div>
                 <div className="message-container">
-                  <div className='message-box'>
+                  <div className='message-box' onClick={()=>setReviewModal(true)}>
                     <ul>
                         <li className="message-text">
                             {item.entity.writedate}
@@ -181,6 +186,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     return(
         <div id='review'>
+            {reviewModal && <ReviewModal setReviewModal={setReviewModal}/>}
         {
             review_list.length !== 0 ?
             (<div className="review-body">
