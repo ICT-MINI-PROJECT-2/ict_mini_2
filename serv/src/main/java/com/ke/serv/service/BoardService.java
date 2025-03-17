@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -186,11 +187,12 @@ public class BoardService {
 
         Path filePath = Paths.get(uploadPath, String.valueOf(boardId), fileName);
 
+
         Files.createDirectories(filePath.getParent());
 
         Files.write(filePath, file.getBytes());
 
-        String fileUrl = "/uploads/board/" + boardId + "/" + fileName;
+        String fileUrl = "/uploads/" + boardId + "/" + fileName;
 
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
@@ -351,6 +353,34 @@ public class BoardService {
             hexString.insert(0, '0');
         }
         return hexString.toString();
+    }
+
+    public void deleteFile(Long fileId) { // ✅ 파일 삭제 메소드 구현 (인터페이스 구현 제거), fileId 타입 Long 유지
+        Optional<FileEntity> fileOptional = fileRepository.findById(fileId);
+
+        if (fileOptional.isPresent()) {
+            FileEntity fileEntity = fileOptional.get();
+
+            // 1. 실제 파일 스토리지에서 파일 삭제
+            Path filePath = Paths.get(uploadPath, String.valueOf(fileEntity.getEvent().getId()), fileEntity.getFileName());
+            try {
+                Files.deleteIfExists(filePath);
+                System.out.println("파일 삭제 성공: " + filePath.toString());
+            } catch (NoSuchFileException e) {
+                System.out.println("파일이 이미 존재하지 않습니다: " + filePath.toString()); // 파일이 이미 없는 경우 로그만 남기고 성공 처리
+            }
+            catch (IOException e) {
+                System.err.println("파일 삭제 실패: " + filePath.toString() + ", 오류: " + e.getMessage());
+                throw new RuntimeException("파일 삭제 실패: " + e.getMessage());
+            }
+
+
+            // 2. 데이터베이스에서 파일 정보 삭제
+            fileRepository.deleteById(fileId);
+
+        } else {
+            throw new IllegalArgumentException("파일을 찾을 수 없습니다.");
+        }
     }
 
 

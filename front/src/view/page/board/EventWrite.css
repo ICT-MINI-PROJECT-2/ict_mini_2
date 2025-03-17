@@ -70,3 +70,21 @@ h1 {
     opacity: 0.8;
 }
 
+
+.btn-delete-file {
+    background-color: #f44336; /* 삭제 버튼 배경색 */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-delete-file:hover {
+    background-color: #d32f2f; /* 호버 시 배경색 변경 */
+}
