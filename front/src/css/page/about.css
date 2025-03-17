@@ -1,4 +1,39 @@
-.about-container{
-    position: relative;
-    padding-top:150px;
-}
+.about-scroll-container {
+    overflow-y: auto;
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  .about-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease-in-out;
+    position: relative; /* 추가: text-overlay의 기준점 설정 */
+  }
+  
+  .about-image {
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    object-fit: contain;
+  }
+
+   
+  .text-overlay {
+    position: absolute; /* 추가: 이미지 위에 텍스트를 겹치도록 설정 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+  }
+  
+  .slider-text {
+    font-size: 1.5em;
+    color: white; /* 텍스트 색상을 흰색으로 변경 (선택 사항) */
+    padding: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 텍스트 그림자 추가 (선택 사항) */
+  }
