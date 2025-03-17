@@ -295,6 +295,9 @@
     border-bottom: 1px solid #555;
     text-align: center;
 }
+#home>div, #menu>div {
+    padding: 5px;
+}
 #map {
     margin-top: 5px;
     height: calc(100% - 30px);
@@ -305,6 +308,33 @@
     grid-template-columns: repeat(4, 1fr);
     text-align: center;
     gap: 5px;
+}
+#photo>img, #moreImage {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin: 10px auto;
+}
+#photo>div {
+    position: relative;
+    display: inline-block;
+    transition: opacity 0.3s ease;
+}
+#moreImage {
+    opacity: 0.3;
+}
+#photo>div:hover {
+    opacity: 0.6;
+    cursor: pointer;
+}
+#moreText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #444;
+    font-size: 1.5em;
+    font-weight: bold;
 }
 .pagination {
     width: 100%;
@@ -353,6 +383,7 @@
 }
 
 .review-body::-webkit-scrollbar {
+    height: 10px;
     border-radius: 0px 8px 0px 0px;
     background:transparent;
     box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
@@ -361,7 +392,7 @@
 }
 
 .review-body::-webkit-scrollbar-thumb {
-    background:rgba(0, 0, 0, 0.733);
+    background:rgba(121, 121, 121, 0.733);
     box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
     7px 7px 20px 0px rgba(0,0,0,.3),
     4px 4px 5px 0px rgba(0,0,0,.3);
@@ -495,6 +526,7 @@ position: absolute;
     font-family: "Gowun Dodum", sans-serif;
     padding-left:5px;
     padding-top:5px;
+    user-select: none;
 }
 .input-file-button{
     width:60px;

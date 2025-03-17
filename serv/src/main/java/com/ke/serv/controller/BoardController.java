@@ -144,4 +144,17 @@ public class BoardController {
         }
     }
 
+    @DeleteMapping("/file/delete/{fileId}") // ✅ 파일 삭제 엔드포인트 수정 (PathVariable 타입 Long 으로 변경)
+    @Transactional
+    public ResponseEntity<?> deleteFile(@PathVariable Long fileId) { // ✅ @PathVariable int -> Long 으로 변경
+        try {
+            boardService.deleteFile(fileId); // BoardService 의 deleteFile 메소드 호출 (수정 불필요)
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 삭제 중 오류 발생: " + e.getMessage());
+        }
+    }
+
+
+
 }
