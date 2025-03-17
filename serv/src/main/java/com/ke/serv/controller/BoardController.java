@@ -71,7 +71,7 @@ public class BoardController {
             @RequestParam(value = "files", required = false) List<MultipartFile> contentImageFiles,
             @RequestParam("user_id") String userId,
             @RequestParam("category") BoardCategory category,
-            @RequestParam("password") String password, // ✅ 비밀번호 파라미터 추가
+            @RequestParam(value = "password", required = false) String password, // ✅ 비밀번호 파라미터 추가
             HttpServletRequest request
     ) {
         try {

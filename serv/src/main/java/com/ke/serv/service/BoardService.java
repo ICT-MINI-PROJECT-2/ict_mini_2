@@ -78,11 +78,13 @@ public class BoardService {
             }
 
             List<FileEntity> files = fileRepository.findByEvent(event);
+            /*
             files.forEach(file -> {
                 String fileUrl = "/uploads/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
 
                 file.setFileUrl(fileUrl);
             });
+            */
             event.setFiles(files);
         });
 
@@ -149,8 +151,10 @@ public class BoardService {
 
         List<FileEntity> newFiles = new ArrayList<>();
 
+        EventEntity new_e = boardRepository.save(event);
+
         if (thumbnail != null && !thumbnail.isEmpty()) {
-            FileEntity thumbnailFile = saveUploadedFile(thumbnail, event, event.getId(), request);
+            FileEntity thumbnailFile = saveUploadedFile(thumbnail, new_e, new_e.getId(), request);
             newFiles.add(thumbnailFile);
         } else if (eventId != null) {
             FileEntity oldThumbnail = existingFiles.stream()
@@ -165,14 +169,11 @@ public class BoardService {
         if (contentImageFiles != null && !contentImageFiles.isEmpty()) {
             for (MultipartFile file : contentImageFiles) {
                 if (!file.isEmpty()) {
-                    FileEntity fileEntity = saveUploadedFile(file, event, event.getId(), request);
+                    FileEntity fileEntity = saveUploadedFile(file, new_e, new_e.getId(), request);
                     newFiles.add(fileEntity);
                 }
             }
         }
-
-        event.getFiles().addAll(newFiles);
-        boardRepository.save(event);
     }
 
 
@@ -184,13 +185,16 @@ public class BoardService {
         long fileSize = file.getSize();
 
 
-        Path filePath = Paths.get(uploadPath, String.valueOf(boardId), fileName);
+//        Path filePath = Paths.get(uploadPath, String.valueOf(boardId), fileName);
+        Path filePath = Paths.get(request.getServletContext().getRealPath("/uploads/board"), String.valueOf(boardId), fileName);
+        System.out.println(boardId+"!!!!!");
 
         Files.createDirectories(filePath.getParent());
 
         Files.write(filePath, file.getBytes());
 
         String fileUrl = "/uploads/board/" + boardId + "/" + fileName;
+        System.out.println(fileUrl+"!#!#");
 
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
