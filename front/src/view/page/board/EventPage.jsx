@@ -17,6 +17,7 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
     thumbnailUrl = `http://localhost:9977${event.files[0].fileUrl}`
   }
 
+  console.log(event.files);
   const formatDate = (dateString) => {
     if (!dateString) return "날짜 미정";
     const date = new Date(dateString);
