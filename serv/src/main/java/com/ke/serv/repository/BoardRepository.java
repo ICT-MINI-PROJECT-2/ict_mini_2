@@ -1,3 +1,4 @@
+// BoardRepository.java
 package com.ke.serv.repository;
 
 import com.ke.serv.entity.EventEntity;

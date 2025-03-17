@@ -1,3 +1,4 @@
+// BoardService.java
 package com.ke.serv.service;
 
 import com.ke.serv.entity.EventEntity;
@@ -33,7 +34,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
 import java.math.BigInteger;
-
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +72,6 @@ public class BoardService {
             boardPage = boardRepository.findByCategory(category, pageable);
         }
 
-        System.out.println(boardPage);
         boardPage.forEach(event -> {
             UserEntity user = event.getUser();
             if (user != null) {
@@ -80,13 +79,7 @@ public class BoardService {
             }
 
             List<FileEntity> files = fileRepository.findByEvent(event);
-            /*
-            files.forEach(file -> {
-                String fileUrl = "/uploads/" + file.getFileName().substring(0, file.getFileName().indexOf("_")) + "/" + file.getFileName();
-
-                file.setFileUrl(fileUrl);
-            });
-            */
+            setFileUrls(event); //수정된 setFileUrls 사용
             event.setFiles(files);
         });
 
@@ -182,23 +175,17 @@ public class BoardService {
 
     private FileEntity saveUploadedFile(MultipartFile file, EventEntity event, int boardId, HttpServletRequest request) throws IOException {
         String originalFilename = file.getOriginalFilename();
-        String userFolder = "Board/UserId";
         String fileName = boardId + "_" + System.currentTimeMillis() + "_" + originalFilename;
         String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
         long fileSize = file.getSize();
-
-
 //        Path filePath = Paths.get(uploadPath, String.valueOf(boardId), fileName);
         Path filePath = Paths.get(request.getServletContext().getRealPath("/uploads/board"), String.valueOf(boardId), fileName);
-        System.out.println(boardId+"!!!!!");
-
 
         Files.createDirectories(filePath.getParent());
 
         Files.write(filePath, file.getBytes());
 
         String fileUrl = "/uploads/board/" + boardId + "/" + fileName;
-        System.out.println(fileUrl+"!#!#");
 
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
@@ -400,6 +387,163 @@ public class BoardService {
             throw new IllegalArgumentException("파일을 찾을 수 없습니다.");
         }
     }
+    private void setFileUrls(EventEntity event) {
+        if (event == null || event.getFiles() == null) {
+            return;
+        }
+        event.getFiles().forEach(file -> {
+            // 파일 이름에서 boardId + "_" + 타임스탬프 + "_" 부분을 제거할 필요가 없습니다.
+            // DB에 저장된 파일 이름을 그대로 사용하되, boardId 대신 event.getId()를 사용합니다.
+            String fileUrl = "/uploads/board/" + event.getId() + "/" + file.getFileName();
 
+            file.setFileUrl(fileUrl);
+        });
+    }
 
+    @Transactional
+    public void updateEvent(Integer eventId, String title, String content, String startDate, String endDate,
+                            MultipartFile thumbnail, List<MultipartFile> contentImageFiles, String userId,
+                            BoardCategory category, String password, HttpServletRequest request) throws IOException {
+
+        UserEntity user = userRepository.findByUserid(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("Invalid user ID: " + userId);
+        }
+
+        // 1. 기존 EventEntity 로드
+        Optional<EventEntity> existingEventOptional = boardRepository.findById(eventId);
+        if (!existingEventOptional.isPresent()) {
+            throw new IllegalArgumentException("Event not found with ID: " + eventId);
+        }
+        EventEntity event = existingEventOptional.get();
+        event.setModifiedDate(LocalDateTime.now());
+
+        // 2. 기존 파일 가져오기
+        List<FileEntity> existingFiles = fileRepository.findByEvent(event);
+
+        // 3. **썸네일 처리 (새 썸네일이 있으면 기존 썸네일 삭제 후 교체)**
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            // 기존 썸네일 삭제
+            existingFiles.stream()
+                    .filter(file -> file.getContentType() != null && file.getContentType().startsWith("image/"))
+                    .forEach(this::deleteFileEntity);
+
+            // 새로운 썸네일 저장
+            FileEntity thumbnailFile = saveUploadedFile(thumbnail, event, eventId, request);
+            fileRepository.save(thumbnailFile);
+        }
+
+        // 4. **내용 이미지 처리 (새 이미지가 있으면 기존 이미지 삭제 후 교체)**
+        if (contentImageFiles != null && !contentImageFiles.isEmpty()) {
+            // 기존 내용 이미지 삭제
+            existingFiles.stream()
+                    .filter(file -> !file.getContentType().startsWith("image/"))  // 썸네일이 아닌 파일 삭제
+                    .forEach(this::deleteFileEntity);
+
+            // 새로운 내용 이미지 저장
+            for (MultipartFile file : contentImageFiles) {
+                if (!file.isEmpty()) {
+                    FileEntity fileEntity = saveUploadedFile(file, event, eventId, request);
+                    fileRepository.save(fileEntity);
+                }
+            }
+        }
+
+        // 5. 변경된 내용 저장
+        event.setSubject(title);
+        event.setContent(content);
+        event.setCategory(category);
+        event.setUser(user);
+
+        if (category == BoardCategory.INQUIRY && password != null && !password.isEmpty()) {
+            event.setPassword(hashPassword(password));
+        } else {
+            event.setPassword(null);
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        if (startDate != null && !startDate.isEmpty()) {
+            event.setStartDate(LocalDateTime.parse(startDate, formatter));
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            event.setEndDate(LocalDateTime.parse(endDate, formatter));
+        }
+
+        boardRepository.save(event);
+    }
+
+    // ✅ 글 수정 시 파일 저장 (saveUploadedFileUpdate) - 새로 추가
+    private FileEntity saveUploadedFileUpdate(MultipartFile file, EventEntity event, HttpServletRequest request) throws IOException {
+        // 파일 이름 생성 로직 (boardId 사용 안 함, eventId 사용)
+        String originalFilename = file.getOriginalFilename();
+        String fileName =  System.currentTimeMillis() + "_" + originalFilename; // boardId 사용 안함
+        String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        long fileSize = file.getSize();
+
+        // 상대 경로 사용
+        Path filePath = Paths.get("uploads/board", String.valueOf(event.getId()), fileName); // event.getId() 사용
+
+        // 디렉터리가 없으면 생성
+        Files.createDirectories(filePath.getParent());
+
+        // 파일 저장
+        Files.write(filePath, file.getBytes());
+
+        // 파일 URL 생성
+        String fileUrl = "/uploads/board/" + event.getId() + "/" + fileName;  // event.getId() 사용
+
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFileName(fileName);
+        fileEntity.setFileExt(fileExt);
+        fileEntity.setFileSize(fileSize);
+        fileEntity.setFileUrl(fileUrl);
+        fileEntity.setEvent(event);
+        fileEntity.setOriginalFileName(originalFilename);
+        fileEntity.setContentType(file.getContentType());
+        fileEntity.setExtName(fileExt);
+        fileEntity.setFilePath(filePath.toString()); // 상대 경로
+
+        return fileRepository.save(fileEntity);
+    }
+
+    // ✅ 파일 일괄 삭제 (deleteFiles) - 기존 코드 유지 (필요에 따라)
+    @Transactional
+    public void deleteFiles(List<Long> fileIds) {
+        for (Long fileId : fileIds) {
+            Optional<FileEntity> fileOptional = fileRepository.findById(fileId);
+            if (fileOptional.isPresent()) {
+                FileEntity fileEntity = fileOptional.get();
+                deleteLocalFile(fileEntity);
+                fileRepository.delete(fileEntity);
+            }
+        }
+    }
+
+    private void deleteFileEntity(FileEntity fileEntity) {
+        deleteLocalFile(fileEntity);  // 로컬 파일 삭제
+        fileRepository.delete(fileEntity);  // DB에서 삭제
+    }
+
+    // 답변 추가 메서드
+    @Transactional
+    public void addReply(int eventId, String reply, String userId) {
+        Optional<EventEntity> eventOptional = boardRepository.findById(eventId);
+        if (!eventOptional.isPresent()) {
+            throw new IllegalArgumentException("해당 ID의 문의글을 찾을 수 없습니다: " + eventId);
+        }
+        EventEntity event = eventOptional.get();
+
+        UserEntity user = userRepository.findByUserid(userId);
+
+        if(user == null){
+            throw new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다: " + userId);
+        }
+
+        // 답변 내용 업데이트 (기존 답변에 추가하는 방식)
+        String currentContent = event.getContent();
+        String newContent = currentContent + "\n\n===== 답변 =====\n" +  reply + "\n답변 작성자: " + user.getUsername() + "\n답변 작성 시간: " + LocalDateTime.now();
+        event.setContent(newContent);
+
+        boardRepository.save(event); // 변경 사항 저장
+    }
 }

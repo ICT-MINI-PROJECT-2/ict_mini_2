@@ -26,6 +26,9 @@ import java.security.MessageDigest; // ✅ MessageDigest import 추가
 import java.security.NoSuchAlgorithmException; // ✅ NoSuchAlgorithmException import 추가
 import java.nio.charset.StandardCharsets; // StandardCharsets import 추가
 import java.math.BigInteger; // BigInteger import 추가
+import org.json.JSONArray; // ✅ JSONArray import
+import org.json.JSONException; // ✅ JSONException import
+import java.util.ArrayList; //import
 
 
 @RestController
@@ -45,10 +48,8 @@ public class BoardController {
             @RequestParam(required = false) String searchTerm, // ✅ 검색어 파라미터 추가 (required = false)
             HttpServletRequest req
     ) {
-        System.out.println("BoardController - Category: " + category + ", SearchType: " + searchType + ", SearchTerm: " + searchTerm); // 로그 추가
-        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm); // ✅ Service 메소드에 검색 파라미터 전달
 
-        System.out.println("BoardController - BoardPage: " + boardPage);
+        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm); // ✅ Service 메소드에 검색 파라미터 전달
 
         Map<String, Object> response = new HashMap<>();
         response.put("list", boardPage.getContent());
@@ -67,7 +68,7 @@ public class BoardController {
             @RequestParam("event_content") String content,
             @RequestParam(value = "event_startdate", required = false) String startDate,
             @RequestParam(value = "event_enddate", required = false) String endDate,
-            @RequestParam(value = "mf", required = false) MultipartFile thumbnail,
+            @RequestParam(value = "mf", required = false) MultipartFile thumbnail,`
             @RequestParam(value = "files", required = false) List<MultipartFile> contentImageFiles,
             @RequestParam("user_id") String userId,
             @RequestParam("category") BoardCategory category,
@@ -76,16 +77,6 @@ public class BoardController {
     ) {
         try {
             // 디버깅 로그 추가 (기존 로그 유지)
-            System.out.println("Event ID: " + eventId);
-            System.out.println("Title: " + title);
-            System.out.println("Content: " + content);
-            System.out.println("Start Date: " + startDate);
-            System.out.println("End Date: " + endDate);
-            System.out.println("Thumbnail: " + (thumbnail != null ? thumbnail.getOriginalFilename() : "없음"));
-            System.out.println("Content Image Files: " + (contentImageFiles != null ? contentImageFiles.size() : 0));
-            System.out.println("User ID: " + userId);
-            System.out.println("Category: " + category);
-            System.out.println("Password: " + (password != null ? "입력됨" : "없음")); // ✅ 비밀번호 로그 추가
 
             boardService.saveEvent(eventId, title, content, startDate, endDate, thumbnail, contentImageFiles, userId, category, password, request); // ✅ 비밀번호 파라미터 전달
             return ResponseEntity.ok(eventId == null ? "Event created successfully" : "Event updated successfully");
@@ -95,25 +86,25 @@ public class BoardController {
     }
 
     @GetMapping("/view/{id}") // ✅ 이 엔드포인트 추가!
-        @Transactional(readOnly = false) // 🔥 변경
-        public ResponseEntity<?> viewEvent(@PathVariable("id") int id) {
-            Optional<EventEntity> eventOptional = boardService.getEvent(id); // 새로운 service 메소드 호출
-            if (eventOptional.isPresent()) {
-                return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
-            } else {
-                return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
-            }
+    @Transactional(readOnly = false) // 🔥 변경
+    public ResponseEntity<?> viewEvent(@PathVariable("id") int id) {
+        Optional<EventEntity> eventOptional = boardService.getEvent(id); // 새로운 service 메소드 호출
+        if (eventOptional.isPresent()) {
+            return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
+        } else {
+            return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
         }
+    }
 
-        @GetMapping("/view/edit/{id}") // ✅ 수정용 엔드포인트 추가!
-        @Transactional(readOnly = true) // ✅ 읽기 전용 트랜잭션 적용 (수정 폼 조회)
-        public ResponseEntity<?> editEvent(@PathVariable("id") int id) {
-            Optional<EventEntity> eventOptional = boardService.getEvent(id); // 기존 getEvent 메소드 재활용
-            if (eventOptional.isPresent()) {
-                return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
-            } else {
-                return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
-            }
+    @GetMapping("/view/edit/{id}") // ✅ 수정용 엔드포인트 추가!
+    @Transactional(readOnly = true) // ✅ 읽기 전용 트랜잭션 적용 (수정 폼 조회)
+    public ResponseEntity<?> editEvent(@PathVariable("id") int id) {
+        Optional<EventEntity> eventOptional = boardService.getEvent(id); // 기존 getEvent 메소드 재활용
+        if (eventOptional.isPresent()) {
+            return ResponseEntity.ok(eventOptional.get()); // event 가 있으면 200 OK 와 함께 event 정보 반환
+        } else {
+            return ResponseEntity.notFound().build(); // event 가 없으면 404 Not Found 반환
+        }
     }
 
     @DeleteMapping("/delete/{id}") // ✅ 삭제 엔드포인트 추가
@@ -155,5 +146,47 @@ public class BoardController {
         }
     }
 
+    @PostMapping("/eventUpdateOk")
+    @Transactional
+    public ResponseEntity<String> eventUpdateOk(
+            @RequestParam("event_id") Integer eventId,
+            @RequestParam("event_title") String title,
+            @RequestParam("event_content") String content,
+            @RequestParam(value = "event_startdate", required = false) String startDate,
+            @RequestParam(value = "event_enddate", required = false) String endDate,
+            @RequestParam(value = "mf", required = false) MultipartFile thumbnail,
+            @RequestParam(value = "files", required = false) List<MultipartFile> contentImageFiles,
+            @RequestParam("user_id") String userId,
+            @RequestParam("category") BoardCategory category,
+            @RequestParam(value = "password", required = false) String password,
+            HttpServletRequest request
+    ) {
+        try {
+            boardService.updateEvent(eventId, title, content, startDate, endDate, thumbnail, contentImageFiles, userId, category, password, request);
+            return ResponseEntity.ok("Event updated successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error updating event: " + e.getMessage());
+        }
+    }
 
+    // 답변 추가 API
+    @PostMapping("/addReply/{id}")
+    @Transactional
+    public ResponseEntity<?> addReply(@PathVariable("id") int id, @RequestBody Map<String, String> requestBody) {
+        String reply = requestBody.get("reply");
+        String userId = requestBody.get("userId");
+
+        if (reply == null || reply.trim().isEmpty() || userId == null || userId.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("답변 내용 또는 사용자 ID가 비어있습니다.");
+        }
+
+        try {
+            boardService.addReply(id, reply, userId);
+            return ResponseEntity.ok("답변이 등록되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 게시글 없음
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("답변 등록 중 오류 발생: " + e.getMessage());
+        }
+    }
 }

@@ -11,32 +11,51 @@ function InquiryView() {
     const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
     const [error, setError] = useState('');
     const [reply, setReply] = useState(''); // 답변 내용
+    const [isAuthor, setIsAuthor] = useState(false); // 작성자 여부
     const navigate = useNavigate();
 
     useEffect(() => {
         // 컴포넌트가 처음 로드될 때, 비밀번호 확인 상태를 false 로 초기화 (비밀번호 입력 폼 표시)
         setIsPasswordCorrect(false);
         setInquiry(null); // inquiry 데이터 초기화
+        setIsAuthor(false); // 작성자 여부 초기화
     }, [id]);
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
         setError(''); // 에러 메시지 초기화
-        // 비밀번호 확인 요청 (백엔드 API 호출)
-        axios.get(`http://localhost:9977/board/inquiryView/${id}?password=${password}`) // ✅ 백엔드 비밀번호 검증 API 호출
+    
+        axios.get(`http://localhost:9977/board/inquiryView/${id}?password=${password}`)
             .then(response => {
-                setInquiry(response.data); // 문의 내용 설정
-                setIsPasswordCorrect(true); // 비밀번호 일치 상태로 변경
-                setError(''); // 에러 메시지 초기화
+                const inquiryData = response.data;
+    
+                // 관리자 또는 작성자 확인 (핵심 로직)
+                if (sessionStorage.getItem('loginId') === 'admin1234' ||
+                    (inquiryData.user && sessionStorage.getItem("loginId") === inquiryData.user.userid)) {
+    
+                    setInquiry(inquiryData);
+                    setIsPasswordCorrect(true);
+                    setError('');
+    
+                    // 작성자 여부 설정 (삭제 버튼 표시를 위해)
+                    if (inquiryData.user && sessionStorage.getItem("loginId") === inquiryData.user.userid) {
+                        setIsAuthor(true);
+                    }
+                } else {
+                    // 관리자나 작성자가 아닌 경우
+                    setIsPasswordCorrect(false);
+                    setInquiry(null);
+                    setError('해당 사용자가 아닙니다.'); // 에러 메시지 설정
+                }
             })
             .catch(error => {
                 console.error('Error verifying password:', error);
-                setIsPasswordCorrect(false); // 비밀번호 불일치 상태 유지
-                setInquiry(null); // inquiry 데이터 초기화
-                if (error.response && error.response.status === 401) { // 401 Unauthorized 에러 (비밀번호 불일치)
+                setIsPasswordCorrect(false);
+                setInquiry(null);
+                if (error.response && error.response.status === 401) {
                     setError('비밀번호가 일치하지 않습니다.');
                 } else {
-                    setError('문의 내용을 불러오는 데 실패했습니다.'); // 다른 오류
+                    setError('문의 내용을 불러오는 데 실패했습니다.');
                 }
             });
     };
@@ -56,7 +75,7 @@ function InquiryView() {
             return;
         }
         // 답변 등록 로직 (백엔드와 연동) - 기존 코드 유지
-        axios.post(`http://localhost:9977/board/addReply/${id}`, { reply: reply,  userId: sessionStorage.getItem("loginId") })
+        axios.post(`http://localhost:9977/board/addReply/${id}`, { reply: reply, userId: sessionStorage.getItem("loginId") })
             .then(response => {
                 alert('답변이 등록되었습니다.');
                 window.location.reload();
@@ -70,7 +89,7 @@ function InquiryView() {
     // 날짜 포맷팅 함수 (기존 코드 유지)
     function formatDateTime(dateTimeString) {
         if (!dateTimeString) {
-          return '';
+            return '';
         }
         const date = new Date(dateTimeString);
         if (isNaN(date)) {
@@ -82,6 +101,23 @@ function InquiryView() {
 
         return `${year}-${month}-${day}`;
     }
+
+
+    // 삭제 핸들러
+    const handleDelete = () => {
+        if (window.confirm("정말로 삭제하시겠습니까?")) {
+            axios.delete(`http://localhost:9977/board/delete/${id}`) // 백엔드 API 호출
+                .then(response => {
+                    alert('문의글이 삭제되었습니다.');
+                    navigate('/boardPage?category=INQUIRY'); // 목록 페이지로 이동
+                })
+                .catch(error => {
+                    console.error('Error deleting inquiry:', error);
+                    alert('문의글 삭제에 실패했습니다.');
+                });
+        }
+    };
+
 
     if (!inquiry && isPasswordCorrect) { // 데이터 로딩 중 (비밀번호 확인 후)
         return <div>Loading Inquiry Content...</div>;
@@ -147,9 +183,12 @@ function InquiryView() {
                 </>
             )}
 
-             <div className="button-container">
-                    <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="btn-style">목록</button>
-                </div>
+            <div className="button-container">
+                <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="btn-style">목록</button>
+                {(isAuthor || sessionStorage.getItem('loginId') === 'admin1234') && (
+                    <button type="button" onClick={handleDelete} className="btn-style delete-button">삭제</button>
+                )}
+            </div>
         </div>
     );
 }

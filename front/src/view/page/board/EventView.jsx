@@ -11,6 +11,13 @@ function EventView() {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [fadeIn, setFadeIn] = useState(false);
+
+  
+  useEffect(() => {
+    setFadeIn(true); // 페이지가 로드될 때 애니메이션 실행
+    }, []);
+
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -68,7 +75,8 @@ function EventView() {
   }
 
   return (
-    <div className="event-view-container">
+    <div className={`container ${fadeIn ? "fade-in" : ""}`}>
+
       <div className="event-header">
         <h1>{event.subject}</h1>
         <div className="event-meta">

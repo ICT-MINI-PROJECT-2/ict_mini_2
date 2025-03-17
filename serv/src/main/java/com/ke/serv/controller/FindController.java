@@ -34,7 +34,6 @@ public class FindController {
                 if(tagList[i].contains("구")) loc_list.add(tagList[i].replace(" ", ""));
                 else cat_list.add(tagList[i].replace(" ", ""));
             }
-            System.out.println(service.totalRecordByTag(pvo,cat_list,loc_list)+"!!");
             pvo.setTotalRecord(service.totalRecordByTag(pvo,cat_list,loc_list));
             list = service.findListByTag(pvo,cat_list,loc_list);
         }
@@ -47,7 +46,6 @@ public class FindController {
         map.put("pvo", pvo);
         map.put("list", list);
         map.put("rating_size",rating_size);
-        System.out.println(pvo.getOnePageRecord());
         return map;
     }
 

@@ -25,7 +25,6 @@ public class TechController {
 
     @GetMapping("/jsoup")
     public HashMap infoSearch(String place_id) {
-        System.out.println(place_id);
 
         System.setProperty("webdriver.chrome.driver","chromedriver.exe");
 
