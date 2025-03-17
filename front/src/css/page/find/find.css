@@ -691,6 +691,7 @@ position: absolute;
     font-weight: 800;
     transition: all 0.5s;
     cursor:pointer;
+}
 
 #review-modal-title{
     text-align: center;
