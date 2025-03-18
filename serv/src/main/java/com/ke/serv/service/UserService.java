@@ -22,4 +22,5 @@ public class UserService {
     public UserEntity pwChk(UserEntity entity) {
         return repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());
     }
+
 }
