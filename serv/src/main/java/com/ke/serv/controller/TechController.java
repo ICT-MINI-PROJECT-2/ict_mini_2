@@ -23,6 +23,11 @@ import java.util.List;
 public class TechController {
     private final UserService service;
 
+    @GetMapping("/getUserInfo")
+    public UserEntity getUserInfo(UserEntity entity) {
+        return service.selectUser(entity);
+    }
+
     @GetMapping("/jsoup")
     public HashMap infoSearch(String place_id) {
 

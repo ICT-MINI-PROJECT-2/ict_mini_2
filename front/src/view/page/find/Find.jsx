@@ -8,11 +8,12 @@ import FindListItem from './FindListItem';
 import axios from 'axios';
 
 function Find(){
-    let [list, setList] = useState([]);
-    let [searchWord, setSearchWord] = useState('');
-    let [pageNumber, setPageNumber] = useState([]);
-    let [nowPage, setNowPage] = useState(1);
-    let [totalPage, setTotalPage] = useState(1);
+    const [list, setList] = useState([]);
+    const [searchWord, setSearchWord] = useState('');
+    const [pageNumber, setPageNumber] = useState([]);
+    const [nowPage, setNowPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+    const [sort, setSort] = useState('restaurant_no');
     
     const [rating_size,setRating_size] = useState([]);
     const firstSearch = useRef(false);
@@ -21,16 +22,31 @@ function Find(){
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
 
-    const page_mount = useRef(true);
+    useEffect(()=>{
+        if (sort !== 'restaurant_no') {
+            searchList();
+        }
+    }, [sort])
+    
+    const page_mount = useRef(false);
 
+    useEffect(()=>{
+        if(!page_mount.current) page_mount.current=true;
+        else {
+        console.log(nowPage);
+            searchList();
 
+        }
+    }, [nowPage])
 
-    const searchList = ()=> {
+    const searchList = (e)=> {
+        console.log(e)
         if(!firstSearch.current) firstSearch.current = true;
         let searchData = ({
             searchWord: searchWord,
             searchTag: tag,
-            nowPage: nowPage
+            nowPage: nowPage,
+            sort: sort
         })
 
         axios.post('http://localhost:9977/find/searchList', searchData)
@@ -48,39 +64,11 @@ function Find(){
                 }
             }
 
-            setNowPage(pvo.nowPage);
-            setTotalPage(pvo.totalPage);
-        })
-        .catch(function(err){
-            console.log(err);
-        });
-    }
-
-    const drawList = (msg)=> {
-        if(!firstSearch.current) firstSearch.current = true;
-        let searchData;
-        console.log(msg);
-        searchData = ({
-            searchWord: searchWord,
-            searchTag: tag,
-            nowPage: msg
-        })
-        axios.post('http://localhost:9977/find/drawList', searchData)
-        .then(async function(res){
-            setList(res.data.list);
-            setRating_size(res.data.rating_size);
-            setPageNumber([]);
-            let pvo = res.data.pvo;
-            
-            for (let p = pvo.startPageNum; p < pvo.startPageNum + pvo.onePageCount; p++) {
-                if (p <= pvo.totalPage) {
-                    setPageNumber((prev)=>{
-                        return [...prev, p];
-                    });
-                }
+            if (e === undefined) {
+                setNowPage(pvo.nowPage);
+            } else {
+                setNowPage(1);
             }
-
-            setNowPage(pvo.nowPage);
             setTotalPage(pvo.totalPage);
         })
         .catch(function(err){
@@ -208,27 +196,6 @@ function Find(){
         }
     }
 
-    const clickCategory = (e) => {
-        let items = [];
-        for(var i=0;i<10;i++) {
-            items.push(document.getElementById('category-'+i));
-            items[i].style.fontWeight='400';
-            items[i].style.color='black';
-            items[i].value = -1;
-        }
-        items[e.target.id.substring(9,10)].style.fontWeight='bold';
-        items[e.target.id.substring(9,10)].style.color='#b21848';
-        items[e.target.id.substring(9,10)].value = 1;
-
-        if(document.getElementsByName('detailcategory')) {
-            document.getElementsByName('detailcategory').forEach((item)=>{
-                item.style.fontWeight='400';
-                item.style.color='black';
-                item.value = -1;
-            });
-        }
-    }
-
     const clickDetailCategory = (e) => {
         let item = document.getElementById(e.target.id);
         if(item.value === -1) {
@@ -265,8 +232,9 @@ function Find(){
     }
 
     const handleSearch = (e) => {
-        if(e.key==='Enter') searchList();
+        if(e.key==='Enter') searchList(e);
     }
+    
 
     return(
         <Faded>
@@ -305,8 +273,15 @@ function Find(){
                     <div id="plus-btn"><img src={plusImg} width='40' onClick={() => openModal()}/></div>
                     <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onKeyUp={(e) => handleSearch(e)} onChange={doSearch} name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
-                    <div id="search-btn" onClick={() =>{searchList()}}><img src={searchImg} width='40'/></div>
+                    <div id="search-btn" onClick={(e) =>{searchList(e)}}><img src={searchImg} width='40'/></div>
                 </div>
+                {
+                    firstSearch.current && 
+                    <div className='sort-btn'>
+                        <div onClick={()=>{setSort("hit")}} style={sort == 'hit' ? {color: '#b21848', fontWeight: 'bold'} : {}}>조회수 순</div>
+                        <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
+                    </div>
+                }
                 <div className='find-list'>
                     {list.map((item,idx)=>
                             <FindListItem key={item.id} rating_size={rating_size[idx]} restaurant={item}/>
@@ -317,7 +292,7 @@ function Find(){
                 {
                     (function(){
                         if (nowPage > 1){
-                            return (<a className="page-link" onClick={()=>drawList(nowPage-1)}>
+                            return (<a className="page-link" onClick={()=>setNowPage(nowPage-1)}>
                                         <li className="page-item">◁</li>
                                     </a>)
                         }
@@ -327,15 +302,15 @@ function Find(){
                     pageNumber.map(function(pg){
                         var activeStyle = 'page-item';
                         if (nowPage == pg) var activeStyle = 'page-item active';
-                        return (<a className="page-link" onClick={()=>drawList(pg)}>
+                        return (<a className="page-link" onClick={()=>setNowPage(pg)}>
                                     <li className={activeStyle}>{pg}</li>
                                 </a>)
                     })
                 }
                 {
                     (function(){
-                        if (nowPage < totalPage){
-                            return (<a className="page-link" onClick={()=>drawList(nowPage + 1)}>
+                        if (nowPage < totalPage && nowPage > 0){
+                            return (<a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>
                                         <li className="page-item">▷</li>
                                     </a>)
                         }

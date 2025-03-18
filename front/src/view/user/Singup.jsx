@@ -4,187 +4,48 @@ import '../../js/user/signup.js';
 import { useEffect, useRef, useState } from 'react';
 import Post from './Post.jsx';
 import axios from 'axios';
+import CheckList from './CheckList.jsx';
+import SignUpConfirm from './SignUpConfirm.jsx';
 
+function Signup(){  
+    const [param, setParam] = useState({});
 
+    const [where, setWhere] = useState(0);
 
-function Signup(){
-    const mount = useRef(true);
-    
-    const [idOk, setIdOk] = useState(0);
-    const [pwOk, setPwOk] = useState(0);
-    const [pw_chkOk, setPwchkOk] = useState(0);
-    const [nameOk, setNameOk] = useState(0);
-    const [emailOk, setEmailOk] = useState(0);
-    const [emailOk2, setEmailOk2] = useState(0);
-    
-    const [zipcodeOk, setZipcodeOk] = useState(0);
-    const [telOk, setTelOk] = useState(0);
-    
-    const [addr, setAddr] = useState({addr:'',});
+    const [okChk, setOkChk] = useState({
+        idOk:false,
+        pwOk:false,
+        pw_chkOk:false,
+        nameOk:false,
+        emailOk:false,
+        email2Ok:false,
+        zipcodeOk:false,
+        telOk:false,
+        id_alert:'',
+        pw_alert:'',
+        pw_chk_alert:'',
+        name_alert:'',
+        email_alert:'',
+        zipcode_alert:'',
+        addr_alert:'',
+        tel_alert:''
+    });
 
-    const [popup, setPopup] = useState(false);
-
-    const [idst, setIdst] = useState(0);
-
-    const handleComplete = (data) => {
-        setPopup(!popup);
-    }
-
-    useEffect(()=>{
-        if(idOk===1) {
-            let userid = document.getElementById("userid");
-            var alert_id = document.getElementById("alert-id");
-            axios.post("http://localhost:9977/user/idChk",{userid:userid.value})
-            .then(res => {
-                if(res.data===1) {
-                    setIdOk(0);
-                    alert_id.innerHTML = "이미 존재하는 아이디 입니다.";
-                    alert_id.style.opacity = 1;
-                }
-            })
-            .catch(err=>console.log(err))
-        }
-    },[idst]);
-
-    useEffect(()=> {
-        if(!mount.current){}
-        else {
-            mount.current=false;
-            let userid = document.getElementById("userid");
-            let userpw = document.getElementById("userpw");
-            let userpw_chk = document.getElementById("userpw_chk");
-            let username = document.getElementById("username");
-            let email1 = document.getElementById("email1");
-            let email2 = document.getElementById("email2");
-            
-            var alert_id = document.getElementById("alert-id");
-            var alert_pw = document.getElementById("alert-pw");
-            var alert_pwchk = document.getElementById("alert-pwchk");
-            var alert_name = document.getElementById("alert-name");
-            var alert_email = document.getElementById("alert-email");
-            if(userid)
-            userid.addEventListener("input",()=>{
-                setIdst(userid.value.length);
-                if(userid.value.length < 7) {
-                    alert_id.innerHTML = "7자 이상 입력해주세요.";
-                    alert_id.style.opacity = 1;
-                    setIdOk(0);
-                }
-                if(userid.value.length>15) {
-                        alert_id.innerHTML = "15자 이하 입력해주세요.";
-                    alert_id.style.opacity = 1;
-                    setIdOk(0);
-                    }
-                    else if(userid.value.length>6) {
-                        alert_id.style.opacity = 0;
-                        setIdOk(1);
-                    }
-            });
-            var regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,15}$/;
-            if(userpw)
-            userpw.addEventListener("input",()=>{
-                if(!regex.test(userpw.value)) {
-                    alert_pw.innerHTML = "8~15자의 영문,숫자,특수문자의 조합 입력";
-                    alert_pw.style.opacity = 1;
-                    setPwOk(0);
-                } else {
-                    alert_pw.style.opacity = 0;
-                    setPwOk(1);
-                }
-            });
-            if(userpw_chk !== null)
-                userpw_chk.addEventListener("input",()=>{
-                    if(userpw_chk.value !== userpw.value) {
-                        alert_pwchk.innerHTML = "비밀번호가 일치하지 않습니다.";
-                        alert_pwchk.style.opacity = 1;
-                        setPwchkOk(0);
-                    } else {
-                        alert_pwchk.style.opacity = 0;
-                        setPwchkOk(1);
-                    }
-                });
-            if(username)
-            username.addEventListener("input",()=>{
-                if(username.value.length < 3) {
-                    alert_name.innerHTML = "3자 이상 입력해주세요.";
-                    alert_name.style.opacity = 1;
-                    setNameOk(0);
-                } else if(username.value.length>15){
-                    alert_name.innerHTML = "15자 이하 입력해주세요.";
-                    alert_name.style.opacity = 1;
-                    setNameOk(0);
-                } else {
-                    alert_name.style.opacity = 0;
-                    setNameOk(1);
-                }
-            });
-            
-            var regex2 = /^[A-Za-z0-9-]+\.[A-za-z0-9-]+/;
-            if(email2)
-            email2.addEventListener("input",()=>{
-                if(!regex2.test(email2.value)) {
-                    alert_email.innerHTML = "올바르지 않은 도메인 주소입니다.";
-                    alert_email.style.opacity = 1;
-                    setEmailOk(0);
-                } else {
-                    alert_email.style.opacity = 0;
-                    setEmailOk(1);
-                }
-            });
-            if(email1)
-            email1.addEventListener("input",()=>{
-                if(email1.value.length<3) {
-                    alert_email.innerHTML = "올바르지 않은 이메일입니다.";
-                    alert_email.style.opacity = 1;
-                    setEmailOk2(0);
-                } else {
-                    alert_email.style.opacity = 0;
-                    setEmailOk2(1);
-                }
-            });
-        }
-    },[]);
-    function signUpChk(){
-        var zipcode = document.getElementById("zipcode");
-        var alert_zipcode = document.getElementById("alert-zipcode");
-        
-        var tel1 = document.getElementById("tel1");
-        var tel2 = document.getElementById("tel2");
-        var tel3 = document.getElementById("tel3");
-        var alert_tel = document.getElementById("alert-tel");
-        
-        
-        if(zipcode.value === "") {
-            alert_zipcode.innerHTML = "우편번호 찾기를 해주세요.";
-            alert_zipcode.style.opacity = 1;
-            setZipcodeOk(0);
-        } else {
-            alert_zipcode.style.opacity = 0;
-            setZipcodeOk(1);
-        }
-        var regex_tel = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
-        if(!regex_tel.test(tel1.value+'-'+tel2.value+'-'+tel3.value)) {
-            alert_tel.innerHTML = "올바른 전화번호를 입력해주세요.";
-            alert_tel.style.opacity = 1;
-            setTelOk(0);
-        } else {
-            alert_tel.style.opacity = 0;
-            setTelOk(1);
-        }
-        var result = pwOk+pw_chkOk+nameOk+emailOk+zipcodeOk+idOk+telOk+emailOk2;
-        if(result===8) {
-            let userid = document.getElementById("userid");
-            let userpw = document.getElementById("userpw");
-            let username = document.getElementById("username");
-            let email1 = document.getElementById("email1");
-            let email2 = document.getElementById("email2");
-            let zipcode = document.getElementById('zipcode');
-            let addr = document.getElementById("addr");
-            let addrdetail = document.getElementById('addrdetail');
-            let tel1 = document.getElementById("tel1");
-            let tel2 = document.getElementById("tel2");
-           let tel3 = document.getElementById("tel3");
-           axios.post('http://localhost:9977/user/signup',{
+    useEffect(() => {
+        //if(okChk.idOk && okChk.pwOk && okChk.pw_chkOk && okChk.emailOk && okChk.email2Ok && okChk.nameOk && okChk.zipcodeOk && okChk.zipcodeOk) { 
+            if(okChk.idOk) { 
+                let userid = document.getElementById("userid");
+                let userpw = document.getElementById("userpw");
+                let username = document.getElementById("username");
+                let email1 = document.getElementById("email1");
+                let email2 = document.getElementById("email2");
+                let zipcode = document.getElementById('zipcode');
+                let addr = document.getElementById("addr");
+                let addrdetail = document.getElementById('addrdetail');
+                let tel1 = document.getElementById("tel1");
+                let tel2 = document.getElementById("tel2");
+            let tel3 = document.getElementById("tel3");
+            const params = {
                 userid:userid.value,
                 userpw:userpw.value,
                 username:username.value,
@@ -195,14 +56,84 @@ function Signup(){
                 addrdetail:addrdetail.value,
                 tel1:tel1.value,
                 tel2:tel2.value,
-                tel3:tel3.value
-           })
-           .then(res => {
-                if(res.data === 'ok') {
-                    window.location.href='#/login';
-                }
-           })
-           .catch(err => console.log(err))
+                tel3:tel3.value,
+                foods:''
+            }
+            setParam(params);
+            setWhere(1);
+        }
+    }, [okChk]);
+    
+    const [addr, setAddr] = useState({addr:'',});
+
+    const [popup, setPopup] = useState(false);
+
+    const handleComplete = (data) => {
+        setPopup(!popup);
+    }
+
+    
+    function setFormData(event){
+        let name = event.target.name;
+        let value = event.target.value;
+        
+        setParam(prev=>{
+            return{...prev, [name]:value}
+        }); 
+        if(name === 'userid') {
+            if(value.length === 0) setOkChk({...okChk, idOk:false, id_alert:''});
+            else if(value.length < 7) 
+                setOkChk({...okChk, idOk:false, id_alert:'7자 이상 입력해주세요.'});
+            else if(value.length>15) setOkChk({...okChk, idOk:false, id_alert:'15자 이하 입력해주세요.'});
+            else {
+                axios.post("http://localhost:9977/user/idChk",{userid:value})
+                .then(res => {
+                    console.log(res.data);
+                    if(res.data===1) setOkChk({...okChk, idOk:false, id_alert:'이미 존재하는 아이디입니다.'});
+                    else setOkChk({...okChk, idOk:true, id_alert:''});
+                })
+                .catch(err=>console.log(err))
+            }
+        }
+        else if(name === 'userpw') {
+            let pw_regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,15}$/;
+            if(!pw_regex.test(value)) setOkChk({...okChk, pwOk:false, pw_alert:'8~15자의 영문,숫자,특수문자의 조합 입력'});
+            else setOkChk({...okChk, pwOk:true, pw_alert:''});
+        }
+        else if(name === 'userpw_chk') {
+                if(value !== param.userpw) setOkChk({...okChk, pw_chkOk:false, pw_chk_alert:'비밀번호가 일치하지 않습니다'});
+                else setOkChk({...okChk, pw_chkOk:true, pw_chk_alert:''});
+        }
+        else if(name === 'username') {
+            if(value.length < 3) setOkChk({...okChk, nameOk:false, name_alert:'3자 이상 입력해주세요'});
+            else if(value.length>8) setOkChk({...okChk, nameOk:false, name_alert:'8자 이하 입력해주세요'});
+            else setOkChk({...okChk, nameOk:true, name_alert:''});
+        }
+        else if(name === 'email1') {
+            if(value.length<3) setOkChk({...okChk, emailOk:false, email_alert:'올바르지 않은 이메일입니다'}); 
+            else setOkChk({...okChk, emailOk:true, email_alert:''});
+        }
+        else if(name === 'email2') {
+            let email_regex = /^[A-Za-z0-9-]+\.[A-za-z0-9-]+/;
+            if(!email_regex.test(value)) setOkChk({...okChk, email2Ok:false, email_alert:'올바르지 않은 이메일 입니다'}); 
+            else setOkChk({...okChk, email2Ok:true, email_alert:''});
+        }
+     }
+    
+    function signUpChk(){
+        var zipcode = document.getElementById("zipcode");
+        
+        var tel1 = document.getElementById("tel1");
+        var tel2 = document.getElementById("tel2");
+        var tel3 = document.getElementById("tel3");
+        
+        var regex_tel = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+        if(!regex_tel.test(tel1.value+'-'+tel2.value+'-'+tel3.value)) setOkChk({...okChk, telOk:false, tel_alert:'올바르지 않은 전화번호 입니다.'}); 
+        else if(zipcode.value.length === 0) {
+            setOkChk({...okChk, zipcodeOk:false, telOk:true, tel_alert:'', zipcode_alert:'우편번호 찾기를 해주세요'}); 
+        }
+        else {
+            setOkChk({...okChk, zipcodeOk:true, telOk:true, zipcode_alert:'', tel_alert:''}); 
         }
     }
     const postButtonStyle = {
@@ -226,26 +157,43 @@ function Signup(){
     }
     return(
         <Faded>
+            { where === 0 &&
             <div className="signup-container">
-            <div id="signup-title">Sign Up</div>
-                <form name="signupForm">
-                    <div id="signup-box">
-                        <div id="signup-left"><div id="idpw">ID</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="userid" name="userid"/><div id="alert-id">Invalid ID</div></div>
-                        <div id="signup-left"><div id="idpw">PW</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw" name="userpw"/><div id="alert-pw">Invalid PW</div></div>
-                        <div id="signup-left"><div id="idpw">PWCHECK</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw_chk" name="userpw_chk"/><div id="alert-pwchk">Invalid PW</div></div>
-                        <div id="signup-left"><div id="idpw">NAME</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="username" name="username"/><div id="alert-name">Invalid NAME</div></div>
-                        <div id="signup-left"><div id="idpw">EMAIL</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="email1" name="email1"/> @ <input type="text" id="email2" name="email2"/><div id="alert-email">Invalid EMAIL</div></div>
-                        <div id="signup-left"><div id="idpw">TEL</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="tel1" name="tel1" maxLength='3'/> - <input type="text" id="tel2" name="tel2" maxLength='4'/> - <input type="text" id="tel3" name="tel3" maxLength='4'/><div id="alert-tel">Invalid TEL</div></div>
-                        <div id="signup-left"><div id="idpw">ZIPCODE</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value={addr.zonecode} id="zipcode" name="zipcode" readOnly/><button className="buttons" type="button" onClick={handleComplete}>Find</button><div id="alert-zipcode">Invalid ZIPCODE</div></div>
-                        <div id="signup-left"><div id="idpw">ADDRESS</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value={addr.address} id="addr" name="addr" readOnly/><div id="alert-addr">Invalid ADDRESS</div></div>
-                        <div id="signup-left"><div id="idpw">DETAIL</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="addrdetail" name="addrdetail"/><div id="alert-addrdetail">Invalid DETAIL</div></div>
-                        {popup && <div style={postBox}>
-                            <button title="X" style = {postButtonStyle} onClick={() => setPopup(false)} >X</button> 
-                            <Post addr={addr} setAddr={setAddr} setPopup={setPopup}/></div>}
-                    </div>
-                    <input className="signup-submit" onClick = {signUpChk} type="button" value="SignUp"/>
-                </form>
+                <div id = "step"><pre></pre>STEP 0{where+1}</div>           
+                <div id="signup-title">회원가입</div>
+                    <form name="signupForm">
+                        <div id="signup-box">
+                            <div id="signup-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="userid" value={param.userid} onChange={setFormData} name="userid"/><div id="alert-id">{!okChk.idOk && okChk.id_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw" value={param.userpw} onChange={setFormData} name="userpw"/><div id="alert-pw">{!okChk.pwOk && okChk.pw_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">비밀번호확인</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw_chk" value={param.userpw_chk} onChange={setFormData} name="userpw_chk"/><div id="alert-pwchk">{!okChk.pw_chkOk && okChk.pw_chk_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">이름</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="username" value={param.username} onChange={setFormData} name="username"/><div id="alert-name">{!okChk.nameOk && okChk.name_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">이메일</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="email1" value={param.email1} onChange={setFormData} name="email1"/> @ <input type="text" id="email2" value={param.email2} onChange={setFormData} name="email2"/><div id="alert-email">{!okChk.emailOk || !okChk.email2Ok ? okChk.email_alert : ''}</div></div>
+                            <div id="signup-left"><div id="idpw">전화번호</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="tel1" value={param.tel1} onChange={setFormData} name="tel1" maxLength='3'/> - <input type="text" id="tel2"value={param.tel2} onChange={setFormData} name="tel2" maxLength='4'/> - <input type="text" id="tel3" value={param.tel3} onChange={setFormData} name="tel3" maxLength='4'/><div id="alert-tel">{okChk.tel_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">우편번호</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value={addr.zonecode} onChange={setFormData} id="zipcode" name="zipcode" readOnly/><button className="buttons" type="button" onClick={handleComplete}>찾기</button><div id="alert-zipcode">{okChk.zipcode_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">주소</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" value={addr.address} onChange={setFormData} id="addr" name="addr" readOnly/><div id="alert-addr"></div></div>
+                            <div id="signup-left"><div id="idpw">상세주소</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="addrdetail" value={param.addrdetail} onChange={setFormData} name="addrdetail"/><div id="alert-addrdetail"></div></div>
+                            <div id="signup-left"><div id="idpw"></div></div>
+
+                            {popup && <div style={postBox}>
+                                <button title="X" style = {postButtonStyle} onClick={() => setPopup(false)} >X</button> 
+                                <Post addr={addr} setAddr={setAddr} setPopup={setPopup}/></div>}
+                        </div>
+                        <input className="signup-submit" onClick = {signUpChk} type="button" value="다음"/>
+                    </form>
             </div>
+            }
+            {
+                where === 1 &&
+                <div className="signup-container">           
+                    <CheckList param={param} setParam={setParam} where={where} setWhere={setWhere}/>
+                </div>
+            }
+            {
+                where === 2 &&
+                <div className="signup-container">
+                    <SignUpConfirm where={where} setWhere={setWhere}/>
+                </div>
+            }
         </Faded>
     );
 }
