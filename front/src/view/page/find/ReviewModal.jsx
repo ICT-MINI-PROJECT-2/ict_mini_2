@@ -7,7 +7,6 @@ function ReviewModal({reviewModal, setReviewModal}){
     useEffect(()=>{
         if(!mount.current) mount.current = false;
         else {
-            console.log("!!!");
             axios.get('http://localhost:9977/review/selectReview?id='+reviewModal.selected)
             .then(res =>{
                 setReview(res.data.review);

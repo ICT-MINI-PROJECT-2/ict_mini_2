@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState , useEffect, useRef} from 'react';
 import '../../css/page/mainpage.css';
 import Faded from '../../effect/Faded';
 import axios from 'axios';
@@ -8,11 +8,24 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 function MainPage(){
-    const [tt,setTt] = useState('');
+
+  const main_mount = useRef(false);
+
+    useEffect(()=>{
+      if(main_mount.current){}
+      else {
+        axios.get('http://localhost:9977/tech/today')
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => console.log(err))
+      }
+    },[]);
+
     const setAPI = () =>{
         axios.get('http://localhost:9977/api')
         .then(res => {
-            setTt(res.data);
+          console.log(res.data);
         })
         .catch(err => console.log(err));
     }
@@ -68,10 +81,17 @@ function MainPage(){
             </Slider>
                 <br/><br/><br/><br/><br/><br/>
                 <div className="main-content-title">▶ <p>KICK!</p> 오늘의 맛집</div>
-                <button onClick={setAPI} style={{marginTop:'300px'}}>절대 클릭 [X] api테스트용</button>
-                <button onClick={testCrolling} style={{marginTop:'100px'}}>크롤링 테스트용</button>
-                {tt}
+              <div className='main-today'>
+                  <div className='main-today-left'>
+                  <span>인기 리뷰</span>
+                  </div>
+                  <div className='main-today-right'>
+                  <span>인기 맛집</span>
+                  </div>
+              </div>
             </div>
+            <button onClick={setAPI} style={{display:'none',marginTop:'300px'}}>절대 클릭 [X] api테스트용</button>
+            <button onClick={testCrolling} style={{display:'none',marginTop:'100px'}}>크롤링 테스트용</button>
         </Faded>
     )
 }

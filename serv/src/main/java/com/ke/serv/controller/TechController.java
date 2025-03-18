@@ -23,6 +23,11 @@ import java.util.List;
 public class TechController {
     private final UserService service;
 
+    @GetMapping("/today")
+    public String today() {
+        return "hi";
+    }
+
     @GetMapping("/getUserInfo")
     public UserEntity getUserInfo(UserEntity entity) {
         return service.selectUser(entity);
