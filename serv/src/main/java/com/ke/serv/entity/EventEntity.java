@@ -44,7 +44,7 @@ public class EventEntity {
     private UserEntity user;
 
     // CascadeType.ALL: EventEntity가 저장, 수정, 삭제될 때 FileEntity도 함께 처리
-    // orphanRemoval = true: EventEntity에서 FileEntity가 제거되면 DB에서도 삭제
+// orphanRemoval = true: EventEntity에서 FileEntity가 제거되면 DB에서도 삭제
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // LAZY 로 복원!
     @JsonManagedReference // ✅ @JsonManagedReference 추가!
     private List<FileEntity> files = new ArrayList<>();
