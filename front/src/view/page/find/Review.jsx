@@ -236,8 +236,9 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                         }
                         <input type='file' style={{display:'none'}} id='review_files' name='review_files' className='review-input-image' onChange={changeFile} multiple/>
                         { isLogin && !isReviewWrite ? 
-                        <button className='review-input-button' onClick={doSubmit}>리뷰작성</button> :
-                        <button className='review-input-button' onClick={myReview}>리뷰보기</button>
+                        <span className='all-button' id='review-submit-button' onClick={doSubmit}>리뷰작성</span>
+                        /*<button className='review-input-button' onClick={doSubmit}>리뷰작성</button>*/ :
+                        <span className='all-button' id='review-submit-button' onClick={myReview}>리뷰보기</span>
                         }
                     </div>
                 </div>

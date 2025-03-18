@@ -32,7 +32,7 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
     };
 
     return (
-        <div className="event-card" style={{ marginBottom: "20px" }}>
+        <div className="EventPage_event-card" style={{ marginBottom: "20px" }}>
             <div style={{ position: "relative" }}>
                 <div
                     style={{
@@ -86,7 +86,7 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                         color: "white",
                         textAlign: "center",
                         width: "100%",
-                        textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+                        textShadow: "2px 2px 4px rgba(0,0,0,1)",
                     }}
                 >
                     <p style={{ fontSize: "14px", margin: "0" }}>
@@ -150,7 +150,7 @@ const EventList = memo(function EventList() {
     }, [currentPage, searchType, searchTerm, showOnlyWithImages]);
 
     // useQuery를 EventList 안에서 사용
-    const { data, fetchStatus } = useQuery({
+    const { data, fetchStatus, isLoading } = useQuery({ // isLoading 추가
         queryKey: getSearchKey(),
         queryFn: ({ queryKey }) => {
             const [_, category, page, searchType, searchTerm, withImages] = queryKey;
@@ -193,23 +193,23 @@ const EventList = memo(function EventList() {
     }, [data]);
 
     const events = sortedEvents;
-    const loading = fetchStatus === 'fetching';
+    // const loading = fetchStatus === 'fetching'; //isLoading으로 대체
 
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
             setCurrentPage(1);
         },
-        [searchTerm, searchType]
+        [] // searchTerm, searchType 제거
     );
     const renderEventList = useCallback(() => {
         const containerStyle = {
-            opacity: loading ? 0 : 1,
+            opacity: isLoading ? 0 : 1, //isLoading으로 변경
             transition: "opacity 0.3s ease",
             minHeight: '400px'
         };
 
-        if (loading) {
+        if (isLoading) { // isLoading 사용
             return <div style={{ textAlign: "center", padding: "50px 0" }}>로딩 중...</div>;
         }
 
@@ -228,7 +228,7 @@ const EventList = memo(function EventList() {
                 </div>
             </div>
         );
-    }, [loading, events]);
+    }, [events]); // isLoading 제거
 
 
     const renderPagination = useCallback(() => {
@@ -256,7 +256,7 @@ const EventList = memo(function EventList() {
     }, [totalPages, currentPage]);
 
     return (
-        <div className="event-list-container" style={{ minHeight: '600px' }}>
+        <div className="EventPage_event-list-container" style={{ minHeight: '600px' }}>
             <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ display: "flex" }}>
                     <select value={searchType} onChange={(e) => setSearchType(e.target.value)} style={{
@@ -291,16 +291,22 @@ const EventList = memo(function EventList() {
             </div>
             {renderEventList()}
             {renderPagination()}
-            <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className='EventPage_btn-write' style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ display: "flex" }}></div>
                 {sessionStorage.getItem("loginId") === 'admin1234' && (
-                    <Link to="/events/write" style={{
-                        padding: "10px 15px",
-                        background: "#007bff",
-                        color: "white",
-                        textDecoration: "none",
-                        borderRadius: "4px",
-                    }}>글쓰기</Link>
+                    <Link
+                        to="/events/write"
+                        style={{
+                            padding: "10px 15px",
+                            backgroundColor: "#b21848", // 원하는 배경색
+                            color: "white",        // 글자색
+                            textDecoration: "none", // 밑줄 제거
+                            borderRadius: "4px",     // 둥근 모서리
+                            display: "inline-block", // padding이 제대로 적용되도록
+                        }}
+                    >
+                        글쓰기
+                    </Link>
                 )}
             </div>
         </div>

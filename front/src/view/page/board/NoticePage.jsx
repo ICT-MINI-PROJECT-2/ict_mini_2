@@ -1,27 +1,25 @@
-// NoticePage.js
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import './NoticePage.css';
 
-
 function NoticePage() {
     const [boardData, setBoardData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [searchWord, setSearchWord] = useState('');  // 검색어 상태 추가
+    const [searchWord, setSearchWord] = useState('');
     const navigate = useNavigate();
-    const location = useLocation();  // 카테고리 정보 받기
+    const location = useLocation();
 
     useEffect(() => {
-        getBoardPage(0, 'NOTICE'); // 초기 로드 시 NOTICE 게시글 가져오기
+        getBoardPage(0, 'NOTICE');
     }, []);
 
     function getBoardPage(page, category) {
-      let url = `http://localhost:9977/board/boardPage?page=${page}&category=${category}`;
-      if(searchWord){
-        url += `&searchWord=${searchWord}`;
-      }
+        let url = `http://localhost:9977/board/boardPage?page=${page}&category=${category}`;
+        if(searchWord){
+            url += `&searchWord=${searchWord}`;
+        }
 
         axios.get(url)
             .then(function (response) {
@@ -34,70 +32,122 @@ function NoticePage() {
             });
     }
 
+    const handleDelete = async (id) => {
+        if (sessionStorage.getItem("loginId") !== 'admin1234') {
+            alert('관리자만 삭제할 수 있습니다.');
+            return;
+        }
+
+        if (!window.confirm('정말 이 글을 삭제하시겠습니까?')) {
+            return;
+        }
+
+        try {
+            await axios.delete(`http://localhost:9977/board/delete/${id}`);
+            alert('글이 삭제되었습니다.');
+            getBoardPage(currentPage, 'NOTICE');
+        } catch (error) {
+            console.error('삭제 실패:', error);
+            alert('글 삭제에 실패했습니다.');
+        }
+    };
+
     function searchWordChange(event) {
-      setSearchWord(event.target.value)
+        setSearchWord(event.target.value)
     }
 
-
     function renderPagination() {
-      const pageNumbers = [];
+        const pageNumbers = [];
 
         for (let i = 0; i < totalPages; i++) {
-          pageNumbers.push(
-            <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
-              <a className="page-link" style={{cursor:'pointer'}} onClick={() => getBoardPage(i, 'NOTICE')}>{i + 1}</a>
-            </li>
-          );
+            pageNumbers.push(
+                <li key={i} className={`notice-page-item ${currentPage === i ? 'active' : ''}`}>
+                    <a className="notice-page-link" onClick={() => getBoardPage(i, 'NOTICE')}>{i + 1}</a>
+                </li>
+            );
         }
 
         return (
-            <ul className="pagination">
-              <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
-                <a className="page-link" style={{cursor:'pointer'}} onClick={() => getBoardPage(currentPage - 1, 'NOTICE')}>Previous</a>
-              </li>
-              {pageNumbers}
-              <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
-                <a className="page-link" style={{cursor:'pointer'}} onClick={() => getBoardPage(currentPage + 1, 'NOTICE')}>Next</a>
-              </li>
+            <ul className="notice-pagination">
+                <li className={`notice-page-item ${currentPage === 0 ? 'disabled' : ''}`}>
+                    <a className="notice-page-link" onClick={() => getBoardPage(currentPage - 1, 'NOTICE')}>Previous</a>
+                </li>
+                {pageNumbers}
+                <li className={`notice-page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
+                    <a className="notice-page-link" onClick={() => getBoardPage(currentPage + 1, 'NOTICE')}>Next</a>
+                </li>
             </ul>
         );
     }
 
-
-
     return (
-        <div>
-            <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', fontWeight: 'bold' }}>
-                <div className="col-sm-1 p-2" style={{width: '15.5%'}}>번호</div>
-                <div className="col-sm-1 p-2" style={{width: '45.3%'}}>제목</div>
-                <div className="col-sm-1 p-2" style={{width: '14.6%'}}>작성자</div>
-                <div className="col-sm-1 p-2" style={{width: '14.4%'}}>조회수</div>
-                <div className="col-sm-1 p-2">등록일</div>
+        <div className="notice-page-container">
+            <div className="notice-page-header">
+                <div className="notice-col notice-col-num">번호</div>
+                <div className="notice-col notice-col-title">제목</div>
+                <div className="notice-col notice-col-author">작성자</div>
+                <div className="notice-col notice-col-views">조회수</div>
+                <div className="notice-col notice-col-date">등록일</div>
+                {sessionStorage.getItem("loginId") === 'admin1234' && (
+                    <div className="notice-col notice-col-manage">관리</div>
+                )}
             </div>
 
             {boardData.map((record) => (
-                <div className="row" style={{ borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} key={record.id}>
-                    <div className="col-sm-1 p-2"><Link to={`/notice/view/${record.id}`}>{record.id}</Link></div>
-                    <div className="col-sm-4 p-2">
-                    <Link to={`/notice/view/${record.id}`} style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="notice-page-row" key={record.id}>
+                    <div className="notice-col notice-col-num">
+                        <Link to={`/notice/view/${record.id}`}>{record.id}</Link>
+                    </div>
+                    <div className="notice-col notice-col-title">
+                        <Link to={`/notice/view/${record.id}`} className="notice-title-link">
                             {record.files && record.files.length > 0 && (
-                                <img src={`http://localhost:9977${record.files[0].fileUrl}`} alt="썸네일" style={{ width: '100px', height: '100px', marginRight: '10px' }} />
+                                <img 
+                                    src={`http://localhost:9977${record.files[0].fileUrl}`} 
+                                    alt="썸네일" 
+                                    className="notice-thumbnail"
+                                />
                             )}
-                            <span>{record.subject}</span>
+                            <span className="notice-subject">{record.subject}</span>
                         </Link>
                     </div>
-                    <div className="col-sm-2 p-2">{record.user ? record.user.userid : '알 수 없음'}</div>
-                    <div className="col-sm-2 p-2">{record.hit}</div>
-                    <div className="col-sm-3 p-2">{record.createDate ? record.createDate.substring(0, 10) : ''}</div>
+                    <div className="notice-col notice-col-author">{record.user ? record.user.userid : '알 수 없음'}</div>
+                    <div className="notice-col notice-col-views">{record.hit}</div>
+                    <div className="notice-col notice-col-date">{record.createDate ? record.createDate.substring(0, 10) : ''}</div>
+                    {sessionStorage.getItem("loginId") === 'admin1234' && (
+                        <div className="notice-col notice-col-manage">
+                            <button 
+                                onClick={() => handleDelete(record.id)}
+                                className="notice-delete-btn"
+                            >
+                                삭제
+                            </button>
+                        </div>
+                    )}
                 </div>
             ))}
-            <Link to={'/noticewrite'}></Link>
-            {sessionStorage.getItem("loginId") === 'admin1234' && (<p><Link to="/notice/write">글등록</Link></p>)}
+
+            {sessionStorage.getItem("loginId") === 'admin1234' && (
+                <div className="notice-write-link-container">
+                    <Link to="/notice/write" className="notice-write-link">글등록</Link>
+                </div>
+            )}
+
             {renderPagination()}
-             <div className="input-group mb-3">
-                <input type="text" className="form-control" placeholder="검색어를 입력하세요" onChange={searchWordChange} value={searchWord}/>
-                <button className="btn btn-outline-secondary" type="button" onClick={() => getBoardPage(0, 'NOTICE')}>검색</button>
-                
+
+            <div className="notice-search-container">
+                <input 
+                    type="text" 
+                    className="notice-search-input" 
+                    placeholder="검색어를 입력하세요" 
+                    onChange={searchWordChange} 
+                    value={searchWord}
+                />
+                <button 
+                    className="notice-search-button" 
+                    onClick={() => getBoardPage(0, 'NOTICE')}
+                >
+                    검색
+                </button>
             </div>
         </div>
     );

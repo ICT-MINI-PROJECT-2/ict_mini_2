@@ -3,7 +3,7 @@
     margin-bottom: 210px;
     padding-top:150px;
     min-width: 900px;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
 }
 #logo {
     width: 200px;
@@ -29,7 +29,7 @@
     padding: 15px;
     border-radius: 10px;
     border: 2px solid #b21848;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-size: 1.2em;
 }
 .find-box input[type=text] {
@@ -146,7 +146,7 @@
 #find-modal{
     padding:10px;
     color:#2c0813;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-weight: 400;
     font-style: normal;
 	position:fixed;
@@ -250,7 +250,7 @@
 #hash-tag {
     position: absolute;
     top:523px;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-size: 1.2em;
     color:rgb(61, 61, 240);
     width:25vw;
@@ -268,7 +268,7 @@
     max-width: 1200px;
     padding-top: 80px;
     margin: 0 auto;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
 }
 .info>h1 {
     text-align: center;
@@ -385,7 +385,7 @@
 }
 
 #review {
-    font-family: "Sunflower", serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-weight: 300;
     font-style: normal;
     background:transparent;
@@ -449,7 +449,7 @@ align-items: center;
 
 .message-box {
     color:black;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     width: 95%;
     height: 70%;
     border-radius: 10px;
@@ -464,15 +464,14 @@ position: absolute;
 }
 
 .message-who {
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     margin-left:5%;
-    background:#B21848;
-    color:white;
-    font-weight: 400;
+    font-weight: 600;
     font-style: normal;
     font-size:17px;
+    color:#2c0813;
     text-align:center;
-    border-radius:8px;
+    border-bottom: 2px solid #b21848;
     padding: 10px 0px 10px 0px;
     width:7vw;
     max-width:120px;
@@ -522,7 +521,7 @@ position: absolute;
 .star-rating span{ background-position:left bottom; line-height:0; vertical-align:top;}
 
 .input-star{
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     margin-bottom:10px;
 }
 .review-input-box {
@@ -552,7 +551,7 @@ position: absolute;
     float:left;
     resize: none;
     border-radius: 5px;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     padding-left:5px;
     padding-top:5px;
     user-select: none;
@@ -577,7 +576,7 @@ position: absolute;
     display: block;
     width:100px;
     height:60px;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-size:18px;
     background-color: #B21848;
     border:none;
@@ -586,8 +585,17 @@ position: absolute;
     transition: all 0.5s;
     cursor: pointer;
 }
+
+#review-submit-button{
+    margin-left:40px;
+    display: block;
+}
+#review-submit-button:hover{
+    color:white;
+    transition: all 0.3s;
+}
 #preview{
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     display: inline-block;
     position: absolute;
     top:138px;
@@ -619,7 +627,7 @@ position: absolute;
 }
 
 .no-review {
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     padding-top: 200px;
     text-align: center;
     height:200px;
@@ -629,7 +637,7 @@ position: absolute;
     position: absolute;
     right:1%;
     top:0%;
-    font-family: "Gowun Dodum", sans-serif; 
+    font-family: "IBM Plex Sans KR", sans-serif;
     text-align: right;
     font-weight: bold;
     color:rgb(255, 0, 0);
@@ -638,7 +646,7 @@ position: absolute;
 #review-modal {
     padding:10px;
     color:#2c0813;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-weight: 400;
     font-style: normal;
 	position:fixed;
@@ -653,7 +661,7 @@ position: absolute;
 #review-image-modal {
     padding:10px;
     color:#2c0813;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-weight: 400;
     font-style: normal;
 	position:fixed;
@@ -830,7 +838,7 @@ position: absolute;
     }
     .input-file-button{
         margin-bottom: 10px;
-        margin-left:20px;
+        margin-left:63px;
     }
     .review-input-button{
         margin-left:0px;
