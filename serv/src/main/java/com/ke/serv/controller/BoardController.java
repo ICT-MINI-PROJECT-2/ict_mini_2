@@ -90,8 +90,13 @@ public class BoardController {
             boardService.saveEvent(eventId, title, content, startDate, endDate, thumbnail, contentImageFiles, userId, category, password, request); // ✅ 비밀번호 파라미터 전달
             return ResponseEntity.ok(eventId == null ? "Event created successfully" : "Event updated successfully");
         } catch (IOException e) {
+            System.err.println("게시글 저장 중 오류: " + e.getMessage());
             return ResponseEntity.status(500).body(eventId == null ? "Error creating event: " : "Error updating event: " + e.getMessage());
-        }
+        } catch (Exception e) {
+        e.printStackTrace(); // 서버 로그에 스택 트레이스 출력
+        System.err.println("컨트롤러 처리 중 오류: " + e.getMessage());
+        return ResponseEntity.status(500).body("서버 오류가 발생했습니다: " + e.getMessage());
+    }
     }
 
     @GetMapping("/view/{id}") // ✅ 이 엔드포인트 추가!
@@ -154,7 +159,4 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 삭제 중 오류 발생: " + e.getMessage());
         }
     }
-
-
-
 }

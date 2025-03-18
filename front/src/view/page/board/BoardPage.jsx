@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import InquiryPage from "./../board/InquiryPage"
 import EventList from "./EventPage"
+import NoticePage from "./NoticePage"
 import "./../board/BoardPage.css"
 
 // 로딩 컴포넌트
@@ -161,7 +162,7 @@ function BoardPage() {
       case "INQUIRY":
         return <InquiryPage key={`inquiry-page-${Date.now()}`} />
       case "NOTICE":
-        return <div key={`notice-${Date.now()}`}>공지사항 목록이 표시됩니다.</div>
+        return <NoticePage key={`notice-${Date.now()}`}/>
       case "FAQ":
         return <div key={`faq-${Date.now()}`}>FAQ 목록이 표시됩니다.</div>
       default:
