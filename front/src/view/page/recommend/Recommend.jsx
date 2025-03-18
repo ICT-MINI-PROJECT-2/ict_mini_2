@@ -25,24 +25,6 @@ function Recommend() {
         console.log(menuArr);
     }, [menuArr]);
 
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var randomMenuCategoryNumber = getRamdomNumberRangeCountN(0, menuCategory.length - 1, 2);
-    var randomNumber = getRamdomNumberRangeCountN(0, 4, 2);
-    function getRamdomNumberRangeCountN(min, max, N) {
-        const uniqueNumbers = new Set();
-        while (uniqueNumbers.size < N) {
-            const randomNumber = Math.floor(Math.random() * (max - min + 1) + min);
-            // if (!exceptNumber.includes(randomNumber)) {
-            // }
-            uniqueNumbers.add(randomNumber);
-        }
-
-        return Array.from(uniqueNumbers);
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     function getRandomMenu() {
         // 중복되지 않는 카테고리 먼저 선택
         const uniqueMenuNumber = new Set();

@@ -78,7 +78,10 @@
   transform: translate(400%, 0%);
   background-size: cover;
   cursor: pointer;
-  
+}
+
+.kickEatListButton:hover {
+  transform: translate(400%, 0%);
 }
 
 .select-menu-container {
