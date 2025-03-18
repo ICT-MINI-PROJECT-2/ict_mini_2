@@ -1,10 +1,10 @@
-.notice-write-container {
+.notice-edit-container {
     max-width: 800px;
     margin: 30px auto;
     padding: 20px;
 }
 
-.notice-write-title {
+.notice-edit-title {
     font-size: 24px;
     margin-bottom: 30px;
     padding-bottom: 15px;
@@ -12,25 +12,25 @@
     color: #333;
 }
 
-.notice-write-form {
+.notice-edit-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.notice-write-group {
+.notice-edit-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.notice-write-label {
+.notice-edit-label {
     font-size: 16px;
     font-weight: 500;
     color: #555;
 }
 
-.notice-write-input {
+.notice-edit-input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -38,7 +38,7 @@
     font-size: 14px;
 }
 
-.notice-write-textarea {
+.notice-edit-textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -48,15 +48,15 @@
     font-size: 14px;
 }
 
-.notice-write-buttons {
+.notice-edit-buttons {
     display: flex;
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
 }
 
-.notice-write-submit,
-.notice-write-cancel {
+.notice-edit-submit,
+.notice-edit-cancel {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -65,26 +65,26 @@
     transition: background-color 0.2s;
 }
 
-.notice-write-submit {
+.notice-edit-submit {
     background-color: #007bff;
     color: white;
 }
 
-.notice-write-submit:hover {
+.notice-edit-submit:hover {
     background-color: #0056b3;
 }
 
-.notice-write-cancel {
+.notice-edit-cancel {
     background-color: #6c757d;
     color: white;
 }
 
-.notice-write-cancel:hover {
+.notice-edit-cancel:hover {
     background-color: #545b62;
 }
 
-.notice-write-input:focus,
-.notice-write-textarea:focus {
+.notice-edit-input:focus,
+.notice-edit-textarea:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
