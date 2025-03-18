@@ -109,14 +109,14 @@ function BoardWrite() {
     };
 
     return (
-        <div className={`container ${fadeIn ? "fade-in" : ""}`}>
+        <div className={`EventWrite_container ${fadeIn ? "EventWrite_fade-in" : ""}`}>
             <h1>글쓰기</h1>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <table className="custom-table">
+                <table className="EventWrite_custom-table">
                     <tbody>
                         <tr>
                             <th>제목</th>
-                            <td><input type="text" name="event_title" value={title} onChange={handleTitleChange} className="custom-input" /></td>
+                            <td><input type="text" name="event_title" value={title} onChange={handleTitleChange} className="EventWrite_custom-input" /></td>
                         </tr>
                         <tr>
                             <th>내용</th>
@@ -125,7 +125,7 @@ function BoardWrite() {
                                     name="event_content"
                                     value={content}
                                     onChange={handleContentChange}
-                                    className="custom-textarea"
+                                    className="EventWrite_custom-textarea"
                                     placeholder="내용을 입력하세요..."
                                     rows={10}
                                 />
@@ -133,25 +133,25 @@ function BoardWrite() {
                         </tr>
                         <tr>
                             <th>시작 날짜</th>
-                            <td><input type="datetime-local" name="event_startdate" value={startDate} onChange={handleStartDateChange} className="custom-input" /></td>
+                            <td><input type="datetime-local" name="event_startdate" value={startDate} onChange={handleStartDateChange} className="EventWrite_custom-input" /></td>
                         </tr>
                         <tr>
                             <th>종료 날짜</th>
-                            <td><input type="datetime-local" name="event_enddate" value={endDate} onChange={handleEndDateChange} className="custom-input" /></td>
+                            <td><input type="datetime-local" name="event_enddate" value={endDate} onChange={handleEndDateChange} className="EventWrite_custom-input" /></td>
                         </tr>
                         <tr>
                             <th>썸네일 업로드</th>
-                            <td><input type="file" name="mf" onChange={handleThumbnailChange} className="custom-input" /></td>
+                            <td><input type="file" name="mf" onChange={handleThumbnailChange} className="EventWrite_custom-input" /></td>
                         </tr>
                         <tr>
                             <th>파일 업로드</th>
-                            <td><input type="file" name="files" multiple onChange={handleFilesChange} className="custom-input" /></td>
+                            <td><input type="file" name="files" multiple onChange={handleFilesChange} className="EventWrite_custom-input" /></td>
                         </tr>
                     </tbody>
                 </table>
                 <div style={{ textAlign: 'right', marginTop: '10px' }}>
-                    <button type="button" onClick={() => navigate(`/boardpage?category=EVENT`)} className="btn-style">목록</button>
-                    <button type="submit" className="btn-style">저장</button>
+                    <button type="button" onClick={() => navigate(`/boardpage?category=EVENT`)} className="EventWrite_btn-style">목록</button>
+                    <button type="submit" className="EventWrite_btn-style">저장</button>
                 </div>
             </form>
         </div>
