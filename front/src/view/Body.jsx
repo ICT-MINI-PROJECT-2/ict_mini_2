@@ -19,7 +19,7 @@ import NoticeView from "./page/board/NoticeView";
 import InquiryList from "./page/board/InquiryPage"; // 중복된 import 정리 ✅
 import EventEdit from "./page/board/EventEdit"; // ✅ EventEdit 컴포넌트 import 추가!
 import NoticeEdit from "./page/board/NoticeEdit";
-
+import NoticePage from "./page/board/NoticePage";
 function Body() {
   return (
     <Routes>
@@ -42,6 +42,7 @@ function Body() {
       <Route path="/inquiry/view/:id" element={<InquiryView />} /> {/* 글 보기 ✅ */}
 
       {/* 공지사항 게시판 (Notice) */}
+      <Route path="/notice/page" element={<NoticePage/>}/>
       <Route path="/notice/write" element={<NoticeWrite/>}/>
       <Route path="/notice/view/:id" element={<NoticeView/>}/>
       <Route path="/notice/edit/:id" element={<NoticeEdit/>}/>
