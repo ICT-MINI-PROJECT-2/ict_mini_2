@@ -1,4 +1,4 @@
-package com.ke.serv.entity;
+package com.ke.serv.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagingEntity {
+public class PagingVO {
     private String searchWord;
     private String searchTag;
+
+    private String sort;
 
     private int nowPage = 1;
     private int onePageRecord = 12;

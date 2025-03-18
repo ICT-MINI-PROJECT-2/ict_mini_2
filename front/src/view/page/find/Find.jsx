@@ -8,39 +8,68 @@ import FindListItem from './FindListItem';
 import axios from 'axios';
 
 function Find(){
-    let [list, setList] = useState([]);
-    let [searchWord, setSearchWord] = useState('');
-
-    useEffect(()=>{
-        let findInput = document.getElementsByName("find-input")[0];
-        findInput.addEventListener('focus', ()=>{
-            findInput.addEventListener('keydown', function(event) {
-                if (event.key == 'Enter') {
-                    console.log(findInput.value);
-                    searchList(findInput.value);
-                }
-            });
-        });
-    }, []);
+    const [list, setList] = useState([]);
+    const [searchWord, setSearchWord] = useState('');
+    const [pageNumber, setPageNumber] = useState([]);
+    const [nowPage, setNowPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+    const [sort, setSort] = useState('restaurant_no');
     
+    const [rating_size,setRating_size] = useState([]);
+    const firstSearch = useRef(false);
+
     useEffect(() => {
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
 
+    useEffect(()=>{
+        if (sort !== 'restaurant_no') {
+            searchList();
+        }
+    }, [sort])
+    
+    const page_mount = useRef(false);
 
-    const searchList = (msg)=> {
-        let searchData;
-        if(msg === null) searchData = ({
+    useEffect(()=>{
+        if(!page_mount.current) page_mount.current=true;
+        else {
+        console.log(nowPage);
+            searchList();
+
+        }
+    }, [nowPage])
+
+    const searchList = (e)=> {
+        console.log(e)
+        if(!firstSearch.current) firstSearch.current = true;
+        let searchData = ({
             searchWord: searchWord,
-            searchTag: tag
+            searchTag: tag,
+            nowPage: nowPage,
+            sort: sort
         })
-        else searchData = ({
-            searchWord: msg,
-            searchTag: tag
-        })
+
         axios.post('http://localhost:9977/find/searchList', searchData)
         .then(async function(res){
-            setList(res.data);
+            setList(res.data.list);
+            setRating_size(res.data.rating_size);
+            setPageNumber([]);
+            let pvo = res.data.pvo;
+            
+            for (let p = pvo.startPageNum; p < pvo.startPageNum + pvo.onePageCount; p++) {
+                if (p <= pvo.totalPage) {
+                    setPageNumber((prev)=>{
+                        return [...prev, p];
+                    });
+                }
+            }
+
+            if (e === undefined) {
+                setNowPage(pvo.nowPage);
+            } else {
+                setNowPage(1);
+            }
+            setTotalPage(pvo.totalPage);
         })
         .catch(function(err){
             console.log(err);
@@ -49,10 +78,10 @@ function Find(){
     
     const mount = useRef(true);
 
-    const [area,setArea] = useState(['성동구','강남구','냠냠구','구구구','어어구','칠칠구']);
-    const [category,setCategory] = useState(['한식','양식','일식','중식']);
-    const [detailCategory,setDetailCategory] = useState([['찌개','족발'],['스테이크','파스타'],['초밥','덮밥'],['중화요리','사천요리']]);
-    const [dc, setDc] = useState([]);
+    const [area,setArea] = useState(["종로구", "중구", "용산구", "성동구", "광진구", "동대문구", "중랑구", "성북구", "강북구", 
+                                    "도봉구", "노원구", "은평구", "서대문구", "마포구", "양천구", "강서구", "구로구", 
+                                    "금천구", "영등포구", "동작구", "관악구", "서초구", "강남구", "송파구", "강동구"]);
+    const [detailCategory,setDetailCategory] = useState(['한식','패스트푸드','일식','중식','아시아음식','양식','주점','분식','뷔페','기타']);
     const [tag, setTag] = useState('');
 
     useEffect(()=>{
@@ -167,28 +196,6 @@ function Find(){
         }
     }
 
-    const clickCategory = (e) => {
-        let items = [];
-        for(var i=0;i<4;i++) {
-            items.push(document.getElementById('category-'+i));
-            items[i].style.fontWeight='400';
-            items[i].style.color='black';
-            items[i].value = -1;
-        }
-        items[e.target.id.substring(9,10)].style.fontWeight='bold';
-        items[e.target.id.substring(9,10)].style.color='#b21848';
-        items[e.target.id.substring(9,10)].value = 1;
-        setDc(detailCategory[e.target.id.substring(9,10)]);
-
-        if(document.getElementsByName('detailcategory')) {
-            document.getElementsByName('detailcategory').forEach((item)=>{
-                item.style.fontWeight='400';
-                item.style.color='black';
-                item.value = -1;
-            });
-        }
-    }
-
     const clickDetailCategory = (e) => {
         let item = document.getElementById(e.target.id);
         if(item.value === -1) {
@@ -224,6 +231,11 @@ function Find(){
         setSearchWord(e.target.value);
     }
 
+    const handleSearch = (e) => {
+        if(e.key==='Enter') searchList(e);
+    }
+    
+
     return(
         <Faded>
             <div id="find-modal">
@@ -232,33 +244,25 @@ function Find(){
                 <div id="modal-mini-title">원하시는 카테고리를 선택해주세요</div>
                 <div id="modal-list">
                     <ul className='modal-list-title'>
-                        <li>지역</li>
-                        <li>분류</li>
-                        <li>세부 분류</li>
+                        <li style={{marginBottom:'-12px'}}><h3 style={{lineHeight:'0px'}}>지역</h3>
+                            <ul id="list-area">
+                                {
+                                    area.map((item,idx)=> {
+                                        return(<li key={idx} value={-1} id={'area-'+idx} name='area' onClick={clickArea}>{item}</li>) }
+                                    )
+                                }
+                            </ul>
+                        </li>
+                        <li><h3 style={{lineHeight:'0px'}}>분류</h3>
+                            <ul id="list-category">
+                                {
+                                    detailCategory.map((item, idx)=> {
+                                        return(<li key={idx} value={-1} id={'detailcategory-'+idx} name='detailcategory' onClick={clickDetailCategory}>{item}</li>) }
+                                    )
+                                }
+                            </ul>
+                        </li>
                     </ul>
-                    <div className='modal-list-item'>
-                        <ul id="list-area">
-                            {
-                                area.map((item,idx)=> {
-                                    return(<li key={idx} value={-1} id={'area-'+idx} name='area' onClick={clickArea}>{item}</li>) }
-                                )
-                            }
-                        </ul>
-                        <ul id="list-category">
-                            {
-                                category.map((item, idx)=> {
-                                    return(<li key={idx} value={-1} id={'category-'+idx} onClick={clickCategory}>{item}</li>) }
-                                )
-                            }
-                        </ul>
-                        <ul id="list-category">
-                            {
-                                dc.map((item, idx)=> {
-                                    return(<li key={idx} value={-1} id={'detailcategory-'+idx} name='detailcategory' onClick={clickDetailCategory}>{item}</li>) }
-                                )
-                            }
-                        </ul>
-                    </div>
                 </div>
                 <div id="modal-submit" onClick={()=>submitModal()}>카테고리 등록</div>
             </div>
@@ -267,17 +271,52 @@ function Find(){
                 <div id="logo-text">KICK EAT</div>
                 <div className='find-box'>
                     <div id="plus-btn"><img src={plusImg} width='40' onClick={() => openModal()}/></div>
-                    <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onChange={doSearch} name="find-input"></input>
+                    <input type="text" placeholder="검색어를 입력하세요." value={searchWord} onKeyUp={(e) => handleSearch(e)} onChange={doSearch} name="find-input"></input>
                     <div id="hash-tag">{tag}</div>
-                    <div id="search-btn" onClick={() =>{searchList(null)}}><img src={searchImg} width='40'/></div>
+                    <div id="search-btn" onClick={(e) =>{searchList(e)}}><img src={searchImg} width='40'/></div>
                 </div>
+                {
+                    firstSearch.current && 
+                    <div className='sort-btn'>
+                        <div onClick={()=>{setSort("hit")}} style={sort == 'hit' ? {color: '#b21848', fontWeight: 'bold'} : {}}>조회수 순</div>
+                        <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
+                    </div>
+                }
                 <div className='find-list'>
-                    {list.map((item, idx)=>{
-                        return (
-                            <FindListItem key={idx} restaurant={item}/>
-                        )
-                    })}
+                    {list.map((item,idx)=>
+                            <FindListItem key={item.id} rating_size={rating_size[idx]} restaurant={item}/>
+                    )}
                 </div>
+
+                <ul className="pagination">
+                {
+                    (function(){
+                        if (nowPage > 1){
+                            return (<a className="page-link" onClick={()=>setNowPage(nowPage-1)}>
+                                        <li className="page-item">◁</li>
+                                    </a>)
+                        }
+                    })()
+                }
+                {
+                    pageNumber.map(function(pg){
+                        var activeStyle = 'page-item';
+                        if (nowPage == pg) var activeStyle = 'page-item active';
+                        return (<a className="page-link" onClick={()=>setNowPage(pg)}>
+                                    <li className={activeStyle}>{pg}</li>
+                                </a>)
+                    })
+                }
+                {
+                    (function(){
+                        if (nowPage < totalPage && nowPage > 0){
+                            return (<a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>
+                                        <li className="page-item">▷</li>
+                                    </a>)
+                        }
+                    })()
+                }
+            </ul>
             </div>
         </Faded>
     )

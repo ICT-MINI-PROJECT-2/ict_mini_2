@@ -13,12 +13,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "REVIEW")
 public class ReviewEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REVIEW_NO")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(nullable = false)
-    private String subject;
 
     @Column(nullable = false)
     private String comment;
