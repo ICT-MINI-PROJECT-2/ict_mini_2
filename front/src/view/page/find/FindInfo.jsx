@@ -48,7 +48,7 @@ function FindInfo() {
         let x = [];
         review_list.forEach((item) => {
             item.imgList.forEach((imgs) => {
-                x.push({filename:imgs.filename, id:imgs.review.id});
+                x.push({filename:imgs.filename, id:imgs.review.id, writedate:imgs.review.writedate});
             })
         });
         setReview_img_list(x);
@@ -170,7 +170,7 @@ function FindInfo() {
 
     return (
         <div className='info'>
-            {imageModal && <ImageModal setImageModal= {setImageModal} imageList={review_img_list}/>}
+            {imageModal && <ImageModal setImageModal= {setImageModal} imageList={review_img_list} restaurant={info}/>}
             <h1>{info.rstrName}</h1>
             <div className='rPhoto'>
                 <Slider {...settings}>
@@ -227,14 +227,14 @@ function FindInfo() {
                             {
                                 review_img_list.length !== 0 ? 
                                     review_img_list.slice(0,4).map((item, idx) => {
-                                        if (idx < 3) {
-                                            return <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} />;
-                                        } else {
+                                        if (idx === 3 || idx === review_img_list.length - 1) {
                                             return <div>
                                                         <img id="moreImage" key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} 
                                                             onClick={()=>setImageModal(true)}/>
                                                         <div id="moreText">더보기</div>
                                                     </div>
+                                        } else {
+                                            return <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} />;
                                         }
                                     }) 
                                     : <div style={{width: '170px', padding: '5px 0'}}>등록된 사진이 없습니다.</div>

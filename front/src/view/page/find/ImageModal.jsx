@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
-function ImageModal({imageList, setImageModal}) {
+function ImageModal({imageList, setImageModal, restaurant}) {
+    console.log(imageList);
     const mount = useRef(true);
         
         useEffect(()=>{
@@ -11,7 +12,7 @@ function ImageModal({imageList, setImageModal}) {
                 modal.style.opacity=1;
                 modal.style.zIndex=5;
                 modal.style.left=(window.innerWidth-modal.offsetWidth)/2 + 'px';
-                modal.style.top=window.innerHeight/4+'px';
+                modal.style.top=(window.innerHeight-modal.offsetHeight)/2 + 'px';
     
                 let clicked=0;
                 let f_x=0;
@@ -92,32 +93,41 @@ function ImageModal({imageList, setImageModal}) {
             return result;
         }
 
-        function goPage(i) {
-            if(i===1) setPage(page+1);
-            else if(page>0) setPage(page-1);
+        const zoomImage = (item)=>{
+            document.getElementById("zoom").setAttribute("src", `http://localhost:9977/uploads/review/${item.id}/${item.filename}`)
+            
         }
         const imgRender = () => {
             const res = [];
             imageList.forEach((item,idx)=>{
-                if (idx >= 9 * (page - 1) && idx < 9 * page) {
-                    res.push(<img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}/>)
-                }
+                res.push(
+                    <div id="image-box">
+                        <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}
+                                onClick={()=>{zoomImage(item)}}/>
+                        <div>{item.writedate}</div>
+                    </div>
+                    )
+                // if (idx >= 9 * (page - 1) && idx < 9 * page) {
+                //     res.push(<img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}/>);
+                //     res.push(<div>{item.writedate}</div>)
+                // }
             })
             
             return res;
         }
 
-        const [page, setPage] = useState(1);
-
         return (
             <div id='review-image-modal'>
+                <div>{restaurant.rstrName}</div>
                 <div id="review-image-modal-exit" onClick={()=>setImageModal(false)}>×</div>
 
                 <div className='gallery-box'>
                     {imgRender()}
                 </div>
 
-                <div className='gallery-page-button'>
+                <img id="zoom" onClick={()=>{document.getElementById("zoom").setAttribute("src", "")}}/>
+
+                {/* <div className='gallery-page-button'>
                     {
                         page > 1 &&
                         <div className='gallery-left-button' onClick={()=> goPage(-1)}>◀</div>
@@ -127,7 +137,7 @@ function ImageModal({imageList, setImageModal}) {
                         imageList.length > page * 9 &&
                         <div className='gallery-right-button' onClick={()=> goPage(1)}>▶</div>
                     }
-                </div>
+                </div> */}
             </div>
         );
 }
