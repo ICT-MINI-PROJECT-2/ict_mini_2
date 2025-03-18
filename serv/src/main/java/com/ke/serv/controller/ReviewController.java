@@ -109,7 +109,10 @@ public class ReviewController {
     @GetMapping("/selectReview")
     public Map selectReview(ReviewEntity entity){
         Map map = new HashMap();
-        map.put("review", service.selectReview(entity));
+        ReviewEntity selected_review = service.selectReview(entity);
+        selected_review.setHit(selected_review.getHit()+1);
+        map.put("review", selected_review);
+        service.insert(selected_review);
         map.put("img_list", service.selectReviewFileList(entity));
         return map;
     }

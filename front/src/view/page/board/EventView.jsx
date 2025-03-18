@@ -13,10 +13,10 @@ function EventView() {
   const [error, setError] = useState(null)
   const [fadeIn, setFadeIn] = useState(false);
 
-  
-  useEffect(() => {
-    setFadeIn(true); // 페이지가 로드될 때 애니메이션 실행
-    }, []);
+
+  // useEffect(() => {
+  //   setFadeIn(true); // 페이지가 로드될 때 애니메이션 실행  -> 이 부분은 주석처리 하거나 제거. 아래에서 처리
+  //   }, []); // 빈 배열은 마운트될때만 실행
 
 
   useEffect(() => {
@@ -36,6 +36,8 @@ function EventView() {
         setError(error.message)
       } finally {
         setLoading(false)
+        // 데이터 로딩이 완료된 후에 fadeIn 효과 적용
+        setFadeIn(true);
       }
     }
 
@@ -57,17 +59,17 @@ function EventView() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className="EventView_loading-container">
+        <div className="EventView_spinner"></div>
       </div>
     )
   }
 
   if (error || !event) {
     return (
-      <div className="error-container">
+      <div className="EventView_error-container">
         <h2>{error || "이벤트를 찾을 수 없습니다."}</h2>
-        <button onClick={() => navigate("/boardpage?category=EVENT")} className="back-button">
+        <button onClick={() => navigate("/boardpage?category=EVENT")} className="EventView_back-button">
           목록으로 돌아가기
         </button>
       </div>
@@ -75,44 +77,44 @@ function EventView() {
   }
 
   return (
-    <div className={`container ${fadeIn ? "fade-in" : ""}`}>
+    <div className={`EventView_container ${fadeIn ? "EventView_fade-in" : ""}`}>
 
-      <div className="event-header">
+      <div className="EventView_event-header">
         <h1>{event.subject}</h1>
-        <div className="event-meta">
-          <div className="event-author">
-            <div className="author-avatar">{event.user?.username?.charAt(0) || "?"}</div>
+        <div className="EventView_event-meta">
+          <div className="EventView_event-author">
+            <div className="EventView_author-avatar">{event.user?.username?.charAt(0) || "?"}</div>
             <span>{event.user?.username || "최고관리자"}</span>
           </div>
-          <div className="event-info">
+          <div className="EventView_event-info">
             <span>조회수: {event.hit}</span>
-            <span className="divider">|</span>
+            <span className="EventView_divider">|</span>
             <span>{formatDate(event.createDate)}</span>
           </div>
         </div>
       </div>
 
       {/* 이벤트 기간 표시 (기존과 동일) */}
-      <div className="event-period">
+      <div className="EventView_event-period">
         <h3>이벤트 기간</h3>
-        <div className="period-dates">
+        <div className="EventView_period-dates">
           <span>시작: {formatDate(event.startDate)}</span>
-          <span className="divider">~</span>
+          <span className="EventView_divider">~</span>
           <span>종료: {formatDate(event.endDate)}</span>
         </div>
       </div>
 
       {/* 썸네일 이미지 표시 (더 이상 필요 없으므로 제거) */}
 
-      <div className="event-content">
-        <div className="content-text">
+      <div className="EventView_event-content">
+        <div className="EventView_content-text">
           {/* 게시글 내용 표시 (기존과 동일) */}
           <p>{event.content}</p>
 
           {/* 첨부 파일 이미지들을 내용에 삽입 (썸네일 제외 - index 1부터 시작) */}
           {event.files && event.files.length > 1 && // files 배열 길이가 1보다 클 때만 렌더링 (썸네일 제외)
             event.files.slice(1).map((file, index) => ( // slice(1)로 첫 번째 요소(썸네일) 제외
-              <div key={file.id || index} className="content-image-container" style={{ textAlign: 'center', margin: '20px 0' }}> {/* 이미지 중앙 정렬 및 margin */}
+              <div key={file.id || index} className="EventView_content-image-container" style={{ textAlign: 'center', margin: '20px 0' }}> {/* 이미지 중앙 정렬 및 margin */}
                 <img
                   src={`http://localhost:9977${file.fileUrl}`}
                   alt={`첨부파일 ${index + 1}`}
@@ -130,20 +132,20 @@ function EventView() {
 
       {/* 첨부 파일 표시 섹션 제거 */}
 
-      <div className="event-actions">
+      <div className="EventView_event-actions">
       <button
           onClick={() => {
             queryClient.invalidateQueries(['eventList']); // ✅ 목록 페이지 데이터 새로 불러오기
             navigate("/boardpage?category=EVENT");
           }}
-          className="btn-list"
+          className="EventView_btn-list"
         >
           목록
         </button>
 
         {sessionStorage.getItem("loginId") === event.user?.userid && (
-          <div className="author-actions">
-            <button onClick={() => navigate(`/events/edit/${id}`)} className="btn-edit"> {/* 수정 버튼 클릭 시 EventEdit 페이지로 이동 */}
+          <div className="EventView_author-actions">
+            <button onClick={() => navigate(`/events/edit/${id}`)} className="EventView_btn-edit"> {/* 수정 버튼 클릭 시 EventEdit 페이지로 이동 */}
 
               수정
             </button>
@@ -168,7 +170,7 @@ function EventView() {
                   }
                 }
               }}
-              className="btn-delete"
+              className="EventView_btn-delete"
             >
               삭제
             </button>

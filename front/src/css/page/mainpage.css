@@ -1,14 +1,16 @@
 .main-container{
     position: relative;
     padding-top:150px;
+    max-width: 1500px;
+    margin: auto;
 }
 
 .main-content-title{
     padding-left: 20px;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size:2vw;
+    font-size:28px;
     color:#2c0813;
 }
 
@@ -21,7 +23,9 @@
 .slider-image-banner {
     position: relative;
     width:100%;
+    max-width: 1500px;
     height:30vw;
+    max-height:450px;
     margin:0 auto;
     margin-top:20px;
     margin-bottom:1vw;
@@ -77,4 +81,36 @@
 }
 #slider-img-5{
     background-color: rgb(110, 61, 91);
+}
+
+.main-today{
+    width:80%;
+    max-width:1024px;
+    display:flex;
+    margin:auto;
+    margin-top:40px;
+    margin-bottom:100px;
+}
+
+.main-today-left{
+    width:40%;
+    padding-bottom:40%;
+    margin:auto;
+    margin-right:5%;
+    position: relative;
+    border:1px solid gray;
+}
+
+.main-today-right{
+    width:40%;
+    padding-bottom:40%;
+    margin:auto;
+    margin-left:5%;
+    position: relative;
+    border:1px solid gray;
+}
+
+.main-today span {
+    font-family: "IBM Plex Sans KR", sans-serif;
+    font-size:22px;
 }
