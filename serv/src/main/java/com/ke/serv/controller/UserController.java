@@ -15,7 +15,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(@RequestBody UserEntity entity) {
-        System.out.println(service.signup(entity));
         return "ok";
     }
 
@@ -37,5 +36,11 @@ public class UserController {
             return ue;
         }
         return service.idChk(entity);
+    }
+
+    @PostMapping("/checkList")
+    public String checkList(@RequestBody UserEntity entity) {
+        System.out.println(service.signup(entity));
+       return "foodsupdate ok";
     }
 }
