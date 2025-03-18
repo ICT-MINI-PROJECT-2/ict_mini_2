@@ -23,7 +23,7 @@ function FindListItem({rating_size, restaurant}) {
                     <Link to={'/findInfo'} state={{id: restaurant.id}}>
                         <div id="rstr-name">{restaurant.name}</div>
                     </Link>
-                    <div>{restaurant.location.substring(6)}</div>
+                    <div id="rstr-location">{restaurant.location.substring(6)}</div>
                     <div><span className='star-rating'>
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
                             </span>&nbsp;{rating_size}명 참여</div>

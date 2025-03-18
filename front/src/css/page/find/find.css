@@ -1,7 +1,7 @@
 .find-container{
     position: relative;
     padding-top:150px;
-    min-width: 750px;
+    min-width: 900px;
     font-family: "Gowun Dodum", sans-serif;
 }
 #logo {
@@ -33,7 +33,6 @@
 }
 .find-box input[type=text] {
     max-width: 600px;
-    min-width: 360px;
     width: 50%;
 }
 #plus-btn, #search-btn {
@@ -50,13 +49,25 @@
 #plus-btn:hover, #search-btn:hover {
     background-color: #bd3c63;
 }
+.sort-btn {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+.sort-btn>div {
+    width: 70px;
+    margin: 30px;
+    padding: 5px;
+    text-align: center;
+    border-bottom: 2px solid #555;
+}
 
 /* ===== findListItem CSS ===== */
 .find-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 1300px;
-    margin: 50px auto;
+    margin: 0 auto 50px;
 }
 .find-list-item {
     width: 360px;
@@ -69,10 +80,18 @@
     grid-template-columns: 1fr 2fr;
     align-items: center;
 }
+#rstr-location {
+    height: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 #rstr-name {
-    display: inline;
+    display: inline-block;
+    height: 24px;
     position: relative;
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 #rstr-name:after {
     content: "";
