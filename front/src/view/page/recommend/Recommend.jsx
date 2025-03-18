@@ -11,32 +11,18 @@ function Recommend() {
     const [menuArr, setMenuArr] = useState(new Array(menuCategory.length).fill([]).map(() => [0, 1, 2, 3, 4]));
 
     useEffect(() => {
-        exceptMenu("koreanFood", 0);
-        exceptMenu("koreanFood", 1);
-        exceptMenu("koreanFood", 2);
-        exceptMenu("koreanFood", 3);
-        exceptMenu("koreanFood", 4);
-        exceptMenu("japaneseFood", 0);
-        exceptMenu("japaneseFood", 1);
-        exceptMenu("japaneseFood", 2);
-        exceptMenu("japaneseFood", 3);
-        exceptMenu("japaneseFood", 4);
-        exceptMenu("asianFood", 0);
-        exceptMenu("asianFood", 1);
-        exceptMenu("asianFood", 2);
-        exceptMenu("asianFood", 3);
-        exceptMenu("asianFood", 4);
-        exceptMenu("buffet", 0);
-        exceptMenu("buffet", 1);
-        exceptMenu("buffet", 2);
-        exceptMenu("buffet", 3);
-        exceptMenu("bar", 0);
-        exceptMenu("bar", 1);
-        exceptMenu("bar", 2);
-    }, []);
+        var imagePath = '/img/recommend/menuCategory/';
+        var imageExt = '.png';
+        
+        var result = getRandomMenu();
 
-    useEffect(() => {
+        setMenuImage((prev) => ({
+            // 새로운 메뉴 이미지로 변경
+            leftImage: imagePath + result[0] + result[1] + imageExt,
+            rightImage: imagePath + result[2] + result[3] + imageExt
+        }));
 
+        console.log(menuArr);
     }, [menuArr]);
 
 
@@ -56,8 +42,6 @@ function Recommend() {
         return Array.from(uniqueNumbers);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     function getRandomMenu() {
         // 중복되지 않는 카테고리 먼저 선택
@@ -104,8 +88,6 @@ function Recommend() {
         return [menuCategory[uniqueMenuNumberArr[0]], uniqueNumber[0], menuCategory[uniqueMenuNumberArr[1]], uniqueNumber[1]];
     }
 
-
-
     function exceptMenu(menuCategoryName, menuNumber) {
         var menuCategoryNumber = menuCategory.indexOf(menuCategoryName);
 
@@ -119,8 +101,8 @@ function Recommend() {
     }
 
     const [menuImage, setMenuImage] = useState({
-        leftImage: '../../../img/recommend/menuCategory/' + menuCategory[randomMenuCategoryNumber[0]] + randomNumber[0] + '.png',
-        rightImage: '../../../img/recommend/menuCategory/' + menuCategory[randomMenuCategoryNumber[1]] + randomNumber[1] + '.png'
+        leftImage: "",
+        rightImage: ""
     });
 
     const [logoState, setLogoState] = useState(false);
@@ -173,7 +155,6 @@ function Recommend() {
     }
 
     const selectMenu = (option) => {
-
         if (document.getElementById("left-menu-image").style.filter !== 'none') {
             clickMenuImage("left");
         }
@@ -188,6 +169,12 @@ function Recommend() {
                 if (option === 'left') {
                     document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 1s ease-in-out';
                     document.getElementById("select-menu" + i).querySelector("img").style.opacity = 0;
+
+                    var fileName = menuImage.leftImage.substring(28, menuImage.leftImage.length - 4);
+                    var menuName = fileName.substring(0, fileName.length - 1);
+                    var menuNum = fileName.substring(fileName.length - 1);
+            
+                    exceptMenu(menuName, menuNum);
 
                     setIsMenuSelected((prev) => {
                         const newState = [...prev];
@@ -213,6 +200,12 @@ function Recommend() {
                     document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 1s ease-in-out';
                     document.getElementById("select-menu" + i).querySelector("img").style.opacity = 0;
 
+                    var fileName = menuImage.rightImage.substring(28, menuImage.rightImage.length - 4);
+                    var menuName = fileName.substring(0, fileName.length - 1);
+                    var menuNum = fileName.substring(fileName.length - 1);
+            
+                    exceptMenu(menuName, menuNum);
+
                     setIsMenuSelected((prev) => {
                         const newState = [...prev];
                         newState[i - 1] = true;
@@ -237,12 +230,16 @@ function Recommend() {
             }
         }
 
+        var imagePath = '/img/recommend/menuCategory/';
+        var imageExt = '.png';
+
+        var result = getRandomMenu();
+        
         setMenuImage((prev) => ({
             // 새로운 메뉴 이미지로 변경
-            leftImage: 'https://kr.savorjapan.com/gg/content_image/tn0029_001.jpg',
-            rightImage: '/img/recommend/pasta.jpg'
+            leftImage: imagePath + result[0] + result[1] + imageExt,
+            rightImage: imagePath + result[2] + result[3] + imageExt
         }));
-
     }
 
     const clickSelectedMenu = (object) => {
@@ -352,7 +349,7 @@ function Recommend() {
 
     return (
         <Faded>
-            <div className="container">
+            <div className="top-recommend-container">
                 <div className="recommend-container">
                     <div className="menu-container">
                         <div className="left-menu-container" style={{ position: 'relative' }}>
