@@ -352,7 +352,7 @@ function Recommend() {
 
     return (
         <Faded>
-            <div className="container">
+            <div className="top-recommend-container">
                 <div className="recommend-container">
                     <div className="menu-container">
                         <div className="left-menu-container" style={{ position: 'relative' }}>
