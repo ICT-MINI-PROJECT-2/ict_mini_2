@@ -21,42 +21,11 @@ public class FindController {
     @PostMapping("/searchList")
     public Map searchList(@RequestBody PagingVO pvo) {
 
-        System.out.println("========================" + pvo);
         List<RestaurantEntity> list = new ArrayList<>();
-        pvo.setNowPage(1);
         if(pvo.getSearchTag().isEmpty()) {
-            pvo.setTotalRecord(service.totalRecord(pvo));
-            list = service.findListSelect(pvo);
-        }
-        else {
-            String[] tagList = pvo.getSearchTag().split("#");
-            List<String> loc_list = new ArrayList<>();
-            List<String> cat_list = new ArrayList<>();
-            for(int i=1;i< tagList.length;i++) {
-                if(tagList[i].contains("구")) loc_list.add(tagList[i].replace(" ", ""));
-                else cat_list.add(tagList[i].replace(" ", ""));
+            if (pvo.getSort().equals("restaurant_no")) {
+                pvo.setSort("id");
             }
-            System.out.println(service.totalRecordByTag(pvo,cat_list,loc_list)+"!!");
-            pvo.setTotalRecord(service.totalRecordByTag(pvo,cat_list,loc_list));
-            list = service.findListByTag(pvo,cat_list,loc_list);
-        }
-        List<Integer> rating_size = new ArrayList<>();
-
-        for(RestaurantEntity re: list) {
-            rating_size.add(review_service.selectReviewList(re).size());
-        }
-        Map map = new HashMap();
-        map.put("pvo", pvo);
-        map.put("list", list);
-        map.put("rating_size",rating_size);
-        System.out.println(pvo.getOnePageRecord());
-        return map;
-    }
-
-    @PostMapping("/drawList")
-    public Map drawList(@RequestBody PagingVO pvo) {
-        List<RestaurantEntity> list = new ArrayList<>();
-        if(pvo.getSearchTag().isEmpty()) {
             pvo.setTotalRecord(service.totalRecord(pvo));
             list = service.findListSelect(pvo);
         }
