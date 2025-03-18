@@ -1,5 +1,6 @@
 .find-container{
     position: relative;
+    margin-bottom: 210px;
     padding-top:150px;
     min-width: 900px;
     font-family: "IBM Plex Sans KR", sans-serif;
@@ -149,16 +150,12 @@
     font-weight: 400;
     font-style: normal;
 	position:fixed;
-    max-width:800px;
-    max-height:600px;
-    min-width:680px;
-    min-height:550px;
-	width:50%;
-    height:30vw;
+    width:680px;
+    height:500px;
 	background-color:transparent;
 	z-index:-5;
 	opacity:0;
-	backdrop-filter:blur(13px);
+	backdrop-filter:blur(30px);
 	border-radius:15px;
 	box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
 	 2px 2px 7px 0px rgba(85, 85, 85, 0.6),
@@ -182,14 +179,17 @@
 }
 
 #modal-title{
-    text-align: center;
+    display: inline-block;
     font-size:25px;
-    margin-bottom:10px;
+    font-weight: bold;
+    margin: 20px;
+    padding-left: 10%;
 }
 
 #modal-mini-title{
+    display: inline-block;
     color: #b21848;
-    padding-left: 60px;
+    padding-left: 40px;
 }
 
 #modal-list{
@@ -201,12 +201,12 @@
 
 #modal-submit {
     text-align: center;
-    width:30%;
+    width:20%;
     height:40px;
     line-height: 40px;
     background-color: #b21848;
-    margin: auto;
-    margin-top:9%;
+    margin: 20px auto;
+    padding: 3px 0;
     border-radius: 10px;
     color:white;
     transition: all 0.5s;
@@ -219,7 +219,8 @@
 
 .modal-list-title{
     display: grid;
-    grid-template-rows: 3fr;
+    grid-template-rows: 2fr;
+    gap: 20px;
 }
 .modal-list-title>li {
     width:100%;
@@ -229,15 +230,11 @@
 }
 
 #list-area, #list-category {
-    margin-top:10px;
+    margin: 20px auto;
     display:grid;
-    grid-template-columns: repeat(2,1fr);
-    width:100%;
-}
-#list-area {
     grid-template-columns: repeat(5,1fr);
+    width:100%;
     padding: 3px;
-    margin-bottom: 20px;
 }
 
 #list-area>li, #list-category>li{
@@ -370,6 +367,7 @@
     position: static;
     display: flex;
     justify-content: center;
+    font-size: 1.5em;
 }
 .pagination li {
     float: left;
@@ -712,12 +710,17 @@ position: absolute;
 }
 #zoom {
     position: absolute;
-    width: 100%;
-    height: 500px;
-    top: 10%;
-    left: 0;
+    width: 90%;
+    height: 520px;
+    top: 12%;
+    left: 10px;
+    padding: 20px;
+    background-color: #efefef;
     object-fit: cover;
-    border-radius: 5px;
+    border: 2px solid #bbb;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
 }
 /* .gallery-page-button {
     position: absolute;

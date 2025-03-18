@@ -1,6 +1,7 @@
 package com.ke.serv.controller;
 
 import com.ke.serv.entity.UserEntity;
+import com.ke.serv.entity.WishlistEntity;
 import com.ke.serv.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -85,6 +86,42 @@ public class TechController {
         map.put("img_list", img_list);
         map.put("info_list",info_list);
         return map;
+    }
+
+    @PostMapping("/getWishState")
+    public String getWishState(@RequestBody WishlistEntity entity) {
+        WishlistEntity we = service.selectWishRestaurant(entity.getRestaurant(), entity.getUser());
+
+        if (we == null) {
+            return "♡";
+        } else {
+            return we.getState();
+        }
+    }
+
+    @PostMapping("/wishlist")
+    public WishlistEntity wishlist(@RequestBody WishlistEntity entity) {
+        WishlistEntity we = service.selectWishRestaurant(entity.getRestaurant(), entity.getUser());
+
+        System.out.println(we);
+
+        if (entity.getState().equals("♡")) {
+            entity.setState("♥");
+        } else if (entity.getState().equals("♥")) {
+            entity.setState("♡");
+        }
+
+        WishlistEntity updatedWishlist;
+        if (we == null) {
+            updatedWishlist = service.wishUpdate(entity);
+        } else {
+            we.setState(entity.getState());
+            updatedWishlist = service.wishUpdate(we);
+        }
+
+        System.out.println(updatedWishlist);
+
+        return updatedWishlist;
     }
     /*
     @PostMapping("/getImg")
