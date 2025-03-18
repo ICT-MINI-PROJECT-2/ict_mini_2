@@ -140,6 +140,7 @@ function EventView() {
         >
           목록
         </button>
+
         {sessionStorage.getItem("loginId") === event.user?.userid && (
           <div className="author-actions">
             <button onClick={() => navigate(`/events/edit/${id}`)} className="btn-edit"> {/* 수정 버튼 클릭 시 EventEdit 페이지로 이동 */}

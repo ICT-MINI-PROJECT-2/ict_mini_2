@@ -3,10 +3,12 @@ package com.ke.serv.service;
 
 import com.ke.serv.entity.EventEntity;
 import com.ke.serv.entity.FileEntity;
+import com.ke.serv.entity.ReplyEntity;
 import com.ke.serv.entity.UserEntity;
 import com.ke.serv.entity.EventEntity.BoardCategory;
 import com.ke.serv.repository.BoardRepository;
 import com.ke.serv.repository.FileRepository;
+import com.ke.serv.repository.ReplyRepository;
 import com.ke.serv.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 
+import java.util.*;
+
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,9 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +46,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
+    private final ReplyRepository replyRepository;
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -241,6 +244,11 @@ public class BoardService {
             EventEntity event = eventOptional.get();
 
             log.info("EventEntity 찾음 - ID: {}, Subject: {}", event.getId(), event.getSubject());
+
+            // **** 아래 두 줄이 ReplyEntity 삭제를 위해 추가된 핵심 코드 ****
+            List<ReplyEntity> replies = replyRepository.findByEventOrderByCreateDateAsc(event);
+            log.info("삭제할 ReplyEntity 수: {}", replies.size());
+            replyRepository.deleteAll(replies); // ReplyEntity 일괄 삭제
 
             try {
                 List<FileEntity> files = fileRepository.findByEvent(event);
@@ -506,25 +514,24 @@ public class BoardService {
         return fileRepository.save(fileEntity);
     }
 
-    // ✅ 파일 일괄 삭제 (deleteFiles) - 기존 코드 유지 (필요에 따라)
-    @Transactional
-    public void deleteFiles(List<Long> fileIds) {
-        for (Long fileId : fileIds) {
-            Optional<FileEntity> fileOptional = fileRepository.findById(fileId);
-            if (fileOptional.isPresent()) {
-                FileEntity fileEntity = fileOptional.get();
-                deleteLocalFile(fileEntity);
-                fileRepository.delete(fileEntity);
-            }
-        }
-    }
+//    // ✅ 파일 일괄 삭제 (deleteFiles) - 기존 코드 유지 (필요에 따라)
+//    @Transactional
+//    public void deleteFiles(List<Long> fileIds) {
+//        for (Long fileId : fileIds) {
+//            Optional<FileEntity> fileOptional = fileRepository.findById(fileId);
+//            if (fileOptional.isPresent()) {
+//                FileEntity fileEntity = fileOptional.get();
+//                deleteLocalFile(fileEntity);
+//                fileRepository.delete(fileEntity);
+//            }
+//        }
+//    }
 
     private void deleteFileEntity(FileEntity fileEntity) {
         deleteLocalFile(fileEntity);  // 로컬 파일 삭제
         fileRepository.delete(fileEntity);  // DB에서 삭제
     }
 
-    // 답변 추가 메서드
     @Transactional
     public void addReply(int eventId, String reply, String userId) {
         Optional<EventEntity> eventOptional = boardRepository.findById(eventId);
@@ -539,11 +546,49 @@ public class BoardService {
             throw new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다: " + userId);
         }
 
-        // 답변 내용 업데이트 (기존 답변에 추가하는 방식)
-        String currentContent = event.getContent();
-        String newContent = currentContent + "\n\n===== 답변 =====\n" +  reply + "\n답변 작성자: " + user.getUsername() + "\n답변 작성 시간: " + LocalDateTime.now();
-        event.setContent(newContent);
-
-        boardRepository.save(event); // 변경 사항 저장
+        // 답변 객체 생성 및 저장 (별도의 엔티티 사용)
+        ReplyEntity replyEntity = new ReplyEntity();
+        replyEntity.setContent(reply);
+        replyEntity.setUser(user);
+        replyEntity.setEvent(event);
+        replyEntity.setCreateDate(LocalDateTime.now());
+        replyRepository.save(replyEntity); // ReplyRepository 필요!
     }
+
+    // 대화 목록 가져오기 (새 메서드)
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getConversation(int eventId) {
+        Optional<EventEntity> eventOptional = boardRepository.findById(eventId);
+        if (!eventOptional.isPresent()) {
+            throw new IllegalArgumentException("해당 ID의 문의글을 찾을 수 없습니다: " + eventId);
+        }
+        EventEntity event = eventOptional.get();
+
+
+        List<Map<String, Object>> conversation = new ArrayList<>();
+
+        // 문의글 정보 추가
+        Map<String, Object> inquiryInfo = new HashMap<>();
+        inquiryInfo.put("content", event.getContent());
+        inquiryInfo.put("userId", event.getUser().getUserid());
+        inquiryInfo.put("createDate", event.getCreateDate());
+        inquiryInfo.put("isAdmin", event.getUser().getUserid().equals("admin1234"));
+        conversation.add(inquiryInfo);
+
+
+        // 모든 답변 가져오기
+        List<ReplyEntity> replies = replyRepository.findByEventOrderByCreateDateAsc(event);  // ReplyRepository 사용
+        for (ReplyEntity reply : replies) {
+            Map<String, Object> replyInfo = new HashMap<>();
+            replyInfo.put("content", reply.getContent());
+            replyInfo.put("userId", reply.getUser().getUserid());
+            replyInfo.put("createDate", reply.getCreateDate());
+            replyInfo.put("isAdmin", reply.getUser().getUserid().equals("admin1234")); // 관리자 여부
+            conversation.add(replyInfo);
+        }
+
+        return conversation;
+    }
+
+
 }
