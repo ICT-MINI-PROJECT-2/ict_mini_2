@@ -1,14 +1,16 @@
 .main-container{
     position: relative;
     padding-top:150px;
+    max-width: 1500px;
+    margin: auto;
 }
 
 .main-content-title{
     padding-left: 20px;
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size:2vw;
+    font-size:28px;
     color:#2c0813;
 }
 
@@ -21,7 +23,9 @@
 .slider-image-banner {
     position: relative;
     width:100%;
+    max-width: 1500px;
     height:30vw;
+    max-height:450px;
     margin:0 auto;
     margin-top:20px;
     margin-bottom:1vw;
@@ -107,6 +111,6 @@
 }
 
 .main-today span {
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     font-size:22px;
 }
