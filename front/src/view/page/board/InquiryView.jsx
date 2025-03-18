@@ -1,43 +1,81 @@
-// InquiryView.js
+// InquiryView.js (React 프론트엔드)
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './InquiryView.css'; // CSS 파일 import
+import './InquiryView.css';
 
 function InquiryView() {
-    const { id } = useParams(); // URL 파라미터에서 글 번호 (id) 가져오기
+    const { id } = useParams();
     const [inquiry, setInquiry] = useState(null);
+    const [conversation, setConversation] = useState([]);
     const [password, setPassword] = useState('');
     const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
     const [error, setError] = useState('');
-    const [reply, setReply] = useState(''); // 답변 내용
+    const [reply, setReply] = useState('');
+    const [isAuthorOrAdmin, setIsAuthorOrAdmin] = useState(false); // 작성자 또는 관리자 여부
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 컴포넌트가 처음 로드될 때, 비밀번호 확인 상태를 false 로 초기화 (비밀번호 입력 폼 표시)
         setIsPasswordCorrect(false);
-        setInquiry(null); // inquiry 데이터 초기화
+        setInquiry(null);
+        setConversation([]);
+        setError('');
+        setIsAuthorOrAdmin(false); // 초기화
+
+        // 관리자는 비밀번호 없이 바로 접근
+        if (sessionStorage.getItem('loginId') === 'admin1234') {
+            setIsPasswordCorrect(true);
+            setIsAuthorOrAdmin(true); // 관리자는 작성자/관리자 true
+            fetchConversation();
+        }
     }, [id]);
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
-        setError(''); // 에러 메시지 초기화
-        // 비밀번호 확인 요청 (백엔드 API 호출)
-        axios.get(`http://localhost:9977/board/inquiryView/${id}?password=${password}`) // ✅ 백엔드 비밀번호 검증 API 호출
+        setError('');
+
+        axios.get(`http://localhost:9977/board/inquiryView/${id}?password=${password}`)
             .then(response => {
-                setInquiry(response.data); // 문의 내용 설정
-                setIsPasswordCorrect(true); // 비밀번호 일치 상태로 변경
-                setError(''); // 에러 메시지 초기화
+                const inquiryData = response.data;
+                setInquiry(inquiryData);
+
+                // 작성자 또는 관리자인지 확인
+                const isCurrentUserAuthor = inquiryData.user && sessionStorage.getItem("loginId") === inquiryData.user.userid;
+                if (sessionStorage.getItem('loginId') === 'admin1234' || isCurrentUserAuthor) {
+                    setIsPasswordCorrect(true);
+                    setIsAuthorOrAdmin(true); // 작성자 or admin이면 true
+                    fetchConversation();
+                } else {
+                    // 작성자나 관리자가 아닌 경우
+                    setIsPasswordCorrect(false);
+                    setIsAuthorOrAdmin(false);  //false
+                    setInquiry(null);
+                    setError('해당 사용자가 아닙니다.'); // 에러 메시지
+                }
+
             })
             .catch(error => {
                 console.error('Error verifying password:', error);
-                setIsPasswordCorrect(false); // 비밀번호 불일치 상태 유지
-                setInquiry(null); // inquiry 데이터 초기화
-                if (error.response && error.response.status === 401) { // 401 Unauthorized 에러 (비밀번호 불일치)
+                setIsPasswordCorrect(false);
+                setIsAuthorOrAdmin(false);
+                setInquiry(null);
+                if (error.response && error.response.status === 401) {
                     setError('비밀번호가 일치하지 않습니다.');
                 } else {
-                    setError('문의 내용을 불러오는 데 실패했습니다.'); // 다른 오류
+                    setError('문의 내용을 불러오는 데 실패했습니다.');
                 }
+            });
+    };
+
+    const fetchConversation = () => {
+        axios.get(`http://localhost:9977/board/conversation/${id}`)
+            .then(response => {
+                setConversation(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching conversation:", error);
+                setError("대화 내용을 불러오는 데 실패했습니다.");
             });
     };
 
@@ -49,17 +87,18 @@ function InquiryView() {
         setReply(e.target.value);
     };
 
-    const handleReplySubmit = (e) => {  //백엔드 수정 필요 (문의번호(id), 답변자(session), 답변내용(reply))
+    const handleReplySubmit = (e) => {
         e.preventDefault();
         if (!reply.trim()) {
             alert('답변 내용을 입력하세요.');
             return;
         }
-        // 답변 등록 로직 (백엔드와 연동) - 기존 코드 유지
-        axios.post(`http://localhost:9977/board/addReply/${id}`, { reply: reply,  userId: sessionStorage.getItem("loginId") })
+
+        axios.post(`http://localhost:9977/board/addReply/${id}`, { reply: reply, userId: sessionStorage.getItem("loginId") })
             .then(response => {
                 alert('답변이 등록되었습니다.');
-                window.location.reload();
+                setReply('');
+                fetchConversation();
             })
             .catch(error => {
                 console.error('Error adding reply:', error);
@@ -67,31 +106,42 @@ function InquiryView() {
             });
     };
 
-    // 날짜 포맷팅 함수 (기존 코드 유지)
+    const handleDelete = () => {
+        if (window.confirm("정말로 삭제하시겠습니까?")) {
+            axios.delete(`http://localhost:9977/board/delete/${id}`)
+                .then(response => {
+                    alert('문의글이 삭제되었습니다.');
+                    navigate('/boardPage?category=INQUIRY');
+                })
+                .catch(error => {
+                    console.error('Error deleting inquiry:', error);
+                    alert('문의글 삭제에 실패했습니다.');
+                });
+        }
+    };
+
     function formatDateTime(dateTimeString) {
         if (!dateTimeString) {
-          return '';
+            return '';
         }
         const date = new Date(dateTimeString);
         if (isNaN(date)) {
-            return ''; //유효하지 않은 날짜
+            return '';
         }
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
 
-        return `${year}-${month}-${day}`;
-    }
-
-    if (!inquiry && isPasswordCorrect) { // 데이터 로딩 중 (비밀번호 확인 후)
-        return <div>Loading Inquiry Content...</div>;
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
 
     return (
         <div className="inquiry-view-container">
             <h1>1:1 문의 내용</h1>
 
-            {!isPasswordCorrect && ( // 비밀번호 입력 폼 (비밀번호 확인 안 된 경우)
+            {!isPasswordCorrect && (
                 <form onSubmit={handlePasswordSubmit} className="password-form">
                     <label htmlFor="password">비밀번호:</label>
                     <input
@@ -100,38 +150,30 @@ function InquiryView() {
                         value={password}
                         onChange={handlePasswordChange}
                         className="password-input"
-                        placeholder="비밀번호를 입력하세요" // placeholder 추가
+                        placeholder="비밀번호를 입력하세요"
                     />
                     <button type="submit" className='btn-style'>확인</button>
                     {error && <p className="error-message">{error}</p>}
                 </form>
             )}
 
-            {isPasswordCorrect && inquiry && ( // 비밀번호가 맞고, 문의 내용이 로딩되었으면 내용 표시
+            {isPasswordCorrect && (
                 <>
-                    <table className='inquiry-view-table'>
-                        <tbody>
-                            <tr>
-                                <th>제목</th>
-                                <td>{inquiry.subject}</td>
-                            </tr>
-                            <tr>
-                                <th>작성자</th>
-                                <td>{inquiry.user ? inquiry.user.userid : '알 수 없음'}</td>
-                            </tr>
-                            <tr>
-                                <th>등록일</th>
-                                <td>{formatDateTime(inquiry.createDate)}</td>
-                            </tr>
-                            <tr>
-                                <th>내용</th>
-                                <td>{inquiry.content}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className="conversation-container">
+                        {conversation.map((message, index) => (
+                            <div key={index} className={`message ${message.isAdmin ? 'admin-message' : 'user-message'}`}>
+                                <div className="message-content">
+                                    {message.content}
+                                </div>
+                                <div className="message-info">
+                                    {formatDateTime(message.createDate)}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
-                    {/* 관리자 답변 폼 (기존 코드 유지) */}
-                    {sessionStorage.getItem('loginId') === 'admin1234' && (
+                    {/* 답변 작성 폼 (관리자 또는 작성자) */}
+                    {isAuthorOrAdmin && (
                         <form onSubmit={handleReplySubmit} className="reply-form">
                             <h2>답변 작성</h2>
                             <textarea
@@ -144,12 +186,16 @@ function InquiryView() {
                             <button type="submit" className='btn-style'>답변 등록</button>
                         </form>
                     )}
+
+                    <div className="button-container">
+                        <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="btn-style">목록</button>
+                        {/* 삭제 버튼 (관리자 또는 작성자) */}
+                        {isAuthorOrAdmin && (
+                            <button type="button" onClick={handleDelete} className="btn-style delete-button">삭제</button>
+                        )}
+                    </div>
                 </>
             )}
-
-             <div className="button-container">
-                    <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="btn-style">목록</button>
-                </div>
         </div>
     );
 }

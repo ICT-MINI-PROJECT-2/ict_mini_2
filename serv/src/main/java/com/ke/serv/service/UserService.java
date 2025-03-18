@@ -23,4 +23,7 @@ public class UserService {
         return repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());
     }
 
+    public UserEntity selectUser(UserEntity entity) {
+        return repo.findById(entity.getId());
+    }
 }

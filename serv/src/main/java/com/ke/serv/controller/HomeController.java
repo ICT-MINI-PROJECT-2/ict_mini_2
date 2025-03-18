@@ -102,6 +102,10 @@ public class HomeController {
                             re.setCategoryOne("기타");
                             re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
                         }
+                        else if(cat.contains("양식")) {
+                            re.setCategoryOne("양식");
+                            re.setCategoryTwo((String) ((JSONObject) infoArr.get(j)).get("SNTUPTAENM"));
+                        }
                         re.setTel((String) ((JSONObject) infoArr.get(j)).get("SITETEL"));
                         re.setPostno((String) ((JSONObject) infoArr.get(j)).get("SITEPOSTNO"));
                         re.setId(i*1000+j+1);

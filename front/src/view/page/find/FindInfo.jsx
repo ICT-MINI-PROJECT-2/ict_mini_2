@@ -22,6 +22,8 @@ function FindInfo() {
     const [info_list, setInfo_list] = useState([]);
     const [imageModal, setImageModal] = useState(false);
 
+    const [dist, setDist] = useState('');
+
     const [review_img_list,setReview_img_list] = useState([]);
 
     const [review_list, setReview_list] = useState([]);
@@ -48,11 +50,23 @@ function FindInfo() {
         let x = [];
         review_list.forEach((item) => {
             item.imgList.forEach((imgs) => {
-                x.push({filename:imgs.filename, id:imgs.review.id});
+                x.push({filename:imgs.filename, id:imgs.review.id, writedate:imgs.review.writedate});
             })
         });
         setReview_img_list(x);
     },[review_list]);
+    function getDistanceFromLatLonInKm(lat1,lng1,lat2,lng2) {
+        function deg2rad(deg) {
+            return deg * (Math.PI/180)
+        }
+        var R = 6371;
+        var dLat = deg2rad(lat2-lat1);
+        var dLon = deg2rad(lng2-lng1);
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d; 
+      }
     useEffect(()=> {
         if (info.rstrLoc != undefined) {
             var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -103,6 +117,29 @@ function FindInfo() {
     
                     var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
     
+                    if(sessionStorage.getItem("id") !== null && sessionStorage.getItem("id") != '') {
+                        axios.get('http://localhost:9977/tech/getUserInfo?id='+sessionStorage.getItem("id"))
+                        .then(res=>{
+                            console.log(res.data.addr);
+                            geocoder.addressSearch(res.data.addr , (ress, stat) => {
+                                if(ress) {
+                                    let x = ress[0].road_address.x;
+                                    let y = ress[0].road_address.y;
+                                    let ax = result[0].x;
+                                    let ay = result[0].y;
+                                    console.log(Math.sqrt((ax-x)*(ax-x) + (ay-y)*(ay-y)));
+                                    let dists = getDistanceFromLatLonInKm(x,y,ax,ay)*1000;
+                                    if(dists/1000 > 0) dists = getDistanceFromLatLonInKm(x,y,ax,ay).toFixed(2)+'km';
+                                    else dists= parseInt(dists)+'m';
+                                    console.log(dists);
+                                    setDist(dists);
+                                    return;
+                                }
+                            })
+                        })
+                        .catch(err => console.log(err));
+                    }
+
                     // 결과값으로 받은 위치를 마커로 표시합니다
                     var marker = new kakao.maps.Marker({
                         map: map,
@@ -170,7 +207,7 @@ function FindInfo() {
 
     return (
         <div className='info'>
-            {imageModal && <ImageModal setImageModal= {setImageModal} imageList={review_img_list}/>}
+            {imageModal && <ImageModal setImageModal= {setImageModal} imageList={review_img_list} restaurant={info}/>}
             <h1>{info.rstrName}</h1>
             <div className='rPhoto'>
                 <Slider {...settings}>
@@ -183,6 +220,7 @@ function FindInfo() {
                 }
                 </Slider>
             </div>
+            <div style={{textAlign:'center', fontSize:'30px'}}>🚶🏻‍♂️{dist}</div>
 
             <div className='rInfo'>
                 <ul className='info-tab'>
@@ -227,14 +265,14 @@ function FindInfo() {
                             {
                                 review_img_list.length !== 0 ? 
                                     review_img_list.slice(0,4).map((item, idx) => {
-                                        if (idx < 3) {
-                                            return <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} />;
-                                        } else {
+                                        if (idx === 3 || idx === review_img_list.length - 1) {
                                             return <div>
                                                         <img id="moreImage" key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} 
                                                             onClick={()=>setImageModal(true)}/>
                                                         <div id="moreText">더보기</div>
                                                     </div>
+                                        } else {
+                                            return <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} />;
                                         }
                                     }) 
                                     : <div style={{width: '170px', padding: '5px 0'}}>등록된 사진이 없습니다.</div>

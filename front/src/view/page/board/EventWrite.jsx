@@ -19,6 +19,10 @@ function BoardWrite() {
     const [category, setCategory] = useState('EVENT');
 
     useEffect(() => {
+        setFadeIn(true); // 페이지가 로드될 때 애니메이션 실행
+    }, []);
+
+    useEffect(() => {
         const categoryParam = new URLSearchParams(location.search).get('category');
         if (categoryParam) {
             setCategory(categoryParam);
@@ -31,6 +35,8 @@ function BoardWrite() {
     const handleEndDateChange = (e) => setEndDate(e.target.value);
     const handleThumbnailChange = (e) => setThumbnail(e.target.files[0]);
     const handleFilesChange = (e) => setFiles(Array.from(e.target.files)); // 여러 파일 처리
+    const [fadeIn, setFadeIn] = useState(false);
+
 
     // ✅ getSearchKey 함수 복제 (EventList 컴포넌트와 동일하게 구현)
     const getSearchKey = useCallback(() => {
@@ -103,7 +109,7 @@ function BoardWrite() {
     };
 
     return (
-        <div className="container">
+        <div className={`container ${fadeIn ? "fade-in" : ""}`}>
             <h1>글쓰기</h1>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <table className="custom-table">
