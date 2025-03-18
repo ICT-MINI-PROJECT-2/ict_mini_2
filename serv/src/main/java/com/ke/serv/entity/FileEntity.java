@@ -58,4 +58,7 @@ public class FileEntity {
 
     @Column(nullable = false, length = 255)
     private String extName; // ext_name 필드 추가
+
+    @Column // ✅ filePath 필드 추가
+    private String filePath; // 파일 시스템 상의 실제 파일 경로
 }

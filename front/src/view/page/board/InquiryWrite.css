@@ -3,12 +3,31 @@
 .inquiry-write-container {
     width: 80%;
     max-width: 800px;
-    margin: 50px auto;
+    /* margin: 50px auto;  원래 margin을 주석처리하거나 변경 */
+    margin: 0 auto; /* 상하 margin은 0, 좌우는 auto로 유지 */
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* padding-top: 10%;  padding-top 대신 position과 top 사용 */
+    position: relative; /* 상대 위치 지정 */
+    top: 20vh;        /* 뷰포트 높이의 10%만큼 아래로 이동 */
+
+
+    /* Fade-in 애니메이션 추가 */
+    opacity: 0; /* 초기에는 안 보이게 */
+    transform: translateY(20px); /* 초기 위치를 약간 아래로 */
+    animation: fadeIn 0.5s ease forwards; /* 애니메이션 적용 */
 }
+
+@keyframes fadeIn {
+    to {
+        opacity: 1; /* 최종적으로 보이게 */
+        transform: translateY(0); /* 최종 위치는 원래 위치로 */
+    }
+}
+
+
 
 .inquiry-write-container h1 {
     text-align: center;

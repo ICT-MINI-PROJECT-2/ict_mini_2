@@ -1,4 +1,3 @@
-// EventPage.js
 "use client"
 
 import React, { useState, memo, useCallback, useEffect } from "react"
@@ -6,12 +5,11 @@ import { Link } from "react-router-dom"
 import axios from "axios"
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 
-// QueryClient 인스턴스
+// QueryClient 인스턴스를 EventList 컴포넌트 밖에서 생성
 export const queryClient = new QueryClient();
 
 // 이벤트 카드 컴포넌트 (memoized)
 const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
-  // ... (MemoizedRenderEventCard 코드는 위와 동일) ...
     const hasThumbnail = event.files && event.files.length > 0
     let thumbnailUrl = "/placeholder-simple.svg";
 
@@ -135,21 +133,20 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
 });
 MemoizedRenderEventCard.displayName = "MemoizedRenderEventCard"
 
-
-
 const EventList = memo(function EventList() {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchType, setSearchType] = useState("제목내용");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [showOnlyWithImages, setShowOnlyWithImages] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("")
+    const [searchType, setSearchType] = useState("제목내용")
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+    const [showOnlyWithImages, setShowOnlyWithImages] = useState(false)
+
 
     const getSearchKey = useCallback(() => {
         const category = "EVENT";
-        return [`eventList`, category, currentPage, searchType, searchTerm, showOnlyWithImages];
-    }, [currentPage, searchType, searchTerm, showOnlyWithImages]);
+        return [`eventList`, category, currentPage, searchType, searchTerm, showOnlyWithImages]
+    }, [currentPage, searchType, searchTerm, showOnlyWithImages])
 
-    // useQuery를 EventList 안에서 사용
+
     const { data, fetchStatus } = useQuery({
         queryKey: getSearchKey(),
         queryFn: ({ queryKey }) => {
@@ -167,12 +164,22 @@ const EventList = memo(function EventList() {
                 })
                 .then((res) => res.data);
         },
+        // placeholderData: keepPreviousData, // 주석 처리
         staleTime: 60 * 1000,
         cacheTime: 5 * 60 * 1000,
         refetchOnMount: true,
         refetchOnWindowFocus: true,
+        // onSuccess 주석 처리
+        // onSuccess: (data) => {
+        //     if (data && data.totalPages) {
+        //         setTotalPages(data.totalPages);
+        //     } else {
+        //         setTotalPages(1);
+        //     }
+        // },
     });
 
+    // useEffect를 사용하여 data가 변경될 때마다 setTotalPages 호출 (임시 해결책)
     useEffect(() => {
         if (data && data.totalPages) {
             setTotalPages(data.totalPages);
@@ -180,6 +187,7 @@ const EventList = memo(function EventList() {
             setTotalPages(1);
         }
     }, [data]);
+
 
     const sortedEvents = React.useMemo(() => {
         if (data && data.list) {
@@ -192,47 +200,38 @@ const EventList = memo(function EventList() {
         return [];
     }, [data]);
 
-    const events = sortedEvents;
-    const loading = fetchStatus === 'fetching';
+    const events = sortedEvents
+    const loading = fetchStatus === "fetching"
 
     const handleSearch = useCallback(
         (e) => {
-            e.preventDefault();
-            setCurrentPage(1);
+            e.preventDefault()
+            console.log("handleSearch 실행됨", searchTerm, searchType);
+            setCurrentPage(1)
         },
-        [searchTerm, searchType]
-    );
+        [searchTerm, searchType],
+    )
+
     const renderEventList = useCallback(() => {
-        const containerStyle = {
-            opacity: loading ? 0 : 1,
-            transition: "opacity 0.3s ease",
-            minHeight: '400px'
-        };
-
         if (loading) {
-            return <div style={{ textAlign: "center", padding: "50px 0" }}>로딩 중...</div>;
+            return <div style={{ textAlign: "center", padding: "50px 0" }}>로딩 중...</div>
         }
-
         if (!events || events.length === 0) {
             return (
                 <div style={{ gridColumn: "span 3", textAlign: "center", padding: "50px 0" }}>이벤트가 없습니다.</div>
             )
         }
-
         return (
-            <div style={containerStyle}>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px", marginBottom: "30px" }}>
-                    {events.map((event) => (
-                        <MemoizedRenderEventCard key={event.id} event={event} />
-                    ))}
-                </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px", marginBottom: "30px" }}>
+                {events.map((event) => (
+                    <MemoizedRenderEventCard key={event.id} event={event} />
+                ))}
             </div>
-        );
-    }, [loading, events]);
-
+        )
+    }, [loading, events])
 
     const renderPagination = useCallback(() => {
-      if (totalPages <= 1) return null;
+        if (totalPages <= 1) return null
         return (
             <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", marginBottom: "20px" }}>
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -252,11 +251,11 @@ const EventList = memo(function EventList() {
                     </button>
                 ))}
             </div>
-        );
-    }, [totalPages, currentPage]);
+        )
+    }, [totalPages, currentPage])
 
     return (
-        <div className="event-list-container" style={{ minHeight: '600px' }}>
+        <div className="event-list-container">
             <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ display: "flex" }}>
                     <select value={searchType} onChange={(e) => setSearchType(e.target.value)} style={{
@@ -289,8 +288,11 @@ const EventList = memo(function EventList() {
                     </form>
                 </div>
             </div>
+
             {renderEventList()}
+
             {renderPagination()}
+
             <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ display: "flex" }}></div>
                 {sessionStorage.getItem("loginId") === 'admin1234' && (
@@ -304,17 +306,16 @@ const EventList = memo(function EventList() {
                 )}
             </div>
         </div>
-    );
-});
-EventList.displayName = 'EventList';
-
+    )
+})
+EventList.displayName = "EventList"
 
 const EventPage = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <EventList />
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            <EventList />
+        </QueryClientProvider>
+    );
 };
 
 export default EventPage;

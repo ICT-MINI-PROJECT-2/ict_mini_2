@@ -26,6 +26,9 @@ import java.security.MessageDigest; // ✅ MessageDigest import 추가
 import java.security.NoSuchAlgorithmException; // ✅ NoSuchAlgorithmException import 추가
 import java.nio.charset.StandardCharsets; // StandardCharsets import 추가
 import java.math.BigInteger; // BigInteger import 추가
+import org.json.JSONArray; // ✅ JSONArray import
+import org.json.JSONException; // ✅ JSONException import
+import java.util.ArrayList; //import
 
 
 @RestController
@@ -45,10 +48,8 @@ public class BoardController {
             @RequestParam(required = false) String searchTerm, // ✅ 검색어 파라미터 추가 (required = false)
             HttpServletRequest req
     ) {
-        System.out.println("BoardController - Category: " + category + ", SearchType: " + searchType + ", SearchTerm: " + searchTerm); // 로그 추가
-        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm); // ✅ Service 메소드에 검색 파라미터 전달
 
-        System.out.println("BoardController - BoardPage: " + boardPage);
+        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm); // ✅ Service 메소드에 검색 파라미터 전달
 
         Map<String, Object> response = new HashMap<>();
         response.put("list", boardPage.getContent());
@@ -76,16 +77,6 @@ public class BoardController {
     ) {
         try {
             // 디버깅 로그 추가 (기존 로그 유지)
-            System.out.println("Event ID: " + eventId);
-            System.out.println("Title: " + title);
-            System.out.println("Content: " + content);
-            System.out.println("Start Date: " + startDate);
-            System.out.println("End Date: " + endDate);
-            System.out.println("Thumbnail: " + (thumbnail != null ? thumbnail.getOriginalFilename() : "없음"));
-            System.out.println("Content Image Files: " + (contentImageFiles != null ? contentImageFiles.size() : 0));
-            System.out.println("User ID: " + userId);
-            System.out.println("Category: " + category);
-            System.out.println("Password: " + (password != null ? "입력됨" : "없음")); // ✅ 비밀번호 로그 추가
 
             boardService.saveEvent(eventId, title, content, startDate, endDate, thumbnail, contentImageFiles, userId, category, password, request); // ✅ 비밀번호 파라미터 전달
             return ResponseEntity.ok(eventId == null ? "Event created successfully" : "Event updated successfully");
@@ -129,20 +120,29 @@ public class BoardController {
         }
     }
 
-    // ✅ 문의 게시판 상세 보기 엔드포인트 수정 (비밀번호 검증 추가)
     @GetMapping("/inquiryView/{id}")
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public ResponseEntity<?> viewInquiry(
             @PathVariable("id") int id,
-            @RequestParam("password") String password // ✅ 비밀번호 파라미터 추가
+            @RequestParam(value = "password", required = false) String password // ✅ 비밀번호를 선택적(optional) 파라미터로 변경
     ) {
-        Optional<EventEntity> eventOptional = boardService.getEventWithPasswordCheck(id, password); // ✅ Service 메서드 변경 (비밀번호 검증 로직 추가)
-        if (eventOptional.isPresent()) {
-            return ResponseEntity.ok(eventOptional.get()); // 비밀번호 일치 시 EventEntity 반환
+        Optional<EventEntity> eventOptional;
+
+        if (password == null) {
+            eventOptional = boardService.getEvent(id); // ✅ 비밀번호 없이 조회 (관리자용)
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다."); // 401 Unauthorized 반환 (비밀번호 불일치)
+            eventOptional = boardService.getEventWithPasswordCheck(id, password); // ✅ 비밀번호 확인 후 조회
+        }
+
+        if (eventOptional.isPresent()) {
+            return ResponseEntity.ok(eventOptional.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다."); // ✅ 비밀번호 불일치 시 401 반환
         }
     }
+
+
+
 
     @DeleteMapping("/file/delete/{fileId}") // ✅ 파일 삭제 엔드포인트 수정 (PathVariable 타입 Long 으로 변경)
     @Transactional
@@ -155,6 +155,62 @@ public class BoardController {
         }
     }
 
+    @PostMapping("/eventUpdateOk")
+    @Transactional
+    public ResponseEntity<String> eventUpdateOk(
+            @RequestParam("event_id") Integer eventId,
+            @RequestParam("event_title") String title,
+            @RequestParam("event_content") String content,
+            @RequestParam(value = "event_startdate", required = false) String startDate,
+            @RequestParam(value = "event_enddate", required = false) String endDate,
+            @RequestParam(value = "mf", required = false) MultipartFile thumbnail,
+            @RequestParam(value = "files", required = false) List<MultipartFile> contentImageFiles,
+            @RequestParam("user_id") String userId,
+            @RequestParam("category") BoardCategory category,
+            @RequestParam(value = "password", required = false) String password,
+            HttpServletRequest request
+    ) {
+        try {
+            boardService.updateEvent(eventId, title, content, startDate, endDate, thumbnail, contentImageFiles, userId, category, password, request);
+            return ResponseEntity.ok("Event updated successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error updating event: " + e.getMessage());
+        }
+    }
+
+    // 기존 addReply 메서드 (수정)
+    @PostMapping("/addReply/{id}")
+    @Transactional
+    public ResponseEntity<?> addReply(@PathVariable("id") int id, @RequestBody Map<String, String> requestBody) {
+        String reply = requestBody.get("reply");
+        String userId = requestBody.get("userId");
+
+        if (reply == null || reply.trim().isEmpty() || userId == null || userId.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("답변 내용 또는 사용자 ID가 비어있습니다.");
+        }
+
+        try {
+            boardService.addReply(id, reply, userId);
+            return ResponseEntity.ok("답변이 등록되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 게시글 없음
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("답변 등록 중 오류 발생: " + e.getMessage());
+        }
+    }
 
 
+    // 대화 목록 가져오기 (새 메서드 추가)
+    @GetMapping("/conversation/{id}")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getConversation(@PathVariable("id") int id) {
+        try {
+            List<Map<String, Object>> conversation = boardService.getConversation(id);
+            return ResponseEntity.ok(conversation);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("대화 내용 조회 중 오류 발생: " + e.getMessage());
+        }
+    }
 }

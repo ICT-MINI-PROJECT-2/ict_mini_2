@@ -1,3 +1,20 @@
+/* 페이지 전체에 적용할 애니메이션 */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(20px); /* 약간 아래에서 올라오는 효과 */
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+/* 페이지 컨테이너에 적용 */
+.fade-in {
+  animation: fadeIn 0.7s ease-in-out;
+}
+
 .event-view-container {
     max-width: 800px;
     margin: 2rem auto;
@@ -8,6 +25,7 @@
   }
   
   .event-header {
+    padding-top: 10%;
     border-bottom: 1px solid #eee;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
