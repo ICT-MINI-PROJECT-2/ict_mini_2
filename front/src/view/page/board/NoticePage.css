@@ -1,0 +1,31 @@
+.col-sm-1 {
+    width: 10%;
+    flex: none;
+    white-space: nowrap;         /* 줄바꿈 방지 */
+    overflow: hidden;            /* 넘치는 내용 숨김 */
+    text-overflow: ellipsis;     /* 말줄임표 표시 */
+}
+
+.col-sm-4 {
+    width: 40%;
+    flex: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.col-sm-2 {
+    width: 9%;
+    flex: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.col-sm-3 {
+    width: 10%;
+    flex: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
