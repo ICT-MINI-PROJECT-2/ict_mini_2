@@ -10,7 +10,6 @@ function ReviewModal({reviewModal, setReviewModal}){
             console.log("!!!");
             axios.get('http://localhost:9977/review/selectReview?id='+reviewModal.selected)
             .then(res =>{
-                console.log(res.data);
                 setReview(res.data.review);
                 setImg_list(res.data.img_list);
             })
@@ -22,7 +21,7 @@ function ReviewModal({reviewModal, setReviewModal}){
             modal.style.opacity=1;
             modal.style.zIndex=5;
             modal.style.left=(window.innerWidth-modal.offsetWidth)/2 + 'px';
-            modal.style.top=window.innerHeight/4+'px';
+            modal.style.top=(window.innerHeight-modal.offsetHeight)/2 + 'px';
 
             let clicked=0;
             let f_x=0;
