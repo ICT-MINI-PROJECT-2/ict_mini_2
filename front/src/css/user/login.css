@@ -9,6 +9,7 @@
 }
 
 #login-title{
+	font-family: "Gowun Dodum", sans-serif;
 	text-align:center;
 	font-size:45px;
 	padding-top:40px;
@@ -18,7 +19,7 @@
 	margin-top:40px;
 	display:grid;
 	grid-template-columns: 2fr 5fr;
-	width:70%;
+	width:90%;
 	margin-left:20%;
 }
 
@@ -36,6 +37,7 @@
 }
 
 .login-submit {
+	font-family: "Gowun Dodum", sans-serif;
 	color:white;
     font-size:25px;
 	display:block;
@@ -46,27 +48,31 @@
 	height:50px;
 	cursor:pointer;
 	border-radius:10px;
-	background:rgba(106,61,23, 0.7);
-    box-shadow:inset 2px 2px 2px 0px rgba(255, 255, 255, 0.7),
-    1px 1px 3px 0px rgba(106,61,23,.5),
-    3px 3px 2px 0px rgba(106,61,23, 0.5);
-    color:white;
+	background:#b21848;
     
-    transition:all 0.6s;
+    transition:all 0.6s; 
+}
+.login-submit:hover {
+	background:#ec3a73;
 }
 
 #login-right > input, #login-right-two > input {
 	padding:0;
 	margin:0;
 	height:30px;
+	width: 60%;
 	background:transparent;
-	border:none;
-	border-radius:4px;
-    background:transparent;
-    box-shadow:inset 2px 2px 2px 0px rgba(106,61,23, 0.5),
-    1px 1px 3px 0px rgba(106,61,23, 0.2),
-    4px 4px 5px 0px rgba(106,61,23, 0.2);
+	background-color: rgb(260, 260, 260);
+	border: 0.5px solid #b21848;
+	border-right: 2px solid #b21848;
+	border-bottom: 3px solid  #b21848;
     padding-left:15px;
-    color:#6A3D17;
+    color:#b21848;
     transition:all 0.7s;
+	border-radius: 10px 10px 10px 10px; 
+}
+#login-right > input:focus, #login-right-two > input:focus {
+	outline:none;
+	background-color:#b21848;
+	color:white;
 }

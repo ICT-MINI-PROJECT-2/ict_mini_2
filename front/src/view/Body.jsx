@@ -10,6 +10,7 @@ import Recommend from './page/recommend/Recommend';
 import MyPage from './user/MyPage';
 import FindInfo from './page/find/FindInfo';
 import Test from './Test';
+import CheckList from './user/CheckList';
 
 function Body() {
   return (
@@ -24,6 +25,7 @@ function Body() {
       <Route path="/mypage" element={<MyPage/>}/>
       <Route path="/findInfo" element={<FindInfo/>}/>
       <Route path="/test" element={<Test/>}/>
+      <Route path="/checkList" element={<CheckList/>}/>
     </Routes>
   );
 }
