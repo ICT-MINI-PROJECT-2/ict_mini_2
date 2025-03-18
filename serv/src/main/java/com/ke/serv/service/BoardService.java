@@ -66,7 +66,8 @@ public class BoardService {
                 boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCase(
                         category, keyword, pageable);
             } else if ("작성자".equals(searchType)) {
-                boardPage = boardRepository.findByCategoryAndUser_UsernameContainingIgnoreCase(
+                System.out.println("🔍 작성자 검색 - keyword: " + keyword);
+                boardPage = boardRepository.searchByCategoryAndUserId(
                         category, keyword, pageable);
             } else {
                 boardPage = boardRepository.findByCategory(category, pageable);

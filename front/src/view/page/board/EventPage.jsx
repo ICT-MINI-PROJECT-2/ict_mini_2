@@ -5,6 +5,7 @@ import React, { useState, memo, useCallback, useEffect } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import './EventPage.css'
 
 // QueryClient 인스턴스
 export const queryClient = new QueryClient();
@@ -276,16 +277,7 @@ const EventList = memo(function EventList() {
                             border: "1px solid #ddd",
                             marginRight: "5px",
                         }} />
-                        <button type="submit" style={{
-                            background: "#f8f9fa",
-                            color: "#343a40",
-                            padding: "8px 12px",
-                            border: "1px solid #ddd",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                        }}>
-                            <span role="img" aria-label="search">🔍</span>
-                        </button>
+
                     </form>
                 </div>
             </div>
