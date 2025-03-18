@@ -1,3 +1,4 @@
+// BoardRepository.java
 package com.ke.serv.repository;
 
 import com.ke.serv.entity.EventEntity;
@@ -17,7 +18,8 @@ public interface BoardRepository extends JpaRepository<EventEntity, Integer> {
     @Query("SELECT COUNT(e) FROM EventEntity e WHERE (:category IS NULL OR e.category = :category)")
     int countByCategory(@Param("category") BoardCategory category);
 
-    @Query("SELECT e FROM EventEntity e LEFT JOIN FETCH e.user WHERE (:category IS NULL OR e.category = :category)") // 카테고리 조건 추가
+    @Query(value = "SELECT e FROM EventEntity e WHERE e.category = :category",
+            countQuery = "SELECT COUNT(e) FROM EventEntity e WHERE e.category = :category")
     Page<EventEntity> findByCategory(@Param("category") BoardCategory category, Pageable pageable);
 
     // BoardRepository.java 수정 (조회수 증가를 위한 쿼리 추가)

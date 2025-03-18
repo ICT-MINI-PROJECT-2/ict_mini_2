@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -50,4 +54,9 @@ public class UserEntity {
     private String addr;
 
     private String addrdetail;
+
+    //user_foods 추가
+    @Column(nullable = true)
+    private String foods;
+
 }

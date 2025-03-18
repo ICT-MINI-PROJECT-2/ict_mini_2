@@ -31,6 +31,9 @@ public class RestaurantEntity {
 
     private String postno;
 
+    @Column(columnDefinition = "int default 0")
+    private int hit;
+
     @Column(name= "category_1")
     private String categoryOne;
 

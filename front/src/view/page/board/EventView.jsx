@@ -11,6 +11,13 @@ function EventView() {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [fadeIn, setFadeIn] = useState(false);
+
+  
+  useEffect(() => {
+    setFadeIn(true); // 페이지가 로드될 때 애니메이션 실행
+    }, []);
+
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -23,6 +30,7 @@ function EventView() {
         const data = await response.json()
         console.log("받아온 이벤트 데이터:", data)
         setEvent(data)
+        console.log(data);
       } catch (error) {
         console.error("이벤트 로딩 중 오류 발생:", error)
         setError(error.message)
@@ -67,7 +75,8 @@ function EventView() {
   }
 
   return (
-    <div className="event-view-container">
+    <div className={`container ${fadeIn ? "fade-in" : ""}`}>
+
       <div className="event-header">
         <h1>{event.subject}</h1>
         <div className="event-meta">
@@ -131,6 +140,7 @@ function EventView() {
         >
           목록
         </button>
+
         {sessionStorage.getItem("loginId") === event.user?.userid && (
           <div className="author-actions">
             <button onClick={() => navigate(`/events/edit/${id}`)} className="btn-edit"> {/* 수정 버튼 클릭 시 EventEdit 페이지로 이동 */}

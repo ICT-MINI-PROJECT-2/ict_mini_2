@@ -20,10 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -109,4 +106,25 @@ public class ReviewController {
         return service.selectReviewListByUser(entity);
     }
 
+    @GetMapping("/selectReview")
+    public Map selectReview(ReviewEntity entity){
+        Map map = new HashMap();
+        map.put("review", service.selectReview(entity));
+        map.put("img_list", service.selectReviewFileList(entity));
+        return map;
+    }
+    @GetMapping("/deleteReview")
+    public String deleteReview(ReviewEntity entity,HttpServletRequest req) {
+        System.out.println(entity);
+        List<ReviewFileEntity> rf_list = service.selectReviewFileList(entity);
+        service.reviewDelete(entity);
+        for(ReviewFileEntity rf : rf_list) {
+            String FILE_PATH = req.getServletContext().getRealPath("/uploads/review/")+entity.getId();
+            File file = new File(FILE_PATH, rf.getFilename());
+            file.delete();
+            File folder = new File(FILE_PATH,"");
+            folder.delete();
+        }
+        return "ok";
+    }
 }

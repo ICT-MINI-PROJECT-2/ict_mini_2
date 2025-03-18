@@ -11,6 +11,8 @@ public class PagingVO {
     private String searchWord;
     private String searchTag;
 
+    private String sort;
+
     private int nowPage = 1;
     private int onePageRecord = 12;
 

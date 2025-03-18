@@ -13,7 +13,11 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     const [msg, setMsg] = useState('');
 
-    const [reviewModal, setReviewModal] = useState(false);
+    const [reviewModal, setReviewModal] = useState({
+        isOpen: false,
+        selected:0
+    });
+
 
     useEffect(() => {
         axios.get('http://localhost:9977/review/getReviewById?id='+sessionStorage.getItem("id"))
@@ -66,8 +70,8 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
              });
              setFile_id(f_id);
             document.querySelector('#review_files').files = dataTranster.files;
-            
-            removeTarget.remove();
+            if(removeTarget && removeTarget !== undefined)
+                removeTarget.remove();
 
             var curFileCnt = dataTransfer.files.length; //현재 선택된 첨부파일 개수
         })
@@ -101,14 +105,14 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
             <li key={'review-' + idx} className="review-chat-box"><div className="container-msg">
                 <div className='message-who'>{item.entity.user.username}</div>
                 <div className="message-container">
-                  <div className='message-box' onClick={()=>setReviewModal(true)}>
+                  <div className='message-box' onClick={()=>setReviewModal({isOpen:true, selected:item.entity.id})}>
                     <ul>
                         <li className="message-text">
                             {item.entity.writedate}
                         </li>
                         <li>
                             <span className='star-rating'>
-                            <span style ={{width:`${item.entity.rating*20}%`}}></span>
+                            <span style ={{width:`${item.entity.rating*20}%`, float:"left"}}></span>
                             </span> {item.entity.rating}
                         </li>
                     </ul>
@@ -184,9 +188,18 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     }
 
+    const myReview = () => {
+        review_list.forEach(item => {
+            if(item.entity.user.id == sessionStorage.getItem('id')) {
+                setReviewModal({isOpen:true, selected:item.entity.id});
+                return;
+            }
+        })
+    }
+
     return(
         <div id='review'>
-            {reviewModal && <ReviewModal setReviewModal={setReviewModal}/>}
+            {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
         {
             review_list.length !== 0 ?
             (<div className="review-body">
@@ -222,7 +235,10 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                         <label className="input-file-button" htmlFor=""/>
                         }
                         <input type='file' style={{display:'none'}} id='review_files' name='review_files' className='review-input-image' onChange={changeFile} multiple/>
-                        <button className='review-input-button' onClick={isLogin && !isReviewWrite ? doSubmit : doNaN}>리뷰작성</button>
+                        { isLogin && !isReviewWrite ? 
+                        <button className='review-input-button' onClick={doSubmit}>리뷰작성</button> :
+                        <button className='review-input-button' onClick={myReview}>리뷰보기</button>
+                        }
                     </div>
                 </div>
                 <div id="preview"></div>
