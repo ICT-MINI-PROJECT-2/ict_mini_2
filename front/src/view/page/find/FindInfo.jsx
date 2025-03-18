@@ -236,11 +236,6 @@ function FindInfo() {
                             {
                                 info_list.length !== 0 ?
                                 info_list.map((item,idx) => {
-                                    if (idx === info_list.length - 1) {
-                                        return(<div key={idx}>
-                                            ☎ {item}
-                                        </div>);    
-                                    }
                                     return(<div key={idx}>
                                         {item}
                                     </div>);

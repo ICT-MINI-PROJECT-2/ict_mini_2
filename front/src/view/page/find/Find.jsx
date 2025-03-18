@@ -291,7 +291,7 @@ function Find(){
                     (function(){
                         if (nowPage > 1){
                             return (<a className="page-link" onClick={()=>setNowPage(nowPage-1)}>
-                                        <li className="page-item">◁</li>
+                                        <li className="page-item">◀</li>
                                     </a>)
                         }
                     })()
@@ -309,7 +309,7 @@ function Find(){
                     (function(){
                         if (nowPage < totalPage && nowPage > 0){
                             return (<a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>
-                                        <li className="page-item">▷</li>
+                                        <li className="page-item">▶</li>
                                     </a>)
                         }
                     })()
