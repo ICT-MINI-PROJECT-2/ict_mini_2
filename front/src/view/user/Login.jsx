@@ -18,10 +18,11 @@ function Login(){
         }
     });
 
-    const doLogin = (username) => {
+    const doLogin = (dt) => {
         sessionStorage.setItem("loginStatus", "Y");
-        sessionStorage.setItem("loginName",username);
-        sessionStorage.setItem("loginId",data.userid);
+        sessionStorage.setItem("loginName",dt.username);
+        sessionStorage.setItem("loginId",dt.userid);
+        sessionStorage.setItem("id", dt.id);
 
         window.location.href = "/";
     }
@@ -35,11 +36,11 @@ function Login(){
         alert_pw.style.opacity = 0;
         
         if(userid==="" || userid===undefined) {
-            alert_id.innerHTML = "Please enter your ID";
+            alert_id.innerHTML = "아이디를 입력하세요";
             alert_id.style.opacity = 1;
         }
         else if(userpw===""||userpw===undefined){
-            alert_pw.innerHTML = "Please enter your Password";
+            alert_pw.innerHTML = "비밀번호를 입력하세요";
             alert_pw.style.opacity = 1;
         }
         else{
@@ -47,11 +48,11 @@ function Login(){
                 userid:userid,
                 userpw:userpw
             }).then(res => {
-                if(res.data===0){
-                    alert_id.innerHTML = "Invalid ID";
+                if(res.data.id===-1){
+                    alert_id.innerHTML = "아이디를 확인하세요";
                     alert_id.style.opacity = 1;
-                } else if(res.data===1){
-                    alert_pw.innerHTML = "Invalid PW";
+                } else if(res.data.id===-2){
+                    alert_pw.innerHTML = "비밀번호를 확인하세요(8~15글자,영문,숫자,특수문자)";
                     alert_pw.style.opacity = 1;
                 } else{
                     doLogin(res.data);
@@ -64,11 +65,11 @@ function Login(){
     return(
         <Faded>
             <div className="login-container">
-                <div id="login-title">Login</div>
+                <div id="login-title">로그인</div>
                 <form name="loginForm" method="post">
                     <div id="signup-box">
-                        <div id="login-left"><div id="idpw">ID</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="text" id="userid" name="userid" onChange={setFormData}/><div id="alert-id">Invalid ID</div></div>
-                        <div id="login-left"><div id="idpw">PW</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="password" id="userpw" name="userpw" onChange={setFormData}/><div id="alert-pw">Invalid PW</div></div>
+                        <div id="login-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="text" id="userid" name="userid" onChange={setFormData}/><div id="alert-id"></div></div>
+                        <div id="login-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="password" id="userpw" name="userpw" onChange={setFormData}/><div id="alert-pw"></div></div>
                     </div>
                     <input className="login-submit" type="button" onClick={loginChk} value="Login"/>
                 </form>

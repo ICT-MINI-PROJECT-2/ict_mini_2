@@ -1,15 +1,21 @@
 package com.ke.serv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="USER")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // @JsonIgnoreProperties 어노테이션 추가!
 public class UserEntity {
 
     @Id
@@ -48,4 +54,9 @@ public class UserEntity {
     private String addr;
 
     private String addrdetail;
+
+    //user_foods 추가
+    @Column(nullable = true)
+    private String foods;
+
 }

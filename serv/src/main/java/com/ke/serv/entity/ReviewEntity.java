@@ -14,10 +14,17 @@ import org.hibernate.annotations.CreationTimestamp;
 public class ReviewEntity {
     @Id
     @Column(name = "REVIEW_NO")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
     private String comment;
+
+    @Column(nullable = false, columnDefinition = "float default 0.0")
+    private float rating;
+
+    @Column(columnDefinition = "int default 0")
+    private int hit;
 
     @CreationTimestamp
     @Column(columnDefinition = "DATETIME default now()")
