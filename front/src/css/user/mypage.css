@@ -5,13 +5,17 @@
     flex-direction: column; 
     align-items: center;
 }
+#wishlist-box{
+    width: 100%;
+    flex-direction: row;
+}
 #graph-title{
     display: flex;
     text-align: center;
     margin: 0 auto;
 }
 #graph-box{
-    width: 80%;
+    width: 500px;
     display: flex;
     justify-content: center;
     padding-bottom: 20vh;
