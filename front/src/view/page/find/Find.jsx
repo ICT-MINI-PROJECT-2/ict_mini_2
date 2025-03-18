@@ -33,14 +33,12 @@ function Find(){
     useEffect(()=>{
         if(!page_mount.current) page_mount.current=true;
         else {
-        console.log(nowPage);
             searchList();
 
         }
     }, [nowPage])
 
     const searchList = (e)=> {
-        console.log(e)
         if(!firstSearch.current) firstSearch.current = true;
         let searchData = ({
             searchWord: searchWord,
@@ -239,7 +237,7 @@ function Find(){
     return(
         <Faded>
             <div id="find-modal">
-                <div id="modal-exit" onClick={()=>closeModal()}>X</div>
+                <div id="modal-exit" onClick={()=>closeModal()}>×</div>
                 <div id="modal-title">상세 검색</div>
                 <div id="modal-mini-title">원하시는 카테고리를 선택해주세요</div>
                 <div id="modal-list">
