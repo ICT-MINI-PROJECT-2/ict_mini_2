@@ -647,11 +647,9 @@ position: absolute;
 
 	width:720px;
     height:580px;
-	background-color:white;
+	background-color:rgba(255,255,255,0.95);
 	border-radius:15px;
-
-	transition: opacity 0.4s;
-    border:2px solid gray;
+    border:3px solid #b21848;
 	cursor:grab;
 }
 #review-image-modal {
@@ -788,20 +786,32 @@ position: absolute;
     width:100px;
     height:100px;
     object-fit: cover;
-    cursor: pointer;
+    cursor: default;
     transition: all 0.3s;
     position: relative;
     z-index: 10;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 }
 #review-modal-img:hover{
     scale: 4;
     border-radius: 3px;
+    z-index: 11;
+    transform: translate(-30px,-30px);
 }
 
 #review-del-button {
     position: absolute;
     bottom:32px;
-    right:120px;
+    right:80px;
     font-size:20px;
     cursor: pointer;
 }

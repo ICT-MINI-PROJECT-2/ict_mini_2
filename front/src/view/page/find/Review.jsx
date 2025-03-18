@@ -188,6 +188,15 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     }
 
+    const myReview = () => {
+        review_list.forEach(item => {
+            if(item.entity.user.id == sessionStorage.getItem('id')) {
+                setReviewModal({isOpen:true, selected:item.entity.id});
+                return;
+            }
+        })
+    }
+
     return(
         <div id='review'>
             {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
@@ -226,7 +235,10 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                         <label className="input-file-button" htmlFor=""/>
                         }
                         <input type='file' style={{display:'none'}} id='review_files' name='review_files' className='review-input-image' onChange={changeFile} multiple/>
-                        <button className='review-input-button' onClick={isLogin && !isReviewWrite ? doSubmit : doNaN}>리뷰작성</button>
+                        { isLogin && !isReviewWrite ? 
+                        <button className='review-input-button' onClick={doSubmit}>리뷰작성</button> :
+                        <button className='review-input-button' onClick={myReview}>리뷰보기</button>
+                        }
                     </div>
                 </div>
                 <div id="preview"></div>
