@@ -30,6 +30,7 @@
     /* border: solid 1px black; */
     max-width: 800px;
     margin: 2rem auto;
+    margin-bottom: 10rem;
     padding: 2rem;
     padding-bottom: 5rem;
     background-color: white;
@@ -135,6 +136,7 @@
   }
   
   .EventView_content-text {
+    
     white-space: pre-wrap;
     line-height: 1.6;
   }
@@ -209,7 +211,7 @@
   }
   
   .EventView_btn-list {
-    background-color: #b21848;
+    background-color: #666;
     color: white;
   }
   

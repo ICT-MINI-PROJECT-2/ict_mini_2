@@ -39,8 +39,9 @@ public interface BoardRepository extends JpaRepository<EventEntity, Integer> {
                                                                     @Param("subjectKeyword") String subjectKeyword,
                                                                     Pageable pageable);
 
-    Page<EventEntity> findByCategoryAndUser_UsernameContainingIgnoreCase( // 작성자 검색
-                                                                          @Param("category") BoardCategory category,
-                                                                          @Param("usernameKeyword") String usernameKeyword,
-                                                                          Pageable pageable);
+    @Query("SELECT e FROM EventEntity e JOIN e.user u WHERE e.category = :category AND LOWER(u.userid) LIKE LOWER(CONCAT('%', :useridKeyword, '%'))")
+    Page<EventEntity> searchByCategoryAndUserId(
+            @Param("category") EventEntity.BoardCategory category,
+            @Param("useridKeyword") String useridKeyword,
+            Pageable pageable);
 }
