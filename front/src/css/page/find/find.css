@@ -849,8 +849,10 @@ position: absolute;
     cursor: pointer;
 }
 
+
 #review-del-button:hover {
-    font-weight: 700;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 @media(max-width:970px) {

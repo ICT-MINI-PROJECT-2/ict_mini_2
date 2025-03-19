@@ -120,14 +120,12 @@ function FindInfo() {
                     if(sessionStorage.getItem("id") !== null && sessionStorage.getItem("id") != '') {
                         axios.get('http://localhost:9977/tech/getUserInfo?id='+sessionStorage.getItem("id"))
                         .then(res=>{
-                            console.log(res.data.addr);
                             geocoder.addressSearch(res.data.addr , (ress, stat) => {
                                 if(ress) {
                                     let x = ress[0].road_address.x;
                                     let y = ress[0].road_address.y;
                                     let ax = result[0].x;
                                     let ay = result[0].y;
-                                    console.log(Math.sqrt((ax-x)*(ax-x) + (ay-y)*(ay-y)));
                                     let dists = getDistanceFromLatLonInKm(x,y,ax,ay)*1000;
                                     if(dists/1000 > 0) dists = getDistanceFromLatLonInKm(x,y,ax,ay).toFixed(2)+'km';
                                     else dists= parseInt(dists)+'m';

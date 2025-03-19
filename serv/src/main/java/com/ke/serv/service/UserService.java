@@ -38,4 +38,8 @@ public class UserService {
     public WishlistEntity selectWishRestaurant(RestaurantEntity re, UserEntity ue) {
         return wishRepo.findByRestaurantAndUser(re, ue);
     }
+
+    public List<WishlistEntity> selectWishList(RestaurantEntity re) {
+        return wishRepo.findAllByRestaurant(re);
+    }
 }

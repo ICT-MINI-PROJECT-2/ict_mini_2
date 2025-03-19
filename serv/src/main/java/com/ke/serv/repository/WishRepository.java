@@ -11,4 +11,6 @@ import java.util.List;
 
 public interface WishRepository extends JpaRepository<WishlistEntity, Integer> {
     WishlistEntity findByRestaurantAndUser(RestaurantEntity re, UserEntity ue);
+
+    List<WishlistEntity> findAllByRestaurant(RestaurantEntity re);
 }

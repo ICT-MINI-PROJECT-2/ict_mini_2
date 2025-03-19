@@ -39,7 +39,6 @@ public class ReviewController {
         float sum = 0;
         for(ReviewEntity review : review_list) {
             sum+=review.getRating();
-            System.out.println(review.getRating()+"!");
             List<ReviewFileEntity> file_list = service.selectReviewFileList(review);
             ReviewImgVO rivo = new ReviewImgVO(file_list, review);
             result.add(rivo);
@@ -49,7 +48,6 @@ public class ReviewController {
             re.setRating(rating);
             rest_service.addRestaurantByAPI(re);
         }
-        System.out.println(result);
         return result;
     }
 
@@ -91,6 +89,10 @@ public class ReviewController {
                 ReviewFileEntity rfe = new ReviewFileEntity(0,fName+"."+eName,size,res_review);
                 ReviewFileEntity rfe_2 = service.fileInsert(rfe);
             }
+            RestaurantEntity rest_entity = rest_service.restaurantSelect(re.getRestaurant().getId());
+            List<ReviewEntity> review_list = service.selectReviewList(rest_entity);
+            rest_entity.setReviewCount(review_list.size());
+            rest_service.addRestaurantByAPI(rest_entity);
         } catch (Exception e) {
             e.printStackTrace();
             for (File delFile : file_list) {
@@ -118,7 +120,7 @@ public class ReviewController {
     }
     @GetMapping("/deleteReview")
     public String deleteReview(ReviewEntity entity,HttpServletRequest req) {
-        System.out.println(entity);
+        RestaurantEntity rest_entity = rest_service.restaurantSelect(service.selectReview(entity).getRestaurant().getId());
         List<ReviewFileEntity> rf_list = service.selectReviewFileList(entity);
         service.reviewDelete(entity);
         for(ReviewFileEntity rf : rf_list) {
@@ -128,6 +130,19 @@ public class ReviewController {
             File folder = new File(FILE_PATH,"");
             folder.delete();
         }
+        float rating = 0;
+        float sum = 0;
+        List<ReviewEntity> review_list = service.selectReviewList(rest_entity);
+        for(ReviewEntity re : review_list) sum+=re.getRating();
+        rating = sum/review_list.size();
+        if(!review_list.isEmpty()) {
+            rest_entity.setRating(rating);
+        }
+        else {
+            rest_entity.setRating(0);
+        }
+        rest_entity.setReviewCount(review_list.size());
+        rest_service.addRestaurantByAPI(rest_entity);
         return "ok";
     }
 }
