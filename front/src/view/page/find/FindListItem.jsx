@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function FindListItem({rating_size, restaurant}) {
+function FindListItem({restaurant}) {
     const [wish, setWish] = useState('');
     
     useEffect(()=> {
@@ -59,8 +59,8 @@ function FindListItem({rating_size, restaurant}) {
                         <span className='star-rating'>
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
                         </span>
-                        <span> ({restaurant.rating}) /</span>&nbsp;{rating_size}명 참여</div>
-                    <div>조회수 {restaurant.hit}</div>
+                        <span> ({restaurant.rating}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
+                    <div>조회수 {restaurant.hit} / ♥ {restaurant.wishCount}</div>
                 </div>
             </div>
         

@@ -28,6 +28,12 @@
   padding-top: 10%;
   margin: 0 auto;
   position: relative;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  max-width: 1200px;
+}
+
+.BoardPage_container select, .BoardPage_container input{
+  font-family: "IBM Plex Sans KR", sans-serif;
 }
 
 .BoardPage_row{
@@ -51,4 +57,15 @@
        text-decoration: none;
        color: #ccc;
        font-weight: normal;
+  }
+
+  .EventPage_event-card{
+    max-width: 384px;
+    max-height: 362px;
+  }
+
+  @media(min-width:1200px) {
+    .BoardPage_container{
+      padding-top: 120px;
+    }
   }
