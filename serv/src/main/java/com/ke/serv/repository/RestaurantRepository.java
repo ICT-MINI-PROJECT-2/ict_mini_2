@@ -76,4 +76,12 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, In
             nativeQuery = true)
     List<RestaurantEntity> findRestaurantsByLoc(@Param("keyword") String keyword,
                                                 @Param("locations") List<String> locations, PageRequest pageRequest);
+
+    @Query(value = "SELECT rs.restaurant_no " +
+            "FROM restaurant rs, review rv " +
+            "WHERE rs.rating >= 3.5 " +
+            "AND rv.restaurant_no = rs.restaurant_no " +
+            "AND DATE_ADD(rv.writedate, INTERVAL 14 DAY) > NOW()",
+            nativeQuery = true)
+    List<Integer> findPopRestaurants();
 }

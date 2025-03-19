@@ -9,6 +9,7 @@ import com.ke.serv.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -32,5 +33,9 @@ public class ReviewService {
         List<ReviewFileEntity> file_list = f_repo.findAllByReview(entity);
         for(ReviewFileEntity file : file_list) f_repo.delete(file);
         repo.deleteById(entity.getId());
+    }
+
+    public List<ReviewEntity> popReviewSelect() {
+        return repo.findPopReviews();
     }
 }
