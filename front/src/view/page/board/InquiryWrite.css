@@ -12,6 +12,7 @@
     /* padding-top: 10%;  padding-top 대신 position과 top 사용 */
     position: relative; /* 상대 위치 지정 */
     top: 20vh;        /* 뷰포트 높이의 10%만큼 아래로 이동 */
+    margin-bottom: 15%;
 
 
     /* Fade-in 애니메이션 추가 */
