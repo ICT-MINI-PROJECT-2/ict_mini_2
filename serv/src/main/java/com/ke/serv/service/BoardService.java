@@ -589,6 +589,4 @@ public class BoardService {
 
         return conversation;
     }
-
-
 }

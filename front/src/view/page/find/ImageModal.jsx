@@ -94,9 +94,12 @@ function ImageModal({imageList, setImageModal, restaurant}) {
         }
 
         const zoomImage = (item)=>{
-            document.getElementById("zoom").setAttribute("src", `http://localhost:9977/uploads/review/${item.id}/${item.filename}`)
+            let zoom = document.getElementById("zoom");
             
+            zoom.setAttribute("src", `http://localhost:9977/uploads/review/${item.id}/${item.filename}`);
+            zoom.style.display = 'block';
         }
+
         const imgRender = () => {
             const res = [];
             imageList.forEach((item,idx)=>{
@@ -125,7 +128,7 @@ function ImageModal({imageList, setImageModal, restaurant}) {
                     {imgRender()}
                 </div>
 
-                <img id="zoom" onClick={()=>{document.getElementById("zoom").setAttribute("src", "")}}/>
+                <img id="zoom" onClick={()=>{document.getElementById("zoom").style.display = 'none'}}/>
 
                 {/* <div className='gallery-page-button'>
                     {

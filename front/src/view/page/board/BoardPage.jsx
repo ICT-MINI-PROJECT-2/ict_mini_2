@@ -40,7 +40,7 @@ const LoadingFallback = () => (
 const FadeInSection = ({ children, isVisible }) => {
   return (
     <div
-      className={`fade-in-section ${isVisible ? "active" : ""}`}
+    className={`BoardPage_fade-in-section ${isVisible ? "BoardPage_active" : ""}`}
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(10px)",
@@ -181,22 +181,18 @@ function BoardPage() {
 
   return (
     <div style={pageContainerStyle}>
-      <div className="container" style={{ width: "80%", paddingTop: "10%", margin: "0 auto", position: "relative" }}>
-        <div className="row" style={{ marginBottom: "20px", display: "flex", justifyContent: "center" }}>
+      <div className="BoardPage_container" >
+        <div className="BoardPage_row" >
           {["EVENT", "INQUIRY", "NOTICE", "FAQ"].map((category) => (
             <div
               key={category}
-              className={`p-2 ${activeCategory === category ? "active" : ""}`}
-              style={{ margin: "0 10px", cursor: "pointer" }}
+              className={`BoardPage_p-2 ${activeCategory === category ? "BoardPage_active" : ""}`}
+              
               onClick={() => handleCategoryClick(category)}
             >
               <Link
                 to={`/boardpage?category=${category}`}
-                style={{
-                  textDecoration: "none",
-                  color: activeCategory === category ? "black" : "#ccc",
-                  fontWeight: activeCategory === category ? "bold" : "normal",
-                }}
+                className={activeCategory === category? "BoardPage_active-link":"BoardPage_link"}
                 onClick={(e) => {
                   e.preventDefault() // 기본 링크 동작 방지
                   handleCategoryClick(category)
@@ -221,4 +217,3 @@ function BoardPage() {
 }
 
 export default BoardPage
-
