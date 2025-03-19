@@ -1,7 +1,11 @@
 package com.ke.serv.controller;
 
+import com.ke.serv.entity.EventEntity;
+import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.entity.UserEntity;
 import com.ke.serv.entity.WishlistEntity;
+import com.ke.serv.service.BoardService;
+import com.ke.serv.service.RestaurantService;
 import com.ke.serv.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -9,13 +13,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -23,10 +29,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TechController {
     private final UserService service;
+    private final BoardService board_service;
+    private final RestaurantService rest_service;
 
-    @GetMapping("/today")
-    public String today() {
-        return "hi";
+    @GetMapping("/event")
+    public List<EventEntity> event(@PageableDefault(sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        return board_service.getEventByDate(EventEntity.BoardCategory.EVENT);
     }
 
     @GetMapping("/getUserInfo")
@@ -103,8 +111,6 @@ public class TechController {
     public WishlistEntity wishlist(@RequestBody WishlistEntity entity) {
         WishlistEntity we = service.selectWishRestaurant(entity.getRestaurant(), entity.getUser());
 
-        System.out.println(we);
-
         if (entity.getState().equals("♡")) {
             entity.setState("♥");
         } else if (entity.getState().equals("♥")) {
@@ -118,9 +124,18 @@ public class TechController {
             we.setState(entity.getState());
             updatedWishlist = service.wishUpdate(we);
         }
+        int cnt=0;
+        List<WishlistEntity> wish_list = service.selectWishList(entity.getRestaurant());
+        System.out.println(wish_list);
+        for(WishlistEntity wish: wish_list) {
+            if(wish.getState().equals("♥")) {
+                cnt++;
+            }
+        }
 
-        System.out.println(updatedWishlist);
-
+        RestaurantEntity res_cnt = rest_service.restaurantSelect(entity.getRestaurant().getId());
+        res_cnt.setWishCount(cnt);
+        rest_service.addRestaurantByAPI(res_cnt);
         return updatedWishlist;
     }
     /*

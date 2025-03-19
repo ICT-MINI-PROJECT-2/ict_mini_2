@@ -1,4 +1,5 @@
 import {useState , useEffect, useRef} from 'react';
+import { Link } from 'react-router-dom';
 import '../../css/page/mainpage.css';
 import Faded from '../../effect/Faded';
 import axios from 'axios';
@@ -10,13 +11,19 @@ import "slick-carousel/slick/slick-theme.css";
 function MainPage(){
 
   const main_mount = useRef(false);
-
+  const [event_list, setEvent_list] = useState([]);
     useEffect(()=>{
       if(main_mount.current){}
       else {
-        axios.get('http://localhost:9977/tech/today')
+        axios.get('http://localhost:9977/tech/event')
         .then(res => {
           console.log(res.data);
+          let elist = [];
+          for(var i=0; i<res.data.length;i++) {
+            if(i>=5) break;
+            elist.push(res.data[i]);
+          }
+          setEvent_list(elist);
         })
         .catch(err => console.log(err))
       }
@@ -63,21 +70,16 @@ function MainPage(){
             <div className="main-container">
             <div className="main-content-title">▶ <p>KICK!</p> 이벤트</div>
             <Slider {...settings}>
-                <div className="slider-image-banner" id="slider-img-1">
-                    
-                </div>
-                <div className="slider-image-banner" id="slider-img-2">
-                    
-                </div>
-                <div className="slider-image-banner" id="slider-img-3">
-                    
-                </div>
-                <div className="slider-image-banner" id="slider-img-4">
-                    
-                </div>
-                <div className="slider-image-banner" id="slider-img-5">
-                    
-                </div>
+              {
+                event_list.map((item,idx) => {
+                  return(
+                  <div className="slider-image-banner">
+                    <img style={{width:'100%',height:'100%',objectFit:'cover'}}src={`http://localhost:9977/uploads/board/${item.id}/${item.files[0].fileName}`}/>
+                    <Link style={{position:'absolute', bottom:'30px',right:'30px', fontSize:'30px', backgroundColor:'white', padding:'0px 10px 0px 10px'}}to={`/events/${item.id}`}>확인하러 가기 ▶</Link>
+                    </div>
+                  )
+                })
+              }
             </Slider>
                 <br/><br/><br/><br/><br/><br/>
                 <div className="main-content-title">▶ <p>KICK!</p> 오늘의 맛집</div>

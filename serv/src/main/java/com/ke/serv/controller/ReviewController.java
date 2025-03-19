@@ -89,6 +89,10 @@ public class ReviewController {
                 ReviewFileEntity rfe = new ReviewFileEntity(0,fName+"."+eName,size,res_review);
                 ReviewFileEntity rfe_2 = service.fileInsert(rfe);
             }
+            RestaurantEntity rest_entity = rest_service.restaurantSelect(re.getRestaurant().getId());
+            List<ReviewEntity> review_list = service.selectReviewList(rest_entity);
+            rest_entity.setReviewCount(review_list.size());
+            rest_service.addRestaurantByAPI(rest_entity);
         } catch (Exception e) {
             e.printStackTrace();
             for (File delFile : file_list) {
@@ -137,6 +141,7 @@ public class ReviewController {
         else {
             rest_entity.setRating(0);
         }
+        rest_entity.setReviewCount(review_list.size());
         rest_service.addRestaurantByAPI(rest_entity);
         return "ok";
     }

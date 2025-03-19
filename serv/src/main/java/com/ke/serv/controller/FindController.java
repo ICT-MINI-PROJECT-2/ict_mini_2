@@ -41,15 +41,9 @@ public class FindController {
             pvo.setTotalRecord(service.totalRecordByTag(pvo,cat_list,loc_list));
             list = service.findListByTag(pvo,cat_list,loc_list);
         }
-        List<Integer> rating_size = new ArrayList<>();
-
-        for(RestaurantEntity re: list) {
-            rating_size.add(review_service.selectReviewList(re).size());
-        }
         Map map = new HashMap();
         map.put("pvo", pvo);
         map.put("list", list);
-        map.put("rating_size",rating_size);
         System.out.println(pvo.getOnePageRecord());
         return map;
     }
