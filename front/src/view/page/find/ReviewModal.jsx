@@ -4,6 +4,8 @@ function ReviewModal({reviewModal, setReviewModal}){
     const mount = useRef(true);
     const [review, setReview] = useState({});
     const [img_list,setImg_list] = useState([]);
+
+    const [isDel, setIsDel] = useState(false);
     useEffect(()=>{
         if(!mount.current) mount.current = false;
         else {
@@ -110,8 +112,42 @@ function ReviewModal({reviewModal, setReviewModal}){
         .catch(err => console.log(err))
     }
 
+    const delChk = (bool) => {
+        setIsDel(bool);
+    }
+    const delStyle ={
+        position:'absolute',
+        width:'250px',
+        height:'200px',
+        left:'235px',
+        top:'200px',
+        backgroundColor:'white',
+        border:'2px solid #b21848',
+        borderRadius:'8px'
+    }
+    const delTitleStyle = {
+        textAlign:'center',
+        fontSize:'19px',
+        margin:'0px 0px 0px 28px',
+        lineHeight:'100px'
+    }
+    const delButtonStyle1 = {
+        left:'70px',
+        top:'100px'
+    }
+    const delButtonStyle2 = {
+        right:'70px',
+        top:'100px'
+    }
     return(<div id='review-modal'>
         <div id="review-modal-exit" onClick={()=>setReviewModal({...reviewModal, isOpen:false})}>X</div>
+        { isDel &&
+        <div className='review-delete-check' style={delStyle}>
+            <span style={delTitleStyle}>정말 삭제하시겠습니까?</span>
+            <span style={delButtonStyle1} id='review-del-button' onClick={() => delReview()}>삭제</span>
+            <span style={delButtonStyle2} id='review-del-button' onClick={()=>delChk(false)}>취소</span>
+        </div>
+        }
         { review.restaurant !==undefined &&
         <div className='review-modal-box'>
             <div id='review-modal-title'>{review.restaurant.name}</div>
@@ -129,7 +165,7 @@ function ReviewModal({reviewModal, setReviewModal}){
                 })
             }
             <br/>
-            { (sessionStorage.getItem('id') == review.user.id) && <span id='review-del-button' onClick={()=> delReview()}>삭제</span>}
+            { (sessionStorage.getItem('id') == review.user.id) && <span id='review-del-button' onClick={()=> delChk(true)}>삭제</span>}
         </div>
         }
     </div>);
