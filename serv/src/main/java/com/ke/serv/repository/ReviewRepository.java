@@ -4,6 +4,7 @@ import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.ReviewFileEntity;
 import com.ke.serv.entity.UserEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     ReviewEntity findById(int id);
 
     void deleteById(int id);
+
+    List<ReviewEntity> findAllByUser(UserEntity entity, PageRequest of);
+    int countIdBy();
 }

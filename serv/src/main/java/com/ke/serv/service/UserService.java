@@ -1,8 +1,10 @@
 package com.ke.serv.service;
 
 import com.ke.serv.entity.RestaurantEntity;
+import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.UserEntity;
 import com.ke.serv.entity.WishlistEntity;
+import com.ke.serv.repository.ReviewRepository;
 import com.ke.serv.repository.UserRepository;
 import com.ke.serv.repository.WishRepository;
 import com.ke.serv.vo.PagingVO;
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository repo;
     private final WishRepository wishRepo;
+    private final ReviewRepository reviewRepo;
 
     public UserEntity signup(UserEntity entity) {
         return repo.save(entity);
@@ -52,5 +55,13 @@ public class UserService {
 
     public List<WishlistEntity> graphData(UserEntity entity){
         return wishRepo.findAllByUser(entity);
+    }
+
+    public List<ReviewEntity> findReviewList(UserEntity entity, PagingWishVO prVO){
+        return reviewRepo.findAllByUser(entity, PageRequest.of(prVO.getNowPage()-1,prVO.getOnePageRecord()));
+    }
+
+    public int totalReviewRecord(PagingWishVO prVO){
+        return reviewRepo.countIdBy();
     }
 }

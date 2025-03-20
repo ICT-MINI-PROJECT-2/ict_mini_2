@@ -1,6 +1,7 @@
 package com.ke.serv.controller;
 
 import com.ke.serv.entity.RestaurantEntity;
+import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.UserEntity;
 import com.ke.serv.entity.WishlistEntity;
 import com.ke.serv.service.RestaurantService;
@@ -30,10 +31,9 @@ public class UserController {
         return "ok";
     }
 
-    @GetMapping("/getWishList")
+    @PostMapping("/getWishList")
     public Map getWishList(UserEntity entity, PagingWishVO pwVO, @PageableDefault(sort="id", direction = Sort.Direction.DESC) Pageable pageable){
         pwVO.setTotalRecord(service.totalRecord(pwVO));
-        System.out.println(pwVO.toString());
         List<WishlistEntity> we = service.findWishList(entity, pwVO); // 여기를 페이징
         List<RestaurantEntity> re = new ArrayList<>();
         for(WishlistEntity wish : we) {
@@ -45,6 +45,22 @@ public class UserController {
         map.put("we", we);
         return map;
     }
+
+    @PostMapping("/getReviewList")
+    public Map getReviewList(UserEntity entity, PagingWishVO prVO, @PageableDefault(sort="id", direction =  Sort.Direction.DESC) Pageable pageable){
+        prVO.setTotalRecord(service.totalReviewRecord(prVO));
+        List<ReviewEntity> review = service.findReviewList(entity, prVO);
+        List<RestaurantEntity> rest = new ArrayList<>();
+        for(ReviewEntity reviewEntity : review) {
+            rest.add(rest_sevice.restaurantSelect(reviewEntity.getRestaurant().getId()));
+        }
+            Map map = new HashMap();
+            map.put("prVO",prVO);
+            map.put("rest",rest);
+            map.put("review",review);
+            return map;
+        }
+
     @GetMapping("/graphData")
     public List<RestaurantEntity> getGraphData(UserEntity entity){
         List<WishlistEntity> we = service.graphData(entity);
