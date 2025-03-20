@@ -59,6 +59,7 @@ function NoticePage() {
     function renderPagination() {
         const pageNumbers = [];
 
+        console.log(totalPages);
         for (let i = 0; i < totalPages; i++) {
             pageNumbers.push(
                 <li key={i} className={`notice-page-item ${currentPage === i ? 'active' : ''}`}>
@@ -67,14 +68,15 @@ function NoticePage() {
             );
         }
 
+        console.log(currentPage);
         return (
             <ul className="notice-pagination">
-                <li className={`notice-page-item ${currentPage === 0 ? 'disabled' : ''}`}>
-                    <a className="notice-page-link" onClick={() => getBoardPage(currentPage - 1, 'NOTICE')}>Previous</a>
+                <li className={'notice-page-item'}>
+                    {currentPage > 0 && (<a className="notice-page-link" onClick={() => getBoardPage(currentPage - 1, 'NOTICE')}>Previous</a>)}
                 </li>
                 {pageNumbers}
-                <li className={`notice-page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
-                    <a className="notice-page-link" onClick={() => getBoardPage(currentPage + 1, 'NOTICE')}>Next</a>
+                <li className={'notice-page-item'}>
+                    {currentPage < totalPages - 1 && (<a className="notice-page-link" onClick={() => getBoardPage(currentPage + 1, 'NOTICE')}>Next</a>)}
                 </li>
             </ul>
         );
@@ -128,9 +130,12 @@ function NoticePage() {
 
             {sessionStorage.getItem("loginId") === 'admin1234' && (
                 <div className="notice-write-link-container">
-                    <Link to="/notice/write" className="notice-write-link">글등록</Link>
+                    <Link to="/notice/write" className="notice-write-link">공지등록</Link>
                 </div>
             )}
+            <div className="notice-write-link-container">
+                    <Link to="/free/write" className="notice-write-link">글등록</Link>
+            </div>
 
             {renderPagination()}
 
