@@ -40,16 +40,17 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/boardPage")
-    @Transactional(readOnly = true) // ✅ 읽기 전용 트랜잭션 적용 (목록 조회)
+    @Transactional(readOnly = true)
     public ResponseEntity<Map<String, Object>> boardPage(
-            @RequestParam(defaultValue = "EVENT") BoardCategory category, // 기본값 EVENT
+            @RequestParam(defaultValue = "EVENT") BoardCategory category,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) String searchType, // ✅ 검색 타입 파라미터 추가 (required = false)
-            @RequestParam(required = false) String searchTerm, // ✅ 검색어 파라미터 추가 (required = false)
-            HttpServletRequest req
-    ) {
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchTerm) {
 
-        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm); // ✅ Service 메소드에 검색 파라미터 전달
+        // ✅ 디버깅 로그 추가
+        System.out.println("📢 검색 요청 - searchType: " + searchType + ", searchTerm: " + searchTerm);
+
+        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
 
         Map<String, Object> response = new HashMap<>();
         response.put("list", boardPage.getContent());
@@ -57,6 +58,7 @@ public class BoardController {
         response.put("totalPages", boardPage.getTotalPages());
         response.put("totalElements", boardPage.getTotalElements());
 
+        System.out.println(response);
         return ResponseEntity.ok(response);
     }
 

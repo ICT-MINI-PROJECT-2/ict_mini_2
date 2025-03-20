@@ -5,6 +5,9 @@
     min-width: 900px;
     font-family: "IBM Plex Sans KR", sans-serif;
 }
+.find-container>#total-record {
+    width: 1200px;
+}
 #logo {
     width: 200px;
     height: 200px;
@@ -31,6 +34,7 @@
     border: 2px solid #b21848;
     font-family: "IBM Plex Sans KR", sans-serif;
     font-size: 1.2em;
+    box-shadow: 0px 0px 10px -2px #777;
 }
 .find-box input[type=text] {
     max-width: 600px;
@@ -46,14 +50,16 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.5s;
+    box-shadow: 0px 0px 10px -2px #777;
 }
 #plus-btn:hover, #search-btn:hover {
     background-color: #bd3c63;
+    box-shadow: inset 0px 0px 10px #777;
 }
 .sort-btn {
     display: flex;
     justify-content: center;
-    margin: 0 auto;
+    margin: 10px auto;
 }
 .sort-btn>div {
     width: 70px;
@@ -81,6 +87,7 @@
     padding: 10px 15px;
     border: 2px solid #ddd;
     border-radius: 10px;
+    box-shadow: 0px 0px 5px 2px #ddd;
     display: grid;
     grid-template-columns: 1fr 2fr;
     align-items: center;
@@ -129,6 +136,9 @@
         grid-template-columns: repeat(2, 1fr);
         width: 900px;
     }
+    .find-container>#total-record {
+        width: 830px;
+    }
 }
 ::-webkit-scrollbar {
     width: 10px;
@@ -157,6 +167,7 @@
 	opacity:0;
 	backdrop-filter:blur(30px);
 	border-radius:15px;
+    border:3px solid #b21848;
 	box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
 	 2px 2px 7px 0px rgba(85, 85, 85, 0.6),
 	 1px 1px 3px 0px rgba(83, 83, 83, 0.6);
@@ -266,14 +277,13 @@
 .info {
     min-width: 700px;
     max-width: 1200px;
-    padding-top: 80px;
+    padding: 120px 0;
     margin: 0 auto;
     font-family: "IBM Plex Sans KR", sans-serif;
 }
 .info>h1 {
     text-align: center;
     font-size: 2em;
-    text-shadow: 1px 2px #979797;
 }
 #list-favorite {
     position: absolute;
@@ -287,8 +297,8 @@
 .rPhoto, .rLocation, .rInfo {
     width: 70%;
     height: 30%;
-    margin: 20px auto;
-    padding: 10px;
+    margin: 30px auto;
+    padding: 20px;
     border: 1px solid #ddd;
 }
 .rPhoto {
@@ -302,6 +312,7 @@
 }
 .rLocation {
     height: 40vw;
+    max-height: 700px;
     background-color: #fff;
 }
 .info-tab {
@@ -704,6 +715,17 @@ position: absolute;
     cursor: pointer;
     transition: all 0.3s;
     border-radius: 3px;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 }
 #image-box>div {
     width: 97%;
@@ -721,6 +743,17 @@ position: absolute;
     border-radius: 10px;
     cursor: pointer;
     display: none;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 }
 /* .gallery-page-button {
     position: absolute;
@@ -827,8 +860,10 @@ position: absolute;
     cursor: pointer;
 }
 
+
 #review-del-button:hover {
-    font-weight: 700;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 @media(max-width:970px) {
