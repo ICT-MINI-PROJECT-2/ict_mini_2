@@ -150,8 +150,8 @@ function BoardWrite() {
                     </tbody>
                 </table>
                 <div style={{ textAlign: 'right', marginTop: '10px' }}>
-                    <button type="button" onClick={() => navigate(`/boardpage?category=EVENT`)} className="EventWrite_btn-style">목록</button>
                     <button type="submit" className="EventWrite_btn-style">저장</button>
+                    <button type="button" onClick={() => navigate(`/boardpage?category=EVENT`)} className="EventWrite_btn-style">목록</button>
                 </div>
             </form>
         </div>
