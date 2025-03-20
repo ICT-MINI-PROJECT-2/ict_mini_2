@@ -45,3 +45,62 @@ body {
     height:70%;
     opacity: 1;
 }
+
+.interact-container{
+    border:1px solid gray;
+    position: absolute;
+    z-index: 5;
+    background-color: white;
+    padding:20px 10px 20px 10px;
+    top:100px;
+    left:110px;
+    cursor: default;
+}
+.interact-container>li{
+    font-size:14px;
+    padding: 5px 5px 0;
+    font-weight:400;
+    cursor: pointer;
+}
+.interact-container>li:hover, #interact-exit:hover,#dm-exit:hover,#dm-submit:hover{
+    font-weight: 600;
+}
+
+#interact-exit, #dm-exit{
+    position: absolute;
+    right:3px;
+    top:1px;
+    font-weight: 400;
+    cursor: pointer;
+}
+#dm-exit{
+    font-size:18px;
+}
+
+.dm-container{
+    position: absolute;
+    width:300px;
+    height:200px;
+    border:1px solid gray;
+    background-color: white;
+    z-index: 6;
+    left:100px;
+    top:60px;
+    cursor: default;
+}
+.dm-container>span {
+    line-height:40px;
+}
+.dm-textarea{
+    width:80%;
+    margin-top:10px;
+    height:80px;
+    resize: none;
+    font-family: "IBM Plex Sans KR", sans-serif;
+    padding:5px;
+}
+#dm-submit{
+    font-weight: 400;
+    margin-top: -5px;
+    cursor: pointer;
+}
