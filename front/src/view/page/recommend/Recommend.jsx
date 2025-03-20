@@ -549,7 +549,7 @@ function Recommend() {
                         <button id="locationSearchButton" onClick={handleComplete}>찾기</button>
                         <button id="locationSearchButton" onClick={refreshResult}>갱신</button>
                     </div>}
-                    { rest_info.category != '' &&    <div className='find-list' id="find-list">
+                    { rest_info.category != '' &&    <div className='find-rec-list' id="find-list">
                         <div className='recommendResult' onClick={onClickDetail}>
                         <img src={`/img/find/${rest_info.category}.png`}/>
                             <div className='restaurantName'>{rest_info.name}</div>
