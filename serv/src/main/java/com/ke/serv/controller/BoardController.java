@@ -58,6 +58,7 @@ public class BoardController {
         response.put("totalPages", boardPage.getTotalPages());
         response.put("totalElements", boardPage.getTotalElements());
 
+        System.out.println(response);
         return ResponseEntity.ok(response);
     }
 
