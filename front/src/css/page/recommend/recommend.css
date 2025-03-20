@@ -11,7 +11,7 @@
   width: 60vw;
   height: 27vw;
   justify-content: center;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   overflow: hidden;
 }
 
@@ -20,7 +20,6 @@
   width: 50vw;
   height: 25vw;
   gap: 1vw;
-  border: 1px solid black;
 }
 
 .left-menu-container,
@@ -30,7 +29,6 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px solid black;
 }
 
 .menu-image {
@@ -54,7 +52,6 @@
   color: black;
   font-size: 1.1vw;
   font-weight: bold;
-  border: 1px solid black;
   width: 60%;
   height: 50%;
 }
@@ -90,7 +87,9 @@
   justify-content: center;
   width: 60vw;
   height: 10vw;
-  border: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
   gap: 1vw;
 }
 
@@ -103,8 +102,54 @@
 #recommend-list {
   width: 60vw;
   height: 0vw;
-  border: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
   overflow: hidden;
+}
+
+#locationSearch {
+  display: flex;
+  flex-direction: row;
+  width: 25vw;
+  height: 2vw;
+}
+
+#locationSearchBox, #locationSearchButton {
+  height: 100%; /* 원하는 동일한 높이로 설정 */
+  box-sizing: border-box; /* padding과 border를 height에 포함 */
+}
+
+#locationSearchBox {
+  width: 80%; /* 부모 요소의 75% */
+  border: 1px solid red;
+}
+
+#locationSearchButton {
+  width: 20%; /* 부모 요소의 25% */
+  border: 1px solid red;
+  font-size: 0.75vw;
+}
+
+#distanceOption {
+  font-size: 1vw;
+  width: 30%;
+}
+
+.recommendResult {
+  display: flex;
+  align-items: center;
+  outline: 1px solid gray;
+  width: 30vw;
+  height: 6.5vw;
+  box-sizing: border-box;
+}
+
+.recommendResult > img {
+  width: 5vw;
+  height: 5vw;
+  /* border: 1px solid blue; */
+  object-fit: cover;
+  align-self: center;
 }
 
 @media (max-width: 1920px) and (min-width: 1281px) {
@@ -114,7 +159,7 @@
     width: 60vw;
     height: 27vw;
     justify-content: center;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
 }
 
@@ -133,7 +178,6 @@
     width: 960px;
     height: 480px;
     gap: 19px;
-    border: 1px solid black;
   }
 
   .menu-detail {
@@ -161,8 +205,10 @@
   .select-menu-container {
     width: 1152px;
     height: 192px;
-    border: 1px solid black;
     gap: 19.2px;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
   }
 
   .select-menu {
@@ -174,7 +220,34 @@
   #recommend-list {
     width: 1152px;
     height: 0px;
-    border: 1px solid black;
+    /* border-left: 1px solid black; */
+    /* border-right: 1px solid black; */
     overflow: hidden;
+  }
+
+  #locationSearch {
+    width: 480px;
+    height: 38.4px;
+  }
+  
+  #locationSearchButton {
+    font-size: 14.4px;
+  }
+  
+  .recommendResult {
+    display: flex;
+    align-items: center;
+    outline: 1px solid gray;
+    width: 576px;
+    height: 125px;
+    box-sizing: border-box;
+  }
+  
+  .recommendResult > img {
+    width: 96px;
+    height: 96px;
+    /* border: 1px solid blue; */
+    object-fit: cover;
+    align-self: center;
   }
 }
