@@ -7,34 +7,110 @@ import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
 
 function MyPage(){
-    //찜목록
-    /* let {id} = useParams()
+  let [wishRecord,setWishRecord] = useState([]);
+  let [pageNumber, setPageNumber] = useState([]);
+  let [nowPage,setNowPage] = useState(1);
+  let [totalPage,setTotalPage] = useState(1);
+  let [graphRecord, setGraphRecord] = useState([]);
+  let [chartData, setChartDate] = useState([0,0,0,0,0,0,0,0,0,0])
+  const mounted=useRef(false);
+  useEffect(()=>{
+    if(mounted.current){
+    }else{
+      mounted.current=true;
+      getWishList(1);
+      graphData();
+      console.log("!  ")
+    }
+  },[]);
 
-      const mounted=useRef(false);
-      useEffect(()=>{
-        if(!mounted.current){
-          mounted.current=true;
-        }else{
-          getWhisList();
-        }
-      },[]);
+  useEffect(() => {
+    console.log(graphRecord, "graphRecord");
+    const categories = graphRecord.map(item => item.categoryOne);
+    console.log(categories, "categories");
 
-      let [wishRecord,setWishRecord] = useState({});
+    const categoryLabels = ["한식","중국식","일식","양식","아시아음식","패스트푸드","주점","뷔페","패밀리레스트랑","기타"];
+    const categoryData = [0,0,0,0,0,0,0,0,0,0];
+    setChartDate(categoryData);
+    categories.forEach(category => {
+      if (category === "한식") categoryData[0] += 1;
+      if (category === "중국식") categoryData[1] += 1;
+      if (category === "일식") categoryData[2] += 1;
+      if (category === "양식") categoryData[3] += 1;
+      if (category === "아시아음식") categoryData[4] += 1;
+      if (category === "패스트푸드") categoryData[5] += 1;
+      if (category === "주점") categoryData[6] += 1;
+      if (category === "뷔페") categoryData[7] += 1;
+      if (category === "패밀리레스트랑") categoryData[8] += 1;
+      if (category === "기타") categoryData[9] += 1;
+    });
+
+}, [graphRecord]);
+
+  const [wishvo, setWishvo] = useState([]);
+
+  function getWishList(page){
+    const id= sessionStorage.getItem("id");
+    let url =`http://localhost:9977/user/getWishList?id=${id}&nowPage=${page}`;
+
+    axios.get(url)
+    .then(function(res){
+      console.log(res.data)
+      //기존 데이터 초기화
+      setWishRecord([]);
+      setWishRecord(res.data.re);
+      setWishvo([]);
+      setWishvo(res.data.we);
       
-      function getWhisList(){
-        axios.get(`http://localhost:9977/user/wishList/${id}`)
-        .then()
-        .catch()
+
+      setPageNumber([]);
+      let pwVO = res.data.pwVO;
+    
+      for(let pw=pwVO.startPageNum; pw<pwVO.startPageNum+pwVO.onePageCount; pw++){
+        if(pw<=pwVO.totalPage){
+          setPageNumber((prev)=>{
+            return [...prev,pw]
+          });
+        }
       }
- */
-    //그래프
+      setNowPage(pwVO.nowPage);
+      setTotalPage(pwVO.totalPage);
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+  }
+  function wishDel(id){
+    console.log(id,"삭제버튼클릭");
+
+  }
+   
+  //그래프
+  //불러오기
+  function graphData(){
+    const id= sessionStorage.getItem("id");
+    let url =`http://localhost:9977/user/graphData?id=${id}`;
+
+    axios.get(url)
+    .then(function(response){
+      setGraphRecord([]);
+      setGraphRecord(response.data); 
+
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+    
+  }
+
+
     ChartJS.register(ArcElement, Tooltip, Legend);
     const data = {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: ["한식","중국식","일식","양식","아시아음식","패스트푸드","주점","뷔페","패밀리레스트랑","기타"],
         datasets: [
           {
             label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
+            data : chartData,
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(54, 162, 235, 0.2)',
@@ -54,87 +130,82 @@ function MyPage(){
             borderWidth: 1,
           },
         ]
-      }
-      /*  //음식체크
-      const [editSelectedFoods, setEditSelectedFoods] = useState([]);
-      const [editAllChecked, setEditAllChecked] = useState(false);
-      const editAllFoods =  ["한식","중국식","일식","양식","아시아음식","패스트푸드","주점","뷔페","패밀리레스트랑","기타"];
-      
-      const editCheckBoxHandler = (event) =>{
-        const {value,checked} = event.target;
-        if(checked){
-          setEditSelectedFoods([...editSelectedFoods, value]);
-        }else{
-          setEditSelectedFoods(editSelectedFoods.filter((item) => item !== value));
-          setEditAllChecked(false);
-        }
-      }
-      const allEditCheckedHandler = (event) =>{
-        setEditAllChecked(event.target.checked);
-        if(event.target.checked){
-            setEditSelectedFoods(editAllFoods);
-        }else{
-            setEditSelectedFoods([]);
-        }
-    }
-
-       const checkListEditHandler=(event)=>{
-            
-        event.preventDefault();
-        const editFoodsString = editSelectedFoods.length > 0 ? editSelectedFoods.join('/') : '';
-
-        console.log("보내는거", editFoodsString);
-        setParam({...param, foods:editFoodsString});
-        
-        axios.post('http://localhost:9977/user/checkList',{...param, foods:editFoodsString})
-        .then(response =>{
-            console.log('mypage보냄',response.data);
-        })
-        .catch(error =>{
-            console.log("mypage안보내지미",error);
-        })
-    } */
+      };
+      const options = {
+        plugins: {
+          datalabels: {
+            anchor: 'end', // 레이블 위치 설정
+            align: 'start', // 레이블 정렬 설정
+            formatter: (value, context) => { // 레이블 내용 설정
+              return value; // 데이터 값 표시
+            },
+          },
+        },
+      };
+     
     return(
         <Faded>
             <div className="mypage-container">
               <div id='wishlist-box'>
-                <div id='wishlist-title'>찜목록</div>
-                  <div className="row">
-                    <div className="col-sm-3">.col-sm-3</div>
-                    <div className="col-sm-3">.col-sm-3</div>
-                    <div className="col-sm-3">.col-sm-3</div>
-                    <div className="col-sm-3">.col-sm-3</div>
+                <h2 id='wishlist-title'>찜목록</h2>
+                  <div id='wishlist-wrapper'>
+                    <table className='wishlist-table'>
+                      <thead>
+                        <tr>
+                          <th>찜한식당</th>
+                          <th>카테고리</th>
+                          <th>주소</th>
+                          <th>삭제</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          wishRecord.map(function(wishlistup){
+                            return(
+                              <tr key={wishlistup.id}>
+                                <td>{wishlistup.name}</td>
+                                <td>{wishlistup.categoryOne}</td>
+                                <td>{wishlistup.location}</td>
+                                <td><a onClick={() =>wishDel(wishlistup.id)}>삭제</a></td>
+                              </tr>
+                            )
+                          })
+                        }
+                      </tbody>
+                    </table>
+                    <div>
+                        <ul className='pagination'>
+                          {
+                            (function(){
+                              if(nowPage>1){
+                                return <li className='page-item'><a className='page-link' onClick={()=>getWishList(nowPage-1)}>prev</a></li>
+                              }
+                            })
+                          }
+                          {   
+                            pageNumber.map(function(pg){
+                                var activeStyle = 'page-item';
+                                if(nowPage==pg) activeStyle ='page-item active';
+                                return <li className={activeStyle}><a className="page-link" onClick={()=>getWishList(pg)}>{pg}</a></li>
+                            })
+                          }
+                          {
+                          (function(){
+                              //현재페이지가 전체페이지보다 작을때만 다음페이지가 나타남
+                              if(nowPage<totalPage){
+                                  return <li className="page-item"><a className="page-link" onClick={()=>getWishList(nowPage+1)}>Next</a></li>
+                                  }
+                              })
+                          }
+                        </ul>
+                    </div>
                   </div>
                 </div>
                 <div id="graph-box">
-                    <div id="graph-title">와 그래프!</div>
-                    <Doughnut data={data} />
+                    <h2 id="graph-title">선호음식</h2>
+                    <Doughnut data={data} options={options} />
                 </div>
-
-                {/* <div id="checklist-edit-box">
-                    <form id="checklist-edit-form" name='checklist-edit-form' onSubmit={{checkListEditHandler}}>
-                        <div className='edit-all-wrapper'>
-                          <label className='edit-all-label'>
-                            <input type='checkbox' checked={editAllChecked} onChange={allEditCheckedHandler}/>
-                            <span>전체선택</span>
-                          </label>
-                        </div>
-                        <div id='edit-box'>
-                          {allEditFoods.map((food)=>(
-                            <label key={editFood} className='edit-food-select'>
-                              <input
-                                type='checkbox'
-                                checked={editAllChecked||editSelectedFoods.includes(food)}
-                                value={food}
-                                onChange={editCheckBoxHandler}
-                              />
-                              <span className='edit-food-name'>{editFood}</span>
-                            </label>
-                          ))}
-                        </div>
-                    </form>
-                </div> */}
-                
+     
             </div>
 
         </Faded>
