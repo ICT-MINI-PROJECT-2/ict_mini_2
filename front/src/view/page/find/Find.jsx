@@ -14,8 +14,6 @@ function Find(){
     const [nowPage, setNowPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const [sort, setSort] = useState('restaurant_no');
-    
-    const [rating_size,setRating_size] = useState([]);
     const firstSearch = useRef(false);
 
     useEffect(() => {
@@ -33,14 +31,11 @@ function Find(){
     useEffect(()=>{
         if(!page_mount.current) page_mount.current=true;
         else {
-        console.log(nowPage);
             searchList();
-
         }
     }, [nowPage])
 
     const searchList = (e)=> {
-        console.log(e)
         if(!firstSearch.current) firstSearch.current = true;
         let searchData = ({
             searchWord: searchWord,
@@ -52,7 +47,6 @@ function Find(){
         axios.post('http://localhost:9977/find/searchList', searchData)
         .then(async function(res){
             setList(res.data.list);
-            setRating_size(res.data.rating_size);
             setPageNumber([]);
             let pvo = res.data.pvo;
             
@@ -239,7 +233,7 @@ function Find(){
     return(
         <Faded>
             <div id="find-modal">
-                <div id="modal-exit" onClick={()=>closeModal()}>X</div>
+                <div id="modal-exit" onClick={()=>closeModal()}>×</div>
                 <div id="modal-title">상세 검색</div>
                 <div id="modal-mini-title">원하시는 카테고리를 선택해주세요</div>
                 <div id="modal-list">
@@ -279,12 +273,14 @@ function Find(){
                     firstSearch.current && 
                     <div className='sort-btn'>
                         <div onClick={()=>{setSort("hit")}} style={sort == 'hit' ? {color: '#b21848', fontWeight: 'bold'} : {}}>조회수 순</div>
-                        <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
+                        <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>평점 순</div>
+                        <div onClick={()=>{setSort("reviewCount")}} style={sort == 'reviewCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
+                        <div onClick={()=>{setSort("wishCount")}} style={sort == 'wishCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>찜 순</div>
                     </div>
                 }
                 <div className='find-list'>
                     {list.map((item,idx)=>
-                            <FindListItem key={item.id} rating_size={rating_size[idx]} restaurant={item}/>
+                            <FindListItem key={item.id} restaurant={item}/>
                     )}
                 </div>
 
@@ -293,7 +289,7 @@ function Find(){
                     (function(){
                         if (nowPage > 1){
                             return (<a className="page-link" onClick={()=>setNowPage(nowPage-1)}>
-                                        <li className="page-item">◁</li>
+                                        <li className="page-item">◀</li>
                                     </a>)
                         }
                     })()
@@ -311,7 +307,7 @@ function Find(){
                     (function(){
                         if (nowPage < totalPage && nowPage > 0){
                             return (<a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>
-                                        <li className="page-item">▷</li>
+                                        <li className="page-item">▶</li>
                                     </a>)
                         }
                     })()

@@ -138,34 +138,34 @@ function InquiryView() {
     }
 
     return (
-        <div className="inquiry-view-container">
+        <div className="InquiryView_inquiry-view-container">
             <h1>1:1 문의 내용</h1>
 
             {!isPasswordCorrect && (
-                <form onSubmit={handlePasswordSubmit} className="password-form">
+                <form onSubmit={handlePasswordSubmit} className="InquiryView_password-form">
                     <label htmlFor="password">비밀번호:</label>
                     <input
                         type="password"
                         id="password"
                         value={password}
                         onChange={handlePasswordChange}
-                        className="password-input"
+                        className="InquiryView_password-input"
                         placeholder="비밀번호를 입력하세요"
                     />
-                    <button type="submit" className='btn-style'>확인</button>
-                    {error && <p className="error-message">{error}</p>}
+                    <button type="submit" className='InquiryView_btn-style'>확인</button>
+                    {error && <p className="InquiryView_error-message">{error}</p>}
                 </form>
             )}
 
             {isPasswordCorrect && (
                 <>
-                    <div className="conversation-container">
+                    <div className="InquiryView_conversation-container">
                         {conversation.map((message, index) => (
-                            <div key={index} className={`message ${message.isAdmin ? 'admin-message' : 'user-message'}`}>
-                                <div className="message-content">
+                            <div key={index} className={`InquiryView_message ${message.isAdmin ? 'InquiryView_admin-message' : 'InquiryView_user-message'}`}>
+                                <div className="InquiryView_message-content">
                                     {message.content}
                                 </div>
-                                <div className="message-info">
+                                <div className="InquiryView_message-info">
                                     {formatDateTime(message.createDate)}
                                 </div>
                             </div>
@@ -174,24 +174,24 @@ function InquiryView() {
 
                     {/* 답변 작성 폼 (관리자 또는 작성자) */}
                     {isAuthorOrAdmin && (
-                        <form onSubmit={handleReplySubmit} className="reply-form">
+                        <form onSubmit={handleReplySubmit} className="InquiryView_reply-form">
                             <h2>답변 작성</h2>
                             <textarea
                                 value={reply}
                                 onChange={handleReplyChange}
                                 placeholder="답변 내용을 입력하세요..."
                                 rows={5}
-                                className="reply-textarea"
+                                className="InquiryView_reply-textarea"
                             />
-                            <button type="submit" className='btn-style'>답변 등록</button>
+                            <button type="submit" className='InquiryView_btn-style'>답변 등록</button>
                         </form>
                     )}
 
-                    <div className="button-container">
-                        <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="btn-style">목록</button>
+                    <div className="InquiryView_button-container">
+                        <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="InquiryView_btn-style">목록</button>
                         {/* 삭제 버튼 (관리자 또는 작성자) */}
                         {isAuthorOrAdmin && (
-                            <button type="button" onClick={handleDelete} className="btn-style delete-button">삭제</button>
+                            <button type="button" onClick={handleDelete} className="InquiryView_btn-style InquiryView_delete-button">삭제</button>
                         )}
                     </div>
                 </>

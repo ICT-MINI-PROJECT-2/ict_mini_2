@@ -1,6 +1,9 @@
 package com.ke.serv.controller;
 
-import com.ke.serv.entity.UserEntity;
+import com.ke.serv.entity.*;
+import com.ke.serv.service.BoardService;
+import com.ke.serv.service.RestaurantService;
+import com.ke.serv.service.TechService;
 import com.ke.serv.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -8,13 +11,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,6 +27,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TechController {
     private final UserService service;
+    private final BoardService board_service;
+    private final RestaurantService rest_service;
+    private final TechService tech_service;
+
+    @GetMapping("/event")
+    public List<EventEntity> event(@PageableDefault(sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        return board_service.getEventByDate(EventEntity.BoardCategory.EVENT);
+    }
 
     @GetMapping("/getUserInfo")
     public UserEntity getUserInfo(UserEntity entity) {
@@ -80,6 +93,54 @@ public class TechController {
         map.put("img_list", img_list);
         map.put("info_list",info_list);
         return map;
+    }
+
+    @PostMapping("/getWishState")
+    public String getWishState(@RequestBody WishlistEntity entity) {
+        WishlistEntity we = service.selectWishRestaurant(entity.getRestaurant(), entity.getUser());
+
+        if (we == null) {
+            return "♡";
+        } else {
+            return we.getState();
+        }
+    }
+
+    @PostMapping("/wishlist")
+    public WishlistEntity wishlist(@RequestBody WishlistEntity entity) {
+        WishlistEntity we = service.selectWishRestaurant(entity.getRestaurant(), entity.getUser());
+
+        if (entity.getState().equals("♡")) {
+            entity.setState("♥");
+        } else if (entity.getState().equals("♥")) {
+            entity.setState("♡");
+        }
+
+        WishlistEntity updatedWishlist;
+        if (we == null) {
+            updatedWishlist = service.wishUpdate(entity);
+        } else {
+            we.setState(entity.getState());
+            updatedWishlist = service.wishUpdate(we);
+        }
+        int cnt=0;
+        List<WishlistEntity> wish_list = service.selectWishList(entity.getRestaurant());
+        System.out.println(wish_list);
+        for(WishlistEntity wish: wish_list) {
+            if(wish.getState().equals("♥")) {
+                cnt++;
+            }
+        }
+
+        RestaurantEntity res_cnt = rest_service.restaurantSelect(entity.getRestaurant().getId());
+        res_cnt.setWishCount(cnt);
+        rest_service.addRestaurantByAPI(res_cnt);
+        return updatedWishlist;
+    }
+    @PostMapping("/sendDm")
+    public String sendDm(@RequestBody DmEntity entity){
+        tech_service.insertDm(entity);
+        return "ok";
     }
     /*
     @PostMapping("/getImg")

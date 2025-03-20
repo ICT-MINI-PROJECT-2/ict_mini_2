@@ -1,13 +1,44 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function FindListItem({rating_size, restaurant}) {
+function FindListItem({restaurant}) {
+    const [wish, setWish] = useState('');
+    
+    useEffect(()=> {
+        // console.log(sessionStorage.getItem("id"));
+        if (sessionStorage.getItem("id") != null) {
+            axios.post('http://localhost:9977/tech/getWishState', {
+                restaurant: {id: restaurant.id},
+                user: {id: sessionStorage.getItem("id")}
+            })
+            .then(res => {
+                setWish(res.data)
+            })
+            .catch(err => console.log(err))
+        }
+    },[])
+    
 
     const wait = (ms) => {
         return new Promise(res=>setTimeout(res,ms));
     }
 
     const favorite = async(e)=> {
-        e.target.innerText = (e.target.innerText == '♡') ? '♥' : '♡';
+        axios.post('http://localhost:9977/tech/wishlist', {
+            restaurant: {id: restaurant.id},
+            user: {id: sessionStorage.getItem("id")},
+            state: e.target.innerText
+        })
+        .then(res=>{
+            console.log(res.data);
+            setWish(res.data.state);
+        })
+        .catch(err=>{
+            console.log(err);
+        });
+        // e.target.innerText = (e.target.innerText == '♡') ? '♥' : '♡';
+
         e.target.style.scale = '1.4';
         await wait(500);
         e.target.style.scale = '1.0';
@@ -15,7 +46,7 @@ function FindListItem({rating_size, restaurant}) {
 
     return (
             <div className="find-list-item" style={{position: 'relative'}}>
-                <div id="list-favorite" onClick={favorite}>♡</div>
+                <div id="list-favorite" onClick={favorite}>{wish}</div>
                 <div className="list-item-img"
                     style={{background:`url(${'/img/find/'+restaurant.categoryOne+'.png'}) center / 100%`}}>
                 </div>
@@ -24,10 +55,12 @@ function FindListItem({rating_size, restaurant}) {
                         <div id="rstr-name">{restaurant.name}</div>
                     </Link>
                     <div id="rstr-location">{restaurant.location.substring(6)}</div>
-                    <div><span className='star-rating'>
+                    <div>
+                        <span className='star-rating'>
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
-                            </span>&nbsp;{rating_size}명 참여</div>
-                    <div>조회수 {restaurant.hit}</div>
+                        </span>
+                        <span> ({restaurant.rating}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
+                    <div>👁 {restaurant.hit} / ♥ {restaurant.wishCount}</div>
                 </div>
             </div>
         

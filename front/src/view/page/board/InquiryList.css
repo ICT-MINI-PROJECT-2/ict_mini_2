@@ -1,0 +1,199 @@
+/* InquiryList.css */
+.InquiryList_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* padding-top 제거 -> 상위 컨테이너에서 처리 */
+    width: 100%; /* 전체 너비 사용 */
+    padding: 5% 0; /* 상하 패딩만, 좌우는 없음 */
+
+}
+
+.InquiryList_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%;
+    padding: 1% 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.InquiryList_header-row {
+    border-top: 1px solid #ccc;
+    font-weight: bold;
+}
+
+.InquiryList_col {
+    padding: 0.5rem; /* 모든 셀에 패딩 추가 */
+}
+
+.InquiryList_text-center {
+    text-align: center;
+}
+
+/* 반응형: 화면 폭이 좁아지면 세로로 배열 */
+@media (max-width: 768px) {
+    .InquiryList_row {
+        flex-direction: column;
+        align-items: stretch; /* 자식 요소들을 늘려서 컨테이너에 꽉 차게 */
+    }
+
+    .InquiryList_col {
+        width: 100%; /* 각 셀의 너비를 100%로 */
+        text-align: center; /* 내용 가운데 정렬 */
+        padding: 0.5rem 0;
+    }
+     .InquiryList_header-row {
+        display: none; /* 화면이 작을 때는 헤더 숨김 */
+    }
+    .InquiryList_data-row > div:not(.InquiryList_col-sm-4) {
+        display: none;  /* 작은 화면에서 제목 열을 제외한 열 숨김 */
+    }
+
+     /* 작은 화면에서 검색창, 글쓰기 버튼 세로 배열 */
+    .InquiryList_search-write-container {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .InquiryList_input-group {
+        width: 100%; /* 작은 화면에서 검색창 너비 100% */
+        margin-right: 0; /* 오른쪽 마진 제거 */
+    }
+
+    .InquiryList_write-button-container {
+        width: 100%; /* 작은 화면에서 글쓰기 버튼 컨테이너 너비 100% */
+        text-align: center; /* 글쓰기 버튼 가운데 정렬 */
+    }
+}
+
+
+.InquiryList_title-link {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 가로 중앙 정렬 */
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit;      /* 링크 색상 제거 */
+
+}
+
+.InquiryList_thumbnail {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+     object-fit: cover; /* 이미지 비율 유지하면서 채우기 */
+}
+
+
+/* 페이지네이션 스타일 */
+.InquiryList_pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+
+}
+
+.InquiryList_page-item {
+    margin: 0 5px;
+}
+.InquiryList_page-item.InquiryList_active .InquiryList_page-link {
+    background-color: #b21848; /* 활성 페이지 링크 배경색 */
+    border-color: #b21848; /* 활성 페이지 링크 테두리 색상 */
+    color: white;
+}
+
+.InquiryList_page-link {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    color: black;
+    border-radius: 5px;
+}
+
+.InquiryList_page-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* "Previous", "Next" 버튼 스타일 (비활성화 상태) */
+.InquiryList_page-item.InquiryList_disabled .InquiryList_page-link {
+    color: #aaa;
+    pointer-events: none; /* 클릭 비활성화 */
+    cursor: default;
+}
+
+
+.InquiryList_write-button-container {
+    /* width: 60%; */  /*이부분 수정함 */
+    /* text-align: right; */
+    /* margin-top: 10px; */
+     width: auto; /* 내용에 맞게 자동 너비 */
+    margin: 0.5rem;
+}
+
+/* 부트스트랩 클래스 커스터마이징 */
+.InquiryList_btn {
+      padding: 0.375rem 0.75rem; /* 패딩 조정 */
+    font-size: 1rem;          /* 폰트 크기 조정 */
+    line-height: 1.5;         /* 줄 높이 조정 */
+    border-radius: 0.25rem;    /* 테두리 둥글기 조정 */
+    margin: 0.5rem;
+}
+.InquiryList_btn-primary {
+	background-color: #b21848; /* 배경색 */
+	border-color: #b21848;     /* 테두리 색상 */
+	color: white;              /* 글자색 */
+}
+
+.InquiryList_input-group {
+    /* width: 40%; */ /*이부분 수정함*/
+     width: auto; /* 내용에 맞게 자동 너비 */
+    /* margin-bottom: 1rem !important; */ /*제거, 위에서 설정*/
+    flex-shrink: 0; /* 축소 방지 */
+    margin: 0.5rem;
+}
+
+.InquiryList_form-control {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    margin: 0.5rem;
+}
+
+/* 검색 버튼 스타일 */
+.InquiryList_btn-outline-secondary {
+	background-color: #b21848; /* 배경색 */
+	border-color: #b21848;     /* 테두리 색상 */
+	color: white;
+    margin: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+}
+
+.InquiryList_btn-outline-secondary:hover {
+    background-color: #0056b3; /* 호버 시 배경색 */
+    border-color: #0056b3;   /* 호버 시 테두리 색상 */
+}
+
+
+/*justify-content-center 부트 스트랩에서 가져온 클래스*/
+.InquiryList_justify-content-center {
+    justify-content: center!important;
+}
+
+.InquiryList_mb-3 {
+    margin-bottom: 1rem!important;
+}
+
+/* 검색창, 글쓰기 버튼 컨테이너 스타일 */
+.InquiryList_search-write-container {
+    display: flex;
+    justify-content: space-between; /* 검색창 왼쪽, 글쓰기 버튼 오른쪽 */
+    align-items: center; /* 세로 중앙 정렬 */
+    width: 60%; /* 테이블과 동일한 너비 */
+    margin-bottom: 1rem; /* 테이블과의 간격 */
+}

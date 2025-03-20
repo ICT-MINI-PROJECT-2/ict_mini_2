@@ -1,8 +1,9 @@
+// EventEdit.js
 "use client"
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import './EventWrite.css';
+import './EventWrite.css';  //  스타일은 EventWrite.css를 사용
 import { queryClient } from './EventPage';
 
 function EventEdit() {
@@ -120,43 +121,46 @@ function EventEdit() {
     };
 
     return (
-        <div className={`container ${fadeIn ? "fade-in" : ""}`}>
+        <div className={`EventWrite_container ${fadeIn ? "EventWrite_fade-in" : ""}`}>
             <h1>글 수정</h1>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <table className="custom-table">
+                <table className="EventWrite_custom-table">
                     <tbody>
-                        <tr><th>제목</th><td><input type="text" value={title} readOnly onChange={e => setTitle(e.target.value)} /></td></tr>
-                        <tr><th>내용</th><td><textarea value={content} onChange={e => setContent(e.target.value)} /></td></tr>
-                        <tr><th>시작 날짜</th><td><input type="datetime-local" value={startDate} onChange={e => setStartDate(e.target.value)} /></td></tr>
-                        <tr><th>종료 날짜</th><td><input type="datetime-local" value={endDate} onChange={e => setEndDate(e.target.value)} /></td></tr>
+                        <tr><th>제목</th><td><input type="text" value={title} readOnly onChange={e => setTitle(e.target.value)} className="EventWrite_custom-input"/></td></tr>
+                        <tr><th>내용</th><td><textarea value={content} onChange={e => setContent(e.target.value)}  className="EventWrite_custom-textarea"/></td></tr>
+                        <tr><th>시작 날짜</th><td><input type="datetime-local" value={startDate} onChange={e => setStartDate(e.target.value)} className="EventWrite_custom-input"/></td></tr>
+                        <tr><th>종료 날짜</th><td><input type="datetime-local" value={endDate} onChange={e => setEndDate(e.target.value)} className="EventWrite_custom-input"/></td></tr>
                         
                         {/* 썸네일 */}
-                        <tr><th>썸네일</th><td><input type="file" onChange={handleThumbnailChange} /></td></tr>
+                        <tr><th>썸네일</th><td><input type="file" onChange={handleThumbnailChange} className="EventWrite_custom-input"/></td></tr>
                         {thumbnailUrl && (
                             <tr>
                                 <th>미리보기</th>
                                 <td>
                                     <img src={thumbnailUrl} alt="썸네일" width={100} />
-                                    <button type="button" onClick={handleRemoveThumbnail}>삭제</button> {/* 썸네일 삭제 버튼 추가 */}
+                                    <button type="button" onClick={handleRemoveThumbnail} className="EventWrite_btn-delete-file">삭제</button> {/* 썸네일 삭제 버튼 추가 */}
                                 </td>
                             </tr>
                         )}
 
                         {/* 내용 이미지 */}
-                        <tr><th>내용 이미지</th><td><input type="file" multiple onChange={handleContentImagesChange} /></td></tr>
+                        <tr><th>내용 이미지</th><td><input type="file" multiple onChange={handleContentImagesChange}  className="EventWrite_custom-input"/></td></tr>
                         {contentImageUrls.map((url, index) => (
                             <tr key={index}>
                                 <th>미리보기</th>
                                 <td>
                                     <img src={url} alt="내용 이미지" width={100} />
-                                    <button type="button" onClick={() => handleRemoveContentImage(index)}>삭제</button>
+                                    <button type="button" onClick={() => handleRemoveContentImage(index)} className="EventWrite_btn-delete-file">삭제</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <button type="submit">저장</button>
-                <button type="button" onClick={() => navigate(`/events/${id}`)}>취소</button>
+                {/* 버튼 그룹을 div로 감싸고 클래스 적용 */}
+                <div className="EventWrite_button-group">
+                    <button type="submit" className="EventWrite_btn-style">저장</button>
+                    <button type="button" onClick={() => navigate(`/events/${id}`)} className="EventWrite_btn-style">취소</button>
+                </div>
             </form>
         </div>
     );

@@ -32,8 +32,8 @@ function Signup(){
     });
 
     useEffect(() => {
-        //if(okChk.idOk && okChk.pwOk && okChk.pw_chkOk && okChk.emailOk && okChk.email2Ok && okChk.nameOk && okChk.zipcodeOk && okChk.zipcodeOk) { 
-            if(okChk.idOk) { 
+        if(okChk.idOk && okChk.pwOk && okChk.pw_chkOk && okChk.emailOk && okChk.email2Ok && okChk.nameOk && okChk.zipcodeOk && okChk.zipcodeOk) { 
+
                 let userid = document.getElementById("userid");
                 let userpw = document.getElementById("userpw");
                 let username = document.getElementById("username");
@@ -180,7 +180,7 @@ function Signup(){
                         </div>
                         <input className="signup-submit" onClick = {signUpChk} type="button" value="다음"/>
                     </form>
-            </div>
+                </div>
             }
             {
                 where === 1 &&

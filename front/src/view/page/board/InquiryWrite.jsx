@@ -67,15 +67,15 @@ function InquiryWrite() {
     };
 
     return (
-        <div className="inquiry-write-container">
+        <div className="InquiryWrite_inquiry-write-container">
             <h1>1:1 문의 작성</h1>
             <form onSubmit={handleSubmit} >
-                <table className="inquiry-write-table">
+                <table className="InquiryWrite_inquiry-write-table">
                     <tbody>
                         <tr>
                             <th>작성자</th>
                             <td>
-                                <input type="text" value={userid}  readOnly className="inquiry-write-input" />
+                                <input type="text" value={userid}  readOnly className="InquiryWrite_inquiry-write-input" />
                             </td>
                         </tr>
                         <tr>
@@ -84,7 +84,7 @@ function InquiryWrite() {
                                 <textarea
                                     value={content}
                                     onChange={handleContentChange}
-                                    className="inquiry-write-textarea"
+                                    className="InquiryWrite_inquiry-write-textarea"
                                     placeholder="문의 내용을 입력하세요..."
                                     rows={10}
                                 />
@@ -97,16 +97,16 @@ function InquiryWrite() {
                                     type="password"
                                     value={password}
                                     onChange={handlePasswordChange}
-                                    className="inquiry-write-input"
+                                    className="InquiryWrite_inquiry-write-input"
                                     placeholder="비밀번호를 입력하세요"
                                 />
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div className="button-container">
-                     <button type="button" onClick={() => navigate(`/boardPage?category=${category}`)} className="btn-style">목록</button>
-                    <button type="submit" className='btn-style'>등록</button>
+                <div className="InquiryWrite_button-container">
+                     <button type="button" onClick={() => navigate(`/boardPage?category=${category}`)} className="InquiryWrite_btn-style">목록</button>
+                    <button type="submit" className='InquiryWrite_btn-style'>등록</button>
                 </div>
             </form>
         </div>

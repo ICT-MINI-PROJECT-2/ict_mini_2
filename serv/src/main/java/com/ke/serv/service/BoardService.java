@@ -27,7 +27,6 @@ import java.util.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -66,7 +65,8 @@ public class BoardService {
                 boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCase(
                         category, keyword, pageable);
             } else if ("작성자".equals(searchType)) {
-                boardPage = boardRepository.findByCategoryAndUser_UsernameContainingIgnoreCase(
+                System.out.println("🔍 작성자 검색 - keyword: " + keyword);
+                boardPage = boardRepository.searchByCategoryAndUserId(
                         category, keyword, pageable);
             } else {
                 boardPage = boardRepository.findByCategory(category, pageable);
@@ -589,6 +589,7 @@ public class BoardService {
 
         return conversation;
     }
-
-
+    public List<EventEntity> getEventByDate(BoardCategory category){
+        return boardRepository.findAllByCategoryOrderByStartDateAsc(category);
+    }
 }

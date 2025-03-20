@@ -1,6 +1,6 @@
 /* InquiryWrite.css */
 
-.inquiry-write-container {
+.InquiryWrite_inquiry-write-container {
     width: 80%;
     max-width: 800px;
     /* margin: 50px auto;  원래 margin을 주석처리하거나 변경 */
@@ -12,6 +12,7 @@
     /* padding-top: 10%;  padding-top 대신 position과 top 사용 */
     position: relative; /* 상대 위치 지정 */
     top: 20vh;        /* 뷰포트 높이의 10%만큼 아래로 이동 */
+    margin-bottom: 15%;
 
 
     /* Fade-in 애니메이션 추가 */
@@ -29,30 +30,30 @@
 
 
 
-.inquiry-write-container h1 {
+.InquiryWrite_inquiry-write-container h1 {
     text-align: center;
     margin-bottom: 30px;
 }
 
-.inquiry-write-table {
+.InquiryWrite_inquiry-write-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.inquiry-write-table th,
-.inquiry-write-table td {
+.InquiryWrite_inquiry-write-table th,
+.InquiryWrite_inquiry-write-table td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     text-align: left;
 }
 
-.inquiry-write-table th {
+.InquiryWrite_inquiry-write-table th {
     width: 150px; /* 작성자, 내용, 비밀번호 라벨 너비 */
     font-weight: bold;
 }
 
-.inquiry-write-input,
-.inquiry-write-textarea {
+.InquiryWrite_inquiry-write-input,
+.InquiryWrite_inquiry-write-textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -61,17 +62,17 @@
     font-size: 16px;
 }
 
-.inquiry-write-textarea {
+.InquiryWrite_inquiry-write-textarea {
     resize: vertical; /* 세로 크기 조절 가능 */
 }
 
-.button-container {
+.InquiryWrite_button-container {
     text-align: right;
     margin-top: 20px;
 }
 /* 버튼 스타일 */
-.btn-style {
-	background: linear-gradient(45deg, #00bcd4, #0288d1); /* 파란색과 바다색 그라데이션 */
+.InquiryWrite_btn-style {
+	/* background: linear-gradient(45deg, #00bcd4, #0288d1); 파란색과 바다색 그라데이션 */
 	color: white;
 	border: none;
 	padding: 12px 24px;
@@ -84,7 +85,7 @@
     display: inline-block; /* a태그에서 버튼처럼 사용하기 위해 */
 }
 
-.btn-style:hover {
-    background: linear-gradient(45deg, #0288d1, #01579b); /* hover 시 더 짙은 파란색과 네이비 */
+.InquiryWrite_btn-style:hover {
+    background: linear-gradient(45deg, #ccc); /* hover 시 더 짙은 파란색과 네이비 */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }

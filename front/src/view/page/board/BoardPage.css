@@ -2,25 +2,70 @@
 
 /* 스피너 애니메이션 */
 @keyframes spin {
-    0% {
-      transform: rotate(0deg);
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 페이드 인 트랜지션 스타일 */
+.BoardPage_fade-in-section {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  min-height: 600px;
+}
+
+.BoardPage_fade-in-section.BoardPage_active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.BoardPage_container{
+  width: 80%;
+  padding-top: 10%;
+  margin: 0 auto;
+  position: relative;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  max-width: 1200px;
+}
+
+.BoardPage_container select, .BoardPage_container input{
+  font-family: "IBM Plex Sans KR", sans-serif;
+}
+
+.BoardPage_row{
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+  .BoardPage_p-2 {
+      margin: 0 10px;
+      cursor: pointer;
+  }
+
+  .BoardPage_active-link{
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+  }
+
+  .BoardPage_link{
+       text-decoration: none;
+       color: #ccc;
+       font-weight: normal;
+  }
+
+  .EventPage_event-card{
+    max-width: 384px;
+    max-height: 362px;
+  }
+
+  @media(min-width:1200px) {
+    .BoardPage_container{
+      padding-top: 120px;
     }
-    100% {
-      transform: rotate(360deg);
-    }
   }
-  
-  /* 페이드 인 트랜지션 스타일 */
-  .fade-in-section {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    min-height: 600px;
-  }
-  
-  .fade-in-section.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  

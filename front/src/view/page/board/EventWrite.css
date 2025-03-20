@@ -1,38 +1,38 @@
 /* BoardWrite.css */
-.container {
-    width: 70%;
+.EventWrite_container {
+    width: 40%;
     margin: 0 auto;
     padding: 5% 0;
     font-family: 'Arial', sans-serif;
     color: #333;
 }
 
-h1 {
+.EventWrite_container h1 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 2rem;
     font-weight: bold;
 }
 
-.custom-table {
+.EventWrite_custom-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 2rem;
 }
 
-.custom-table th, .custom-table td {
+.EventWrite_custom-table th, .EventWrite_custom-table td {
     border: 1px solid #ddd;
     padding: 1rem;
     font-size: 1rem;
 }
 
-.custom-table th {
+.EventWrite_custom-table th {
     background-color: #f5f5f5;
     text-align: left;
     width: 20%;
 }
 
-.custom-input, .custom-textarea {
+.EventWrite_custom-input, .EventWrite_custom-textarea {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid #ccc;
@@ -41,37 +41,44 @@ h1 {
     box-sizing: border-box;
 }
 
-.custom-textarea {
+.EventWrite_custom-textarea {
     min-height: 200px;
 }
 
-.button-group {
+/* 버튼 그룹 스타일 (수정) */
+/* .EventWrite_button-group {
     text-align: right;
     margin-top: 1.5rem;
+} */
+.EventWrite_button-group {
+  text-align: right; /* 우측 정렬 */
+  margin-top: 1rem;   /* 위쪽 여백 (필요에 따라 조정) */
+  /* margin-bottom: 5rem; */
 }
 
-.btn-style {
+
+.EventWrite_btn-style {
     padding: 0.8rem 2rem;
     font-size: 1rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: #000;
+    background-color: #b21848;
     color: #fff;
     margin-left: 1rem;
     transition: all 0.3s ease;
 }
 
-.btn-style.cancel {
+.EventWrite_btn-style.cancel {
     background-color: #888;
 }
 
-.btn-style:hover {
+.EventWrite_btn-style:hover {
     opacity: 0.8;
 }
 
 
-.btn-delete-file {
+.EventWrite_btn-delete-file {
     background-color: #f44336; /* 삭제 버튼 배경색 */
     color: white;
     border: none;
@@ -85,7 +92,7 @@ h1 {
     border-radius: 4px;
 }
 
-.btn-delete-file:hover {
+.EventWrite_btn-delete-file:hover {
     background-color: #d32f2f; /* 호버 시 배경색 변경 */
 }
 
@@ -102,6 +109,6 @@ h1 {
 }
 
 /* 페이지 컨테이너에 적용 */
-.fade-in {
+.EventWrite_fade-in {
     animation: fadeIn 0.7s ease-in-out;
 }
