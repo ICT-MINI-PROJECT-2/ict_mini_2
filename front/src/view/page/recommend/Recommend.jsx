@@ -19,6 +19,11 @@ function Recommend() {
     const [left_hover, setLeft_hover] = useState(false);
     const [right_hover, setRight_hover] = useState(false);
 
+    const [dist_one,setDist_one] = useState(0);
+    const [dist_two,setDist_two] = useState(0);
+    const [dist_three,setDist_three] = useState(0);
+    const [dist_four,setDist_four] = useState(0);
+
     const [rest_info, setRest_info] = useState({
         id:0,
         name:'',
@@ -280,6 +285,9 @@ function Recommend() {
             let menuCon = document.getElementsByClassName('menu-container')[0];
             menuCon.style.transition='all 2s';
             menuCon.style.transform='translateY(-700px)';
+            let selCon = document.getElementsByClassName('select-menu-container')[0];
+            selCon.style.transition='all 2s';
+            selCon.style.transform='translateY(-700px)';
             recommnedContainer = document.getElementsByClassName("recommend-container")[0];
             recommnedContainer.style.transition = 'all 1.5s';
             recommnedContainer.style.paddingTop = '75px';
@@ -343,7 +351,7 @@ function Recommend() {
     const handleComplete = (data) => {
         setPopup(!popup);
     }
-    const calcDist = (addrs) => {
+    const calcDist = (addrs, iddx) => {
         let dists=0;
         var geocoder = new kakao.maps.services.Geocoder();
 
@@ -360,13 +368,15 @@ function Recommend() {
                         dists = getDistanceFromLatLonInKm(x,y,ax,ay)*1000;
                         if(dists/1000 > 0) dists = getDistanceFromLatLonInKm(x,y,ax,ay).toFixed(2)+'km';
                         else dists= parseInt(dists)+'m';
-                        console.log(dists);
+                        if(iddx===1) setDist_one(dists);
+                        else if(iddx===2) setDist_two(dists);
+                        else if(iddx===3) setDist_three(dists);
+                        else setDist_four(dists);  
                         return;
                     }
                 })
             } 
         });
-        return dists;
     }
 
 
@@ -398,8 +408,8 @@ function Recommend() {
     const [selectedRecommendId, setSelectedRecommendId] = useState(0);
     const navigate = useNavigate();
 
-    function onClickDetail(){
-        navigate('/findInfo',{state: {id: selectedRecommendId}})
+    function onClickDetail(id){
+        navigate('/findInfo',{state: {id: id}})
     }
     function getDistanceFromLatLonInKm(lat1,lng1,lat2,lng2) {
         function deg2rad(deg) {
@@ -426,31 +436,35 @@ function Recommend() {
         axios.get("http://localhost:9977/recommend/list?menuCategory="+x+'&address='+trimAddress)
             .then(function (response) {
                 console.log(response.data);
-                for (let i = 1; i <= 4; i++) {
-                    if(i===1) {
-                        setRest_info({distance:calcDist(response.data[i-1].location),name:response.data[i-1].name,
+                let z = parseInt(Math.random() *response.data.length);
+                if(z >= response.data.length-4) z-=4;
+                let idd = 1;
+                for (let i = z; i < z+4; i++) {
+                    if(i===z) {
+                        setRest_info({...rest_info,name:response.data[i-1].name,
                             category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
                             ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
                         });
                     }
-                    if(i===2) {
-                        setRest_info_two({distance:calcDist(response.data[i-1].location),name:response.data[i-1].name,
+                    if(i===z+1) {
+                        setRest_info_two({...rest_info_two,name:response.data[i-1].name,
                             category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
                             ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
                         });
                     }
-                    if(i===3) {
-                        setRest_info_three({distance:calcDist(response.data[i-1].location),name:response.data[i-1].name,
+                    if(i===z+2) {
+                        setRest_info_three({...rest_info_three,name:response.data[i-1].name,
                             category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
                             ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
                         });
                     }
-                    if(i===4) {
-                        setRest_info_four({distance:calcDist(response.data[i-1].location),name:response.data[i-1].name,
+                    if(i===z+3) {
+                        setRest_info_four({...rest_info_four,name:response.data[i-1].name,
                             category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
                             ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
                         });
                     }
+                    calcDist(response.data[i-1].location, idd++);
                     /*
                     const imgElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector("img");
                     imgElement.src = '/img/find/' + response.data[i - 1].categoryOne + '.png';
@@ -471,7 +485,7 @@ function Recommend() {
     }
 
     const refreshResult = () => {
-        resetResultStyle();
+        //resetResultStyle();
         reqeustToServer();
     }
 
@@ -527,7 +541,6 @@ function Recommend() {
                 </div>
                 <div>
                     <div className='select-menu-container'>
-                        <div className='kickEatListText'>나의 KICK EAT 메뉴</div>
                         <div className="select-menu" id="select-menu1" style={{ backgroundImage: '' }}>
                             <img src={emptyImage} id="select-menu-image1" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} alt="" />
                         </div>
@@ -549,26 +562,118 @@ function Recommend() {
                         <button id="locationSearchButton" onClick={handleComplete}>찾기</button>
                         <button id="locationSearchButton" onClick={refreshResult}>갱신</button>
                     </div>}
-                    { rest_info.category != '' &&    <div className='find-rec-list' id="find-list">
-                        <div className='recommendResult' onClick={onClickDetail}>
+                    { rest_info.category != '' &&    <div className='find-rec-list' id="find-rec-list">
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info.id)}>
                         <img src={`/img/find/${rest_info.category}.png`}/>
                             <div className='restaurantName'>{rest_info.name}</div>
                             <div className='restaurantAddress'>{rest_info.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_one}
+                                </li>
+                                <li>
+                                👁{rest_info.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    ♥{rest_info.wish}
+                                </li>
+                                <li>
+                                📖{rest_info.review}
+                                </li>
+                            </ul>
                         </div>
-                        <div className='recommendResult' onClick={onClickDetail}>
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info_two.id)}>
                             {<img src={`/img/find/${rest_info_two.category}.png`}/>}
                             <div className='restaurantName'>{rest_info_two.name}</div>
                             <div className='restaurantAddress'>{rest_info_two.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info_two.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info_two.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_two}
+                                </li>
+                                <li>
+                                👁{rest_info_two.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                ♥{rest_info_two.wish}
+                                </li>
+                                <li>
+                                📖{rest_info_two.review}
+                                </li>
+                            </ul>
                         </div>
-                        <div className='recommendResult' onClick={onClickDetail}>
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info_three.id)}>
                         <img src={`/img/find/${rest_info_three.category}.png`}/>
                             <div className='restaurantName'>{rest_info_three.name}</div>
                             <div className='restaurantAddress'>{rest_info_three.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info_three.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info_three.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_three}
+                                </li>
+                                <li>
+                                👁{rest_info_three.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                ♥{rest_info_three.wish}
+                                </li>
+                                <li>
+                                📖{rest_info_three.review}
+                                </li>
+                            </ul>
                         </div>
-                        <div className='recommendResult' onClick={onClickDetail}>
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info_four.id)}>
                             <img src={`/img/find/${rest_info_four.category}.png`}/>
                             <div className='restaurantName'>{rest_info_four.name}</div>
                             <div className='restaurantAddress'>{rest_info_three.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info_four.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info_four.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_four}
+                                </li>
+                                <li>
+                                👁{rest_info_four.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                ♥{rest_info_four.wish}
+                                </li>
+                                <li>
+                                📖{rest_info_four.review}
+                                </li>
+                            </ul>
                         </div>
                     </div>}
                 </div>

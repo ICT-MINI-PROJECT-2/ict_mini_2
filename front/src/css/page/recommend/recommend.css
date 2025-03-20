@@ -21,7 +21,8 @@
 }
 
 #recommend-list{
-  height:800px;
+  height:15vw;
+  min-height:800px;
 }
 
 .left-menu-container,
@@ -65,12 +66,6 @@
 }
 
 
-.kickEatListText {
-  position: absolute;
-  font-size: 1vw;
-  transform: translate(-275%, 0%);
-}
-
 .kickEatListButton {
   width: 8vw;
   max-width: 112px;
@@ -78,6 +73,8 @@
   max-height: 112px;
   background-size: cover;
   cursor: pointer;
+  border: 3px solid #b21848;
+  border-radius: 10%;
 }
 
 
@@ -87,7 +84,7 @@
   justify-content: center;
   margin:auto;
   width: 60vw;
-  max-width:600px;
+  max-width:700px;
   height: 10vw;
   max-height:100px;
   gap: 1vw;
@@ -99,38 +96,13 @@
   height: 8vw;
   max-width: 112px;
   max-height: 112px;
-  border: 1px solid black;
+  border: 3px solid #b21848;
+  border-radius: 10%;
 }
 
-#locationSearch {
-  display: flex;
-  flex-direction: row;
-  width: 25vw;
-  height: 2vw;
+.select-menu > img {
+  border-radius: 10%;
 }
-
-#locationSearchBox, #locationSearchButton {
-  height: 100%; /* 원하는 동일한 높이로 설정 */
-  box-sizing: border-box; /* padding과 border를 height에 포함 */
-}
-
-#locationSearchBox {
-  width: 80%; /* 부모 요소의 75% */
-  border: 1px solid red;
-}
-
-#locationSearchButton {
-  width: 20%; /* 부모 요소의 25% */
-  border: 1px solid red;
-  font-size: 0.75vw;
-}
-
-#distanceOption {
-  font-size: 1vw;
-  width: 30%;
-}
-
-
 
 
 #left-select-button-kick, #right-select-button-kick,#left-select-button-eat, #right-select-button-eat{
@@ -147,27 +119,47 @@
 .find-rec-list{
   margin-top:60px;
   display:grid;
-  grid-template-columns: repeat(4,1fr);
-  width:100%;
+  grid-template-columns: repeat(2,1fr);
+  width:60%;
+  margin:auto;
+  max-width: 900px;
+  min-width: 600px;
 }
 .recommendResult{
   width:80%;
+  height:300px;
   margin:auto;
   padding:20px;
   border:2px solid #b21848;
   border-radius: 8px;
   cursor: pointer;
+  margin-bottom: 20px;
 }
+
+.recommendResult > ul {
+  display:flex;
+  width:100%;
+}
+
+.recommendResult > ul>li {
+  display:flex;
+  width:50%;
+}
+
 .recommendResult>img{
   width:100%;
+  object-fit: contain;
+  height:150px;
 }
 
 .restaurantName{
   text-align: center;
-  font-size:17px;
+  font-size:19px;
 }
 .restaurantAddress {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
+  margin-bottom:10px;
 }
