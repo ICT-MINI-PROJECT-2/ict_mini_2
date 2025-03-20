@@ -20,6 +20,7 @@ import InquiryList from "./page/board/InquiryPage"; // 중복된 import 정리 �
 import EventEdit from "./page/board/EventEdit"; // ✅ EventEdit 컴포넌트 import 추가!
 import NoticeEdit from "./page/board/NoticeEdit";
 import NoticePage from "./page/board/NoticePage";
+import FaqUpdate from "./page/board/FaqUpdate";
 import FreeWrite from "./page/board/FreeWrite";
 import FreePage from "./page/board/FreePage";
 import FreeView from "./page/board/FreeView";
@@ -45,6 +46,8 @@ function Body() {
       <Route path="/inquiry/list" element={<InquiryList />} /> {/* 문의 리스트 ✅ */}
       <Route path="/inquiry/write" element={<InquiryWrite />} /> {/* 글쓰기 ✅ */}
       <Route path="/inquiry/view/:id" element={<InquiryView />} /> {/* 글 보기 ✅ */}
+      <Route path="/faq/update/:id" element={<FaqUpdate />} />
+
 
       {/* 공지사항 게시판 (Notice) */}
       <Route path="/notice/page" element={<NoticePage/>}/>
