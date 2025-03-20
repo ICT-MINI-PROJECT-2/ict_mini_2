@@ -35,7 +35,7 @@ const NoticeWrite = () => {
             });
             
             alert('공지사항이 등록되었습니다.');
-            navigate('/notice/page');
+            navigate(`/boardPage?category=NOTICE`);
         } catch (error) {
             console.error('등록 실패:', error);
             alert('등록 실패: ' + (error.response?.data || error.message));

@@ -183,7 +183,7 @@ function BoardPage() {
     <div style={pageContainerStyle}>
       <div className="BoardPage_container" >
         <div className="BoardPage_row" >
-          {["EVENT", "INQUIRY", "NOTICE", "FAQ"].map((category) => (
+          {["EVENT", "INQUIRY", "NOTICE"].map((category) => (
             <div
               key={category}
               className={`BoardPage_p-2 ${activeCategory === category ? "BoardPage_active" : ""}`}

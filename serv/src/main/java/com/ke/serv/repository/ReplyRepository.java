@@ -12,4 +12,6 @@ import java.util.List;
 @Repository
 public interface ReplyRepository extends JpaRepository<ReplyEntity, Long> {
     List<ReplyEntity> findByEventOrderByCreateDateAsc(EventEntity event);
+
+
 }
