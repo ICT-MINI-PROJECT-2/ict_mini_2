@@ -20,7 +20,7 @@ const NoticeView = () => {
         } catch (error) {
             console.error('데이터 불러오기 실패:', error);
             alert('게시글을 불러오는데 실패했습니다.');
-            navigate('/notice/page');
+            navigate('/boardpage?category=NOTICE');
         }
     };
 
@@ -38,7 +38,7 @@ const NoticeView = () => {
             try {
                 await axios.delete(`http://localhost:9977/board/delete/${id}`);
                 alert('게시글이 삭제되었습니다.');
-                navigate('/notice/page');
+                navigate('/boardpage?category=NOTICE');
             } catch (error) {
                 console.error('삭제 실패:', error);
                 alert('게시글 삭제에 실패했습니다.');
@@ -71,7 +71,7 @@ const NoticeView = () => {
             <div className="notice-view-buttons">
                 <button 
                     className="notice-view-list-btn"
-                    onClick={() => navigate('/notice/page')}
+                    onClick={() => navigate('/boardpage?category=NOTICE')}
                 >
                     목록으로
                 </button>

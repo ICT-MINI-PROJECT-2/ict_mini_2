@@ -3,6 +3,7 @@ package com.ke.serv.repository;
 import com.ke.serv.entity.RestaurantEntity;
 import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.UserEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,6 +18,8 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
     void deleteById(int id);
 
+    List<ReviewEntity> findAllByUser(UserEntity entity, PageRequest of);
+    int countIdBy();
     List<ReviewEntity> findTop3ByOrderByRatingDesc();
 
     @Query(value = "SELECT * " +

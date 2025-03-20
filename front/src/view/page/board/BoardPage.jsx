@@ -72,10 +72,10 @@ function BoardPage() {
   const [currentCategory, setCurrentCategory] = useState(null)
 
   // 디버깅 로그
-  console.log("현재 URL:", location.pathname + location.search)
-  console.log("활성 카테고리:", activeCategory)
-  console.log("현재 표시 카테고리:", currentCategory)
-  console.log("컨텐츠 가시성:", contentVisible)
+  // console.log("현재 URL:", location.pathname + location.search)
+  // console.log("활성 카테고리:", activeCategory)
+  // console.log("현재 표시 카테고리:", currentCategory)
+  // console.log("컨텐츠 가시성:", contentVisible)
 
   // 해시 라우팅(#) 문제 해결을 위한 useEffect
   useEffect(() => {
@@ -88,7 +88,7 @@ function BoardPage() {
   // URL 변경 감지 및 activeCategory 업데이트
   useEffect(() => {
     const newCategory = getActiveCategory()
-    console.log("URL 변경 감지:", activeCategory, "->", newCategory)
+    // console.log("URL 변경 감지:", activeCategory, "->", newCategory)
 
     if (newCategory !== activeCategory) {
       setActiveCategory(newCategory)
@@ -121,7 +121,7 @@ function BoardPage() {
 
   // activeCategory 변경 감지 및 컨텐츠 업데이트
   useEffect(() => {
-    console.log("activeCategory 변경 감지:", currentCategory, "->", activeCategory)
+    // console.log("activeCategory 변경 감지:", currentCategory, "->", activeCategory)
 
     // activeCategory가 변경되면 페이드 아웃 후 페이드 인
     if (currentCategory !== null && currentCategory !== activeCategory) {
@@ -152,7 +152,7 @@ function BoardPage() {
 
   // 카테고리 컴포넌트 렌더링
   const renderCategoryComponent = () => {
-    console.log("렌더링 카테고리:", currentCategory)
+    // console.log("렌더링 카테고리:", currentCategory)
 
     if (!currentCategory) return null
 
@@ -207,6 +207,7 @@ function BoardPage() {
               </Link>
             </div>
           ))}
+          <Link to={'/free'}><div>자유게시판</div></Link>
         </div>
 
         <Suspense fallback={<LoadingFallback />}>

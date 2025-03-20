@@ -75,7 +75,7 @@ const NoticeWrite = () => {
                     <button
                         type="button"
                         className="notice-write-cancel"
-                        onClick={() => navigate('/notice/page')}
+                        onClick={() => navigate('/boardpage?category=NOTICE')}
                     >
                         취소
                     </button>

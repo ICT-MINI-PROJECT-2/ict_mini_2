@@ -56,6 +56,7 @@ public class ReviewController {
     public String write(ReviewEntity re, MultipartFile[] files, HttpServletRequest req) {
         List<File> file_list =null;
         System.out.println(re);
+
         try{
             ReviewEntity res_review = service.insert(re);
             file_list = new ArrayList<File>();
@@ -101,6 +102,7 @@ public class ReviewController {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return "fail";
         }
+
         return "ok";
     }
     @GetMapping("/getReviewById")

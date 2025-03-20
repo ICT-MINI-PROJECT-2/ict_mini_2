@@ -33,5 +33,7 @@ public class RestaurantDTO {
 
     private int review_count;
 
+    private int wish_count;
+
     private ReviewFileEntity review_file;
 }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../../css/page/mainpage.css';
 import Faded from '../../effect/Faded';
 import axios from 'axios';
+import ReviewModal from './find/ReviewModal';
 
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
@@ -10,6 +11,10 @@ import "slick-carousel/slick/slick-theme.css";
 
 function MainPage(){
 
+  const [reviewModal, setReviewModal] = useState({
+      isOpen: false,
+      selected:0
+  });
   const main_mount = useRef(false);
   const [event_list, setEvent_list] = useState([]);
     useEffect(()=>{
@@ -95,6 +100,7 @@ function MainPage(){
     return (
       <Faded>
         <div className="main-container">
+        {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
           <div className="main-content-title">
             ▶ <p>KICK!</p> 이벤트
           </div>
@@ -115,29 +121,29 @@ function MainPage(){
           <br /><br /><br /><br /><br /><br />
     
           <div className="main-content-title">
-            ▶ <p>먹 KICK!</p> 리스트
+            ▶ <p>EAT!</p> 오늘의 순위
           </div>
     
           <div className="main-today">
             <div className="main-today-left">
               <span>인기 리뷰</span>
-              <ul>
-                <li onClick={() => { setReviewRank(0) }} style={reviewRank == 0 ? {color: '#b21848', fontWeight: 'bold'} : {}}>1</li>
-                <li onClick={() => { setReviewRank(1) }} style={reviewRank == 1 ? {color: '#b21848', fontWeight: 'bold'} : {}}>2</li>
-                <li onClick={() => { setReviewRank(2) }} style={reviewRank == 2 ? {color: '#b21848', fontWeight: 'bold'} : {}}>3</li>
+              <ul className='main-today-btn'>
+                <li onClick={() => { setReviewRank(0) }} style={reviewRank == 0 ? {color: '#b21848', fontWeight: 'bold', zIndex:'3'} : {zIndex:'2',top:'10px'}}>1</li>
+                <li onClick={() => { setReviewRank(1) }} style={reviewRank == 1 ? {color: '#b21848', fontWeight: 'bold',zIndex:'3'} : {zIndex:'2',top:'10px'}}>2</li>
+                <li onClick={() => { setReviewRank(2) }} style={reviewRank == 2 ? {color: '#b21848', fontWeight: 'bold',zIndex:'3'} : {zIndex:'1',top:'10px'}}>3</li>
               </ul>
 
               {popReview.review_list != undefined && (
-                <div>
-                  <div style={{position: 'relative'}}>
+                <div style={{cursor:'pointer'}}onClick={()=>setReviewModal({isOpen:true, selected:popReview.review_list[reviewRank].id})}>
+                  <div className='pop-img-box'>
                     <img
                       id="pop-rev-photo"
                       src={`http://localhost:9977/uploads/review/${popReview.review_list[reviewRank].id}/${popReview.file_list[reviewRank].filename}`}
                     />
                     <img id="medal" src={`./img/main/medal${reviewRank+1}.png`}/>
                   </div>
-                  <div>
-                    <span style={{fontWeight: 'bold'}}>{popReview.review_list[reviewRank].comment}</span><br/>
+                  <div style={{marginTop:'10px'}}>
+                    <span style={{fontWeight: 'bold'}}>👤{popReview.review_list[reviewRank].user.username}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📖{popReview.review_list[reviewRank].comment}</span><br/>
                     <span className="star-rating">
                         <span
                           style={{
@@ -146,7 +152,7 @@ function MainPage(){
                           }}
                         ></span>
                       </span>
-                      <span style={{padding: '0 10px', position: 'relative'}}>
+                      <span style={{padding: '0 20px', position: 'relative'}}>
                         <h5 style={{display:'inline', fontSize: '20px', fontWeight: '100'}}>👁</h5>
                         <span>{popReview.review_list[reviewRank].hit}</span>
                       </span>
@@ -159,23 +165,23 @@ function MainPage(){
     
             <div className="main-today-right">
               <span>인기 맛집</span>
-              <ul>
-                <li onClick={() => { setRstrRank(0) }} style={rstrRank == 0 ? {color: '#b21848', fontWeight: 'bold'} : {}}>1</li>
-                <li onClick={() => { setRstrRank(1) }} style={rstrRank == 1 ? {color: '#b21848', fontWeight: 'bold'} : {}}>2</li>
-                <li onClick={() => { setRstrRank(2) }} style={rstrRank == 2 ? {color: '#b21848', fontWeight: 'bold'} : {}}>3</li>
+              <ul className='main-today-btn'>
+                <li onClick={() => { setRstrRank(0) }} style={rstrRank == 0 ? {color: '#b21848', fontWeight: 'bold', zIndex:'3'} : {zIndex:'2',top:'10px'}}>1</li>
+                <li onClick={() => { setRstrRank(1) }} style={rstrRank == 1 ? {color: '#b21848', fontWeight: 'bold',zIndex:'3'} : {zIndex:'2',top:'10px'}}>2</li>
+                <li onClick={() => { setRstrRank(2) }} style={rstrRank == 2 ? {color: '#b21848', fontWeight: 'bold',zIndex:'3'} : {zIndex:'1',top:'10px'}}>3</li>
               </ul>
 
               {popRstr[rstrRank] && (
                 <Link to={'/findInfo'} state={{ id: popRstr[rstrRank].id }}>
                   <>
-                    <div style={{position: 'relative'}}>
+                    <div className='pop-img-box'>
                       <img
                         id="pop-res-photo"
                         src={`http://localhost:9977/uploads/review/${popRstr[rstrRank].review_file.review.id}/${popRstr[rstrRank].review_file.filename}`}
                       />
                       <img id="medal" src={`./img/main/medal${rstrRank+1}.png`}/>
                     </div>
-                    <div style={{fontWeight: 'bold'}}>{popRstr[rstrRank].rname}</div>
+                    <div style={{fontWeight: 'bold',marginTop:'10px'}}>🍴{popRstr[rstrRank].rname}</div>
                     <div id="pop-res-detail">
                       <span className="star-rating">
                         <span
@@ -186,6 +192,7 @@ function MainPage(){
                         ></span>
                       </span>
                       <span style={{padding: '0 10px'}}>{popRstr[rstrRank].review_count}명</span>
+                      <span style={{padding: '0 10px'}}>♥ {popRstr[rstrRank].wish_count}</span>
                       <span style={{padding: '0 10px', position: 'relative'}}>
                         <h5 style={{display:'inline', fontSize: '20px', fontWeight: '100'}}>👁</h5>
                         <span>{popRstr[rstrRank].hit}</span>

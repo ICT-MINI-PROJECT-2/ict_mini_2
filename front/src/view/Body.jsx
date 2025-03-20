@@ -21,6 +21,10 @@ import EventEdit from "./page/board/EventEdit"; // ✅ EventEdit 컴포넌트 im
 import NoticeEdit from "./page/board/NoticeEdit";
 import NoticePage from "./page/board/NoticePage";
 import FaqUpdate from "./page/board/FaqUpdate";
+import FreeWrite from "./page/board/FreeWrite";
+import FreePage from "./page/board/FreePage";
+import FreeView from "./page/board/FreeView";
+import FreeEdit from "./page/board/FreeEdit";
 
 function Body() {
   return (
@@ -50,6 +54,12 @@ function Body() {
       <Route path="/notice/write" element={<NoticeWrite/>}/>
       <Route path="/notice/view/:id" element={<NoticeView/>}/>
       <Route path="/notice/edit/:id" element={<NoticeEdit/>}/>
+
+      {/* 자유 게시판 (Free) */}
+      <Route path="/free" element={<FreePage/>}/>
+      <Route path="/free/write" element={<FreeWrite/>}/>
+      <Route path="/free/view/:id" element={<FreeView/>}/>
+      <Route path="/free/edit/:id" element={<FreeEdit/>}/>
 
       {/* 추가된 경로 */}
       <Route path="/boardwrite" element={<InquiryWrite/>} /> {/* 추가된 경로 ✅ */}
