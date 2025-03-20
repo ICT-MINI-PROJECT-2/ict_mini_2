@@ -7,7 +7,6 @@ import axios from 'axios';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from 'react-router-dom';
 
 function MainPage(){
 
@@ -128,7 +127,7 @@ function MainPage(){
                 <li onClick={() => { setReviewRank(2) }} style={reviewRank == 2 ? {color: '#b21848', fontWeight: 'bold'} : {}}>3</li>
               </ul>
 
-              {popReview.review_list != undefined && (
+              {popReview.review_list != undefined && popReview.review_list.id != null && (
                 <div>
                   <div style={{position: 'relative'}}>
                     <img
