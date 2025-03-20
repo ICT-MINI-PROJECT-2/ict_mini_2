@@ -83,6 +83,7 @@ public class FindController {
             dto.setRating(re.getRating());
             dto.setReview_count(map.get(id));
             dto.setReview_file(review_service.selectReviewFileList(review_service.selectReviewList(re).get(0)).get(0));
+            dto.setWish_count(re.getWishCount());
             dtoList.add(dto);
         }
         dtoList.sort(Comparator.comparing(RestaurantDTO::getReview_count)
