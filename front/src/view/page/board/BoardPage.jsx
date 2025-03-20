@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import { ClipboardX, CalendarHeart, PatchQuestion} from 'react-bootstrap-icons'; // ClipboardX 아이콘 추가
 import InquiryPage from "./../board/InquiryPage"
 import EventList from "./EventPage"
 import NoticePage from "./NoticePage"
@@ -181,24 +182,28 @@ function BoardPage() {
 
   return (
     <div style={pageContainerStyle}>
-      <div className="BoardPage_container" >
-        <div className="BoardPage_row" >
-          {["EVENT", "INQUIRY", "NOTICE"].map((category) => (
+      <div className="BoardPage_container">
+        <div className="BoardPage_row">
+          {[
+            { category: "EVENT", icon: <CalendarHeart />, text: "EVENT" },
+            { category: "INQUIRY", icon: <PatchQuestion/>, text: "INQUIRY" },
+            // { category: "NOTICE", icon: <ClipboardX />, text: "NOTICE" },
+          ].map(({ category, icon, text }) => (
             <div
               key={category}
-              className={`BoardPage_p-2 ${activeCategory === category ? "BoardPage_active" : ""}`}
-              
+              className={`BoardPage_category-button ${activeCategory === category ? "BoardPage_active" : ""}`}
               onClick={() => handleCategoryClick(category)}
             >
               <Link
                 to={`/boardpage?category=${category}`}
-                className={activeCategory === category? "BoardPage_active-link":"BoardPage_link"}
+                className="BoardPage_link"
                 onClick={(e) => {
-                  e.preventDefault() // 기본 링크 동작 방지
-                  handleCategoryClick(category)
+                  e.preventDefault(); // 기본 링크 동작 방지
+                  handleCategoryClick(category);
                 }}
               >
-                {category}
+                <div className="icon">{icon}</div>
+                <div className="text">{text}</div>
               </Link>
             </div>
           ))}
