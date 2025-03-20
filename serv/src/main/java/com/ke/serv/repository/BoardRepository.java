@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository // 추가
 public interface BoardRepository extends JpaRepository<EventEntity, Integer> {
 
@@ -44,4 +46,6 @@ public interface BoardRepository extends JpaRepository<EventEntity, Integer> {
             @Param("category") EventEntity.BoardCategory category,
             @Param("useridKeyword") String useridKeyword,
             Pageable pageable);
+
+    List<EventEntity> findAllByCategoryOrderByStartDateAsc(EventEntity.BoardCategory category);
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import './NoticeEdit.css';
 
 const NoticeEdit = () => {
     const navigate = useNavigate();
@@ -64,39 +65,40 @@ const NoticeEdit = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2>{id ? '공지사항 수정' : '공지사항 작성'}</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label className="form-label">제목</label>
+        <div className="notice-edit-container">
+            <h2 className="notice-edit-title">
+                {id ? '공지사항 수정' : '공지사항 작성'}
+            </h2>
+            <form onSubmit={handleSubmit} className="notice-edit-form">
+                <div className="notice-edit-group">
+                    <label className="notice-edit-label">제목</label>
                     <input
                         type="text"
-                        className="form-control"
+                        className="notice-edit-input"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
                 </div>
 
-                <div className="mb-3">
-                    <label className="form-label">내용</label>
+                <div className="notice-edit-group">
+                    <label className="notice-edit-label">내용</label>
                     <textarea
-                        className="form-control"
+                        className="notice-edit-textarea"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         rows="10"
                         required
-                        style={{ resize: 'vertical' }}
                     />
                 </div>
 
-                <div className="mb-3">
-                    <button type="submit" className="btn btn-primary">
+                <div className="notice-edit-buttons">
+                    <button type="submit" className="notice-edit-submit">
                         {id ? '수정하기' : '등록하기'}
                     </button>
                     <button
                         type="button"
-                        className="btn btn-secondary ms-2"
+                        className="notice-edit-cancel"
                         onClick={() => navigate('/notice/page')}
                     >
                         취소

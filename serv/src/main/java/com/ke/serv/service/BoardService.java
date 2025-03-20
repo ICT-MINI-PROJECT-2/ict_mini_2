@@ -27,7 +27,6 @@ import java.util.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -590,6 +589,7 @@ public class BoardService {
 
         return conversation;
     }
-
-
+    public List<EventEntity> getEventByDate(BoardCategory category){
+        return boardRepository.findAllByCategoryOrderByStartDateAsc(category);
+    }
 }

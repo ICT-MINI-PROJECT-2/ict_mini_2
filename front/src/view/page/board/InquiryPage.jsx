@@ -76,11 +76,11 @@ function InquiryList() {
                     />
                 </div>
 
-                <div className="InquiryList_write-button-container">
+ 
                     {sessionStorage.getItem("loginId") && (
-                        <Link to="/boardwrite?category=INQUIRY" className="InquiryList_btn InquiryList_btn-primary">글쓰기</Link>
+                        <Link to="/boardwrite?category=INQUIRY" id='inquiry-write-button'>글쓰기</Link>
                     )}
-                </div>
+     
             </div>
 
             <div className="InquiryList_row InquiryList_header-row">
