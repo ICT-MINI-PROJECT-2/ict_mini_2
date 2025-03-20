@@ -60,7 +60,7 @@ function FindListItem({restaurant}) {
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
                         </span>
                         <span> ({restaurant.rating}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
-                    <div>조회수 {restaurant.hit} / ♥ {restaurant.wishCount}</div>
+                    <div>👁 {restaurant.hit} / ♥ {restaurant.wishCount}</div>
                 </div>
             </div>
         

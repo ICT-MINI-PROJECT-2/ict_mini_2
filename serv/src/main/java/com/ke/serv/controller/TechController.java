@@ -1,11 +1,9 @@
 package com.ke.serv.controller;
 
-import com.ke.serv.entity.EventEntity;
-import com.ke.serv.entity.RestaurantEntity;
-import com.ke.serv.entity.UserEntity;
-import com.ke.serv.entity.WishlistEntity;
+import com.ke.serv.entity.*;
 import com.ke.serv.service.BoardService;
 import com.ke.serv.service.RestaurantService;
+import com.ke.serv.service.TechService;
 import com.ke.serv.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -31,6 +29,7 @@ public class TechController {
     private final UserService service;
     private final BoardService board_service;
     private final RestaurantService rest_service;
+    private final TechService tech_service;
 
     @GetMapping("/event")
     public List<EventEntity> event(@PageableDefault(sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -137,6 +136,11 @@ public class TechController {
         res_cnt.setWishCount(cnt);
         rest_service.addRestaurantByAPI(res_cnt);
         return updatedWishlist;
+    }
+    @PostMapping("/sendDm")
+    public String sendDm(@RequestBody DmEntity entity){
+        tech_service.insertDm(entity);
+        return "ok";
     }
     /*
     @PostMapping("/getImg")
