@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
-
+import Interact2 from '../Interact2';
 import "./../board/FreePage.css"
 
 function FreePage() {
@@ -13,6 +13,11 @@ function FreePage() {
     const [searchWord, setSearchWord] = useState('');
     const [totalRecord, setTotalRecord] = useState(0);
     const [currentView, setCurrentView] = useState('all');
+
+    const [interact2, setInteract2] = useState({
+        isOpen:false,
+        selected:0
+    });
 
     const mounted = useRef(false);
     useEffect(()=>{
@@ -85,6 +90,8 @@ function FreePage() {
 
     return (
         <div className="free-container">
+            {interact2.isOpen && <Interact2 interact2={interact2} setInteract2={setInteract2}/>}
+            <h2>자유게시판</h2>
             <div id="search">
                 {
                     currentView === 'all' ? 
@@ -113,7 +120,23 @@ function FreePage() {
                     currentView === 'all' && (
                         <>
                             {renderList(noticeList.slice(0, 2), true)}
-                            {renderList(boardData)}
+                            boardData.map(record=>{
+                              return (
+                                  <ul className="free-list">
+                                      <li>
+                                          {record.id}
+                                      </li>
+                                      <li style={{textAlign: 'left'}}>
+                                          <Link to={`/free/view/${record.id}`}>
+                                              <span>{record.title}</span>
+                                          </Link>
+                                      </li>
+                                      <li style={{cursor:'pointer'}}onClick={(e)=>{ !interact2.isOpen && sessionStorage.getItem("id") !=record.user.id && setInteract2({selected:record.user, isOpen:true, where:e})}}><span>{record.user.username}</span></li>
+                                      <li>{record.hit}</li>
+                                      <li>{record.writedate}</li>
+                                  </ul>
+                              )
+                          })
                         </>
                     )
                 }
