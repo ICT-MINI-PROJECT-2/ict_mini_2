@@ -1,47 +1,98 @@
 .about-scroll-container {
-    overflow-y: auto;
-    width: 100vw;
-    height: 100vh;
-  }
-  
-  .about-page {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.3s ease-in-out;
-    position: relative; /* 추가: text-overlay의 기준점 설정 */
-  }
-  
-  .about-image {
-    width: 100%;
-    max-width: 1200px;
-    height: auto;
-    object-fit: contain;
-  }
-
-   
-  .text-overlay {
-    position: absolute; /* 추가: 이미지 위에 텍스트를 겹치도록 설정 */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    text-align: center;
-  }
-  
-  .slider-text {
-    font-size: 1.5em;
-    color: white; /* 텍스트 색상을 흰색으로 변경 (선택 사항) */
-    padding: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 텍스트 그림자 추가 (선택 사항) */
-  }
-.about-container{
-    position: relative;
-    padding-top:150px;
+  overflow-y: scroll;
+  width: 100vw;
+  height: 88vh;
+  scroll-snap-type: y mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-@media(max-width : 600px){
-    
+.about-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.about-page {
+  width: 100vw;
+  height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease-in-out;
+  position: relative;
+  scroll-snap-align: start;
+  padding: 5vh 0;
+}
+
+.about-image {
+  max-height: 80vh;  
+  width: 100%;  
+  object-fit: contain;
+}
+
+.text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+}
+
+.slider-text {
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-size: 1.5em;
+  color: #2c0813;
+  padding: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  opacity: 0; 
+}
+
+.slider-text.focus-in-expand-fwd {
+    -webkit-animation: focus-in-expand-fwd 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    animation: focus-in-expand-fwd 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+
+@-webkit-keyframes focus-in-expand-fwd {
+  0% {
+    letter-spacing: -0.5em;
+    -webkit-transform: translateZ(-800px);
+            transform: translateZ(-800px);
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+    -webkit-filter: blur(0);
+            filter: blur(0);
+    opacity: 1;
+  }
+}
+@keyframes focus-in-expand-fwd {
+  0% {
+    letter-spacing: -0.5em;
+    -webkit-transform: translateZ(-800px);
+            transform: translateZ(-800px);
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+    -webkit-filter: blur(0);
+            filter: blur(0);
+    opacity: 1;
+  }
+}
+
+
+.about-container {
+  position: relative;
+  padding-top: 150px;
+}
+
+@media (max-width: 600px) {
 }
