@@ -5,7 +5,8 @@ import activatedLogo from '../../../img/kickeat_logo.png';
 import disabledLogo from '../../../img/kickeat_logo_disabled.png';
 import emptyImage from '../../../img/empty_select_menu.png';
 import searchIcon from '../../../img/search.png';
-import refreshIcon from '../../../img/refresh.png'
+import refreshIcon from '../../../img/refresh.png';
+import questionMarkIcon from '../../../img/questionMarkIcon.png';
 import Post from '../../user/Post';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -346,6 +347,8 @@ function Recommend() {
             recommnedContainer.style.transition = 'all 1.5s';
             recommnedContainer.style.paddingTop = '75px';
             recommnedContainer.style.height = '0px';
+            let recCon = document.getElementById('recommend-list');
+            recCon.style.height = '850px';
 
 
             for (let i = 1; i <= 4; i++) {
@@ -543,25 +546,25 @@ function Recommend() {
         reqeustToServer();
     }
 
-    const resetResultStyle = () => {
-        document.querySelectorAll(".recommendResult").forEach((element) => {
-            element.style.backgroundColor = "white";
-        });
+    // const resetResultStyle = () => {
+    //     document.querySelectorAll(".recommendResult").forEach((element) => {
+    //         element.style.backgroundColor = "white";
+    //     });
 
-        setSelectedRecommendId(0);
-    }
+    //     setSelectedRecommendId(0);
+    // }
 
-    const clickRecommendElement = (event) => {
-        document.querySelectorAll(".recommendResult").forEach((element) => {
-            element.style.backgroundColor = "white";
-        });
+    // const clickRecommendElement = (event) => {
+    //     document.querySelectorAll(".recommendResult").forEach((element) => {
+    //         element.style.backgroundColor = "white";
+    //     });
 
-        const parentElement = event.currentTarget;
-        const siblings = parentElement.parentNode.children;
-        const index = Array.from(siblings).indexOf(parentElement);
-        parentElement.style.backgroundColor = 'lightgray';
-        setSelectedRecommendId(recommendResultId[index]);
-    }
+    //     const parentElement = event.currentTarget;
+    //     const siblings = parentElement.parentNode.children;
+    //     const index = Array.from(siblings).indexOf(parentElement);
+    //     parentElement.style.backgroundColor = 'lightgray';
+    //     setSelectedRecommendId(recommendResultId[index]);
+    // }
 
     return (
         <Faded>
@@ -594,6 +597,13 @@ function Recommend() {
                                 }
                             </div>
                         </div>
+                        <div style={{position: 'absolute', border: '1px solid #b21848', borderRadius: '10px',width: '16vw',height: '5vw', maxHeight: '100px', maxWidth: '320px', transform: 'translate(320%, 50%)', fontSize: 'clamp(0.7px, 0.7vw, 15px)'}}>
+                            <div style={{position: 'absolute', width: '10%', height: '32%', transform: 'translate(0%, -140%)'}}><img src={questionMarkIcon} style={{width: '100%'}}/></div>
+                            <div style={{textAlign: 'center'}}>🍽️맛집 추천 사용법🍽️</div>
+                            &nbsp;1. 메뉴 카테고리를 EAT 또는 KICK하여 선택<br/>
+                            &nbsp;2. KICK EAT 로고를 클릭<br/>
+                            &nbsp;3. 입력된 장소 주변 맛집 추천 받기<br/>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -612,6 +622,7 @@ function Recommend() {
                         </div>
                         <button className='kickEatListButton' id='kickEatListButton' style={{ backgroundImage: `url(${disabledLogo})` }} onClick={showRecommendList}></button>
                     </div>
+                    
                 </div>
                    <div id="recommend-list">
                   { rest_info.category != '' && 
