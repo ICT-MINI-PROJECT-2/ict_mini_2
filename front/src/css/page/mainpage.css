@@ -128,11 +128,11 @@
     margin:auto;
     padding: 20px 0;
     position: relative;
-    border: 2px solid #b21848;
+    border:1px solid #b21848;
     border-radius:10px;
     box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    5px 5px 15px 0px rgba(0,0,0,.6),
-    2px 2px 5px 0px rgba(0,0,0,.6);
+    3px 3px 10px 0px rgba(139, 139, 139, 0.6),
+    2px 2px 5px 0px rgba(139, 139, 139, 0.6);
     transition: all 0.7s;
 }
 #pop-res-photo, #pop-rev-photo {
