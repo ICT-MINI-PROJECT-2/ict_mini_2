@@ -90,7 +90,6 @@ function FreePage() {
 
     return (
         <div className="free-container">
-            {interact2.isOpen && <Interact2 interact2={interact2} setInteract2={setInteract2}/>}
             <h2>자유게시판</h2>
             <div id="search">
                 {
@@ -112,7 +111,7 @@ function FreePage() {
                 <ul className="free-list-header">
                     <li>번호</li>
                     <li>제목</li>
-                    <li>작성자</li>
+                    <li id='whoo' style={{position:'relative'}}>작성자{interact2.isOpen && <Interact2 interact2={interact2} setInteract2={setInteract2}/>}</li>
                     <li>조회수</li>
                     <li>등록일</li>
                 </ul>
@@ -120,7 +119,24 @@ function FreePage() {
                     currentView === 'all' && (
                         <>
                             {renderList(noticeList.slice(0, 2), true)}
-                            {renderList(boardData)}
+                            { boardData.map(record=>{
+                              return (
+                                  <ul className="free-list">
+                                      <li>
+                                          {record.id}
+                                      </li>
+                                      <li style={{textAlign: 'left'}}>
+                                          <Link to={`/free/view/${record.id}`}>
+                                              <span>{record.title}</span>
+                                          </Link>
+                                      </li>
+                                      <li style={{cursor:'pointer'}}onClick={(e)=>{ !interact2.isOpen && sessionStorage.getItem("id") !=record.user.id && setInteract2({selected:record.user, isOpen:true, where:e})}}><span>{record.user.username}</span></li>
+                                      <li>{record.hit}</li>
+                                      <li>{record.writedate}</li>
+                                  </ul>
+                              )
+                          })
+                        }
                         </>
                     )
                 }

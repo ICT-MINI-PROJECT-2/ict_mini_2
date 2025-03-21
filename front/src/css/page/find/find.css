@@ -414,7 +414,7 @@
 
 .review-body {
     border-radius: 8px;
-    border: 2px solid gray;
+    border: 2px solid #ddd;
     backdrop-filter: blur(20px);
     height:70%;
     width:99.5%;
@@ -471,7 +471,7 @@ align-items: center;
     border-radius: 10px;
     margin-left:2vw;
     position: relative;
-    border: 2px solid gray;
+    border: 1px solid gray;
     cursor: pointer;
 }
 
@@ -548,7 +548,7 @@ position: absolute;
     padding-left: 40px;
     padding-top:15px;
     border-radius: 0px 0px 8px 8px;
-    border: 2px solid gray;
+    border: 2px solid #ddd;
 }
 .boxes{
     display:flex;

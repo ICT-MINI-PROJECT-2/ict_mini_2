@@ -73,6 +73,6 @@
 }
 #login-right > input:focus, #login-right-two > input:focus {
 	outline:none;
-	background-color:#b21848;
+	background-color:#eb769b;
 	color:white;
 }

@@ -88,14 +88,14 @@
 
 #signup-right > input:focus, #signup-right-two > input:focus {
 	outline:none;
-	background-color:#b21848;
+	background-color:#eb769b;
 	color:white;
 }
 
 .buttons{
 	border-radius:10px;
 	color:white;
-    font-size:20px;
+    font-size:16px;
 	background:#b21848;
     margin-left:20px;
     border:none;
