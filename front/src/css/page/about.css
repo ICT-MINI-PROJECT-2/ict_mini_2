@@ -1,32 +1,30 @@
 .about-scroll-container {
-  overflow-y: scroll;
+  overflow-y: hidden;
   width: 100vw;
-  height: 88vh;
+  height: calc(100vh - 180px); 
   scroll-snap-type: y mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.about-scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
 .about-page {
   width: 100vw;
-  height: 88vh;
+  height: calc(100vh - 180px); 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   transition: opacity 0.3s ease-in-out;
   position: relative;
   scroll-snap-align: start;
-  padding: 5vh 0;
+  padding: 0; 
 }
 
 .about-image {
-  max-height: 80vh;  
-  width: 100%;  
+  max-height: 100%; 
+  width: 100%;
   object-fit: contain;
+  margin: auto 0;
 }
 
 .text-overlay {
@@ -44,7 +42,7 @@
   color: #2c0813;
   padding: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  opacity: 0; 
+  opacity: 2; 
 }
 
 .slider-text.focus-in-expand-fwd {
