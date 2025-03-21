@@ -46,7 +46,7 @@ function FreeView(){
             .then(res=>{
                 console.log(res.data);
                 if (res.data == 0) {
-                    navigate('/free');
+                    navigate('/boardpage?category=BOARD');
                 } else {
                     alert("게시글이 삭제되지 않았습니다.")
                 }
@@ -59,34 +59,14 @@ function FreeView(){
 
     return (
         <div className="view-container">
-            <table className="table">
-                <tbody>
-                    <tr>
-                        <td>글번호</td>
-                        <td>{record.id}</td>
-                    </tr>
-                    <tr>
-                        <td>작성자</td>
-                        <td>{record.username}</td>
-                    </tr>
-                    <tr>
-                        <td>조회수</td>
-                        <td>{record.hit}</td>
-                    </tr>
-                    <tr>
-                        <td>등록일</td>
-                        <td>{record.writedate}</td>
-                    </tr>
-                    <tr>
-                        <td>제목</td>
-                        <td>{record.title}</td>
-                    </tr>
-                    <tr>
-                        <td>글내용</td>
-                        <td>{record.content}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className="view-box">
+                <div>글번호 {record.id}</div>
+                <div>제목 {record.title}</div>
+                <div>작성자 {record.username}</div>
+                <div>조회수 {record.hit}</div>
+            </div>
+            <div>등록일 {record.writedate}</div>
+            <div>글내용 {record.content}</div>
 
 
             {

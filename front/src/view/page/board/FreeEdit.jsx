@@ -51,7 +51,7 @@ function FreeEdit() {
         axios.post('http://localhost:9977/free/editOk', editData)
         .then(res=>{
             if (res.data == 'success') {
-                navigate('/free');
+                navigate('/boardpage?category=BOARD');
             } else if (res.data == 'fail') {
                 alert("게시글이 수정되지 않았습니다.");
             }
