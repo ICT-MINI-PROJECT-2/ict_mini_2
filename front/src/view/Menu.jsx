@@ -64,10 +64,10 @@ function Menu(){
                 <Link to="/recommend">맛집 추천</Link>
                 </li>
                 <li>
-                <Link to="/free">자유게시판</Link>
+                <Link to="/BoardPage?category=BOARD">자유게시판</Link>
                 </li>
                 <li>
-                <Link to="/BoardPage">이벤트</Link>
+                <Link to="/BoardPage">1:1문의</Link>
                 </li>
                 {sessionStorage.getItem("loginStatus") === 'Y' ? <li>
                     <Link onClick={logout}>로그아웃</Link>

@@ -189,8 +189,8 @@ function BoardPage() {
         { activeCategory !=='INQUIRY' &&
         <div className="BoardPage_row">
           {[
-            { category: "EVENT", icon: <CalendarHeart />, text: "EVENT" },
             { category: "BOARD", icon: <Clipboard2/>, text: "BOARD" },
+            { category: "EVENT", icon: <CalendarHeart />, text: "EVENT" },
             // { category: "NOTICE", icon: <ClipboardX />, text: "NOTICE" },
           ].map(({ category, icon, text }) => (
             <div
