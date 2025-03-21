@@ -13,6 +13,7 @@ function Find(){
     const [pageNumber, setPageNumber] = useState([]);
     const [nowPage, setNowPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [totalRecord, setTotalRecord] = useState(0);
     const [sort, setSort] = useState('restaurant_no');
     const firstSearch = useRef(false);
 
@@ -64,6 +65,7 @@ function Find(){
                 setNowPage(1);
             }
             setTotalPage(pvo.totalPage);
+            setTotalRecord(pvo.totalRecord);
         })
         .catch(function(err){
             console.log(err);
@@ -270,14 +272,24 @@ function Find(){
                     <div id="search-btn" onClick={(e) =>{searchList(e)}}><img src={searchImg} width='40'/></div>
                 </div>
                 {
+                    
                     firstSearch.current && 
-                    <div className='sort-btn'>
-                        <div onClick={()=>{setSort("hit")}} style={sort == 'hit' ? {color: '#b21848', fontWeight: 'bold'} : {}}>조회수 순</div>
-                        <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>평점 순</div>
-                        <div onClick={()=>{setSort("reviewCount")}} style={sort == 'reviewCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
-                        <div onClick={()=>{setSort("wishCount")}} style={sort == 'wishCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>찜 순</div>
-                    </div>
+                    <>
+                        <div className='sort-btn'>
+                            <div onClick={()=>{setSort("hit")}} style={sort == 'hit' ? {color: '#b21848', fontWeight: 'bold'} : {}}>조회수 순</div>
+                            <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>평점 순</div>
+                            <div onClick={()=>{setSort("reviewCount")}} style={sort == 'reviewCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
+                            <div onClick={()=>{setSort("wishCount")}} style={sort == 'wishCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>찜 순</div>
+                        </div>
+                        <div id="total-record">총 식당 수:
+                            {
+                                totalRecord >= 1000 ? <span>1000+</span> : <span>{totalRecord}개</span>
+                            }
+                        </div>
+                    </>
                 }
+
+
                 <div className='find-list'>
                     {list.map((item,idx)=>
                             <FindListItem key={item.id} restaurant={item}/>

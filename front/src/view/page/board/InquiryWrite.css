@@ -70,22 +70,92 @@
     text-align: right;
     margin-top: 20px;
 }
-/* 버튼 스타일 */
-.InquiryWrite_btn-style {
-	/* background: linear-gradient(45deg, #00bcd4, #0288d1); 파란색과 바다색 그라데이션 */
-	color: white;
-	border: none;
-	padding: 12px 24px;
-    font-size: 16px;
-	cursor: pointer;
-	border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    text-decoration: none; /* a태그에 스타일 상속 방지 */
-    display: inline-block; /* a태그에서 버튼처럼 사용하기 위해 */
+
+
+
+
+
+.InquiryWrite_btn-style-list {
+  background-color: white;
+  position: relative;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  margin-right: 10px;
+  height:45px;
+  line-height:26px;
+  padding:10px 20px;
+  border: 2px solid #b21848;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-weight:bold;
+  border-radius: 5px;
+  z-index: 0;
 }
 
-.InquiryWrite_btn-style:hover {
-    background: linear-gradient(45deg, #ccc); /* hover 시 더 짙은 파란색과 네이비 */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+.InquiryWrite_btn-style-list:hover{
+  color:white;
 }
+
+.InquiryWrite_btn-style-list:after{
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: -2px;
+  padding:5.8px 7px;
+  width: 0px;
+  height: 0px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  transition-duration: 0.3s;
+  opacity: 0;
+  background-color: #b21848;
+  z-index: -1;
+}
+
+.InquiryWrite_btn-style-list:hover:after {
+  width: 80%;
+  height:34px;
+  opacity: 1;
+}
+
+
+
+.InquiryWrite_btn-style-sign {
+    background-color: white;
+    position: relative;
+    font-family: "IBM Plex Sans KR", sans-serif;
+    margin-right: 10px;
+    height:45px;
+    line-height:26px;
+    padding:10px 20px;
+    border: 2px solid #b21848;
+    font-family: "IBM Plex Sans KR", sans-serif;
+    font-weight:bold;
+    border-radius: 5px;
+    z-index: 0;
+  }
+  
+  .InquiryWrite_btn-style-sign:hover{
+    color:white;
+  }
+  
+  .InquiryWrite_btn-style-sign:after{
+    content: "";
+    position: absolute;
+    left: 0px;
+    bottom: -2px;
+    padding:5.8px 7px;
+    width: 0px;
+    height: 0px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    transition-duration: 0.3s;
+    opacity: 0;
+    background-color: #b21848;
+    z-index: -1;
+  }
+  
+  .InquiryWrite_btn-style-sign:hover:after {
+    width: 80%;
+    height:34px;
+    opacity: 1;
+  }
+

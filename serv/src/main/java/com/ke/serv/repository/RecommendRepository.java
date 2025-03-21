@@ -19,4 +19,11 @@ public interface RecommendRepository extends JpaRepository<RestaurantEntity, Int
             nativeQuery = true)
     List<RestaurantEntity> findByCategoryAndLocation(@Param("category") String category,
                                                      @Param("location") String location);
+
+    @Query(value = "SELECT * " +
+            "FROM restaurant r " +
+            "WHERE r.location LIKE %:location% " +
+            "AND r.category_1 IN :category",
+            nativeQuery = true)
+    List<RestaurantEntity> findRestByLocAndTag(@Param("category") List<String> a, @Param("location") String b);
 }

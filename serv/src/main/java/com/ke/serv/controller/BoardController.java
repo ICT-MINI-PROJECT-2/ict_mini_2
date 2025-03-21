@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class BoardController {
         response.put("totalPages", boardPage.getTotalPages());
         response.put("totalElements", boardPage.getTotalElements());
 
+        System.out.println(response);
         return ResponseEntity.ok(response);
     }
 
@@ -218,5 +220,27 @@ public class BoardController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("대화 내용 조회 중 오류 발생: " + e.getMessage());
         }
+    }
+
+    // ✅ FAQ 수정 API 추가
+    @PutMapping("/update/{id}")
+    public ResponseEntity<EventEntity> updateBoard(@PathVariable Long id, @RequestBody EventEntity updatedBoard) {
+        EventEntity board = boardService.findById(id);
+
+        if (board == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        //권한 검사
+        if (!"admin1234".equals(board.getUser().getUserid())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        board.setSubject(updatedBoard.getSubject());
+        board.setContent(updatedBoard.getContent());
+        board.setModifiedDate(LocalDateTime.now());
+
+        EventEntity savedBoard = boardService.update(board);
+        return ResponseEntity.ok(savedBoard);
     }
 }

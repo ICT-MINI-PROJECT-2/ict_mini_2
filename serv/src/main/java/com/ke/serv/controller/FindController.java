@@ -90,7 +90,9 @@ public class FindController {
                 .thenComparing(RestaurantDTO::getRating).reversed());
 
         List<RestaurantDTO> topThreeList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+
+        for (int i = 0; i < dtoList.size(); i++) {
+            if (i == 3) break;
             topThreeList.add(dtoList.get(i));
         }
 
