@@ -6,6 +6,7 @@ function Interact({interact, setInteract}){
     const [dm, setDm] = useState(false);
     const [report, setReport] = useState(false);
     useEffect(()=>{
+
     },[interact]);
     return(
         <>

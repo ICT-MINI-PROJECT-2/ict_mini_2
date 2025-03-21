@@ -90,7 +90,6 @@ function FreePage() {
 
     return (
         <div className="free-container">
-            {interact2.isOpen && <Interact2 interact2={interact2} setInteract2={setInteract2}/>}
             <h2>자유게시판</h2>
             <div id="search">
                 {
@@ -112,7 +111,7 @@ function FreePage() {
                 <ul className="free-list-header">
                     <li>번호</li>
                     <li>제목</li>
-                    <li>작성자</li>
+                    <li id='whoo' style={{position:'relative'}}>작성자{interact2.isOpen && <Interact2 interact2={interact2} setInteract2={setInteract2}/>}</li>
                     <li>조회수</li>
                     <li>등록일</li>
                 </ul>
@@ -120,7 +119,7 @@ function FreePage() {
                     currentView === 'all' && (
                         <>
                             {renderList(noticeList.slice(0, 2), true)}
-                            boardData.map(record=>{
+                            { boardData.map(record=>{
                               return (
                                   <ul className="free-list">
                                       <li>
@@ -137,6 +136,7 @@ function FreePage() {
                                   </ul>
                               )
                           })
+                        }
                         </>
                     )
                 }
