@@ -107,7 +107,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
         const listItems = review_list.map((item, idx) =>
             (
             <li key={'review-' + idx} className="review-chat-box"><div className="container-msg">
-                <div style={{cursor:'pointer'}} className='message-who'>{interact.isOpen && sessionStorage.getItem("id") != item.entity.user.id && <Interact interact={interact} setInteract={setInteract}/>}<span onClick={()=>setInteract({selected:item.entity.user, isOpen:true})}>{item.entity.user.username}</span></div>
+                <div style={{cursor:'pointer'}} className='message-who'><span onClick={(e)=>{sessionStorage.getItem("id") != item.entity.user.id && setInteract({selected:item.entity.user, isOpen:true , where:e});}}>{item.entity.user.username}</span></div>
                 <div className="message-container">
                   <div className='message-box' onClick={()=>setReviewModal({isOpen:true, selected:item.entity.id})}>
                     <ul>
@@ -203,6 +203,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     return(
         <div id='review'>
+            {interact.isOpen && <Interact interact={interact} setInteract={setInteract}/>}
             {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
         {
             review_list.length !== 0 ?
