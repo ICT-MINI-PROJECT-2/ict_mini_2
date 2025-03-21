@@ -95,8 +95,8 @@ function FreePage() {
             <div id="search">
                 {
                     currentView === 'all' ? 
-                    <div onClick={()=>{setCurrentView('notice')}}>공지 전체 목록</div>
-                    : <div onClick={()=>{setCurrentView('all')}}>게시글 목록</div>
+                    <div onClick={()=>{setCurrentView('notice')}}>공지 전체 목록▷</div>
+                    : <div onClick={()=>{setCurrentView('all')}}>게시글 목록▷</div>
                 }
                 <input type="text" placeholder="검색어를 입력하세요" name="searchWord"
                     value={''||searchWord}  onChange={searchWordChange} onKeyUp={(e) => handleSearch(e)}
@@ -120,23 +120,7 @@ function FreePage() {
                     currentView === 'all' && (
                         <>
                             {renderList(noticeList.slice(0, 2), true)}
-                            boardData.map(record=>{
-                              return (
-                                  <ul className="free-list">
-                                      <li>
-                                          {record.id}
-                                      </li>
-                                      <li style={{textAlign: 'left'}}>
-                                          <Link to={`/free/view/${record.id}`}>
-                                              <span>{record.title}</span>
-                                          </Link>
-                                      </li>
-                                      <li style={{cursor:'pointer'}}onClick={(e)=>{ !interact2.isOpen && sessionStorage.getItem("id") !=record.user.id && setInteract2({selected:record.user, isOpen:true, where:e})}}><span>{record.user.username}</span></li>
-                                      <li>{record.hit}</li>
-                                      <li>{record.writedate}</li>
-                                  </ul>
-                              )
-                          })
+                            {renderList(boardData)}
                         </>
                     )
                 }
@@ -148,7 +132,7 @@ function FreePage() {
 
             <div className="write-btn">
             {
-                sessionStorage.getItem("loginStatus") == "Y" && 
+                sessionStorage.getItem("loginStatus") == "Y" && currentView === 'all' &&
                 <Link state={{category: 'free'}} to={'/free/write'}><div>글쓰기</div></Link>
             }
             {
@@ -171,7 +155,7 @@ function FreePage() {
                         })()
                     }
                     {
-                        pageNumber.map(function(pg){
+                        pageNumber.map(pg=>{
                             var activeStyle = 'free-page-item';
                             if (nowPage == pg) var activeStyle = 'free-page-item active';
                             return (<a className="free-page-link" onClick={()=>setNowPage(pg)}>
