@@ -28,7 +28,6 @@ function FindListItem({restaurant}) {
             })
             .then(res => {
                 setWish(res.data);
-                console.log(restaurant.categoryOne);
             })
             .catch(err => console.log(err));
         }

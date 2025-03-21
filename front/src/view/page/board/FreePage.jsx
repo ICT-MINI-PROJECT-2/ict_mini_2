@@ -6,11 +6,13 @@ import "./../board/FreePage.css"
 
 function FreePage() {
     const [boardData, setBoardData] = useState([]);
+    const [noticeList, setNoticeList] = useState([]);
     const [pageNumber, setPageNumber] = useState([]);
     const [nowPage, setNowPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const [searchWord, setSearchWord] = useState('');
     const [totalRecord, setTotalRecord] = useState(0);
+    const [currentView, setCurrentView] = useState('all');
 
     const mounted = useRef(false);
     useEffect(()=>{
@@ -33,20 +35,8 @@ function FreePage() {
         
         axios.get(url)
         .then(res=>{
-            setBoardData([]);
-
-            res.data.list.map(function(record) {
-                setBoardData(prev => {
-                    return [...prev, {
-                        id: record.id,
-                        title: record.title,
-                        category: record.category,
-                        hit: record.hit,
-                        username: record.user.username,
-                        writedate: record.writedate
-                    }];
-                });
-            });
+            setNoticeList(res.data.noticeList);
+            setBoardData(res.data.list);
 
             setPageNumber([]);
             let pVO = res.data.pVO;
@@ -75,6 +65,8 @@ function FreePage() {
         if(e.key==='Enter') getBoardList(1);
     }
 
+  
+
     return (
         <div className="free-container">
             <h2>자유게시판</h2>
@@ -85,8 +77,11 @@ function FreePage() {
                 <input type="button" value="검색" onClick={()=>{getBoardList(1)}}/>
             </div>
 
-            <div id="total-record">총 게시글 수: {totalRecord}개</div>
-            
+            <div className="total">
+                <div id="total-notice" onClick={()=>{setCurrentView('notice')}}>공지 전체 목록</div>
+                <div id="total-record">총 게시글 수: {totalRecord}개</div>
+            </div>
+
             <div className="board-list">
                 <ul className="free-list-header">
                     <li>번호</li>
@@ -96,7 +91,8 @@ function FreePage() {
                     <li>등록일</li>
                 </ul>
                 {
-                    boardData.map(function(record){
+                    currentView === 'all' &&
+                    noticeList.slice(0, 2).map(record=>{
                         return (
                             <ul className="free-list">
                                 <li>
@@ -104,9 +100,48 @@ function FreePage() {
                                 </li>
                                 <li style={{textAlign: 'left'}}>
                                     <Link to={`/free/view/${record.id}`}>
-                                    {
-                                        record.category === 'notice' && <span id="notice-sticker">공지</span>
-                                    }
+                                        <span id="notice-sticker">공지</span>
+                                        <span>{record.title}</span>
+                                    </Link>
+                                </li>
+                                <li>{record.username}</li>
+                                <li>{record.hit}</li>
+                                <li>{record.writedate}</li>
+                            </ul>
+                        )
+                    })
+                }
+                {
+                    currentView === 'all' &&
+                    boardData.map(record=>{
+                        return (
+                            <ul className="free-list">
+                                <li>
+                                    {record.id}
+                                </li>
+                                <li style={{textAlign: 'left'}}>
+                                    <Link to={`/free/view/${record.id}`}>
+                                        <span>{record.title}</span>
+                                    </Link>
+                                </li>
+                                <li>{record.username}</li>
+                                <li>{record.hit}</li>
+                                <li>{record.writedate}</li>
+                            </ul>
+                        )
+                    })
+                }
+                {
+                    currentView === 'notice' &&
+                    noticeList.map(record=>{
+                        return (
+                            <ul className="free-list">
+                                <li>
+                                    {record.id}
+                                </li>
+                                <li style={{textAlign: 'left'}}>
+                                    <Link to={`/free/view/${record.id}`}>
+                                        <span id="notice-sticker">공지</span>
                                         <span>{record.title}</span>
                                     </Link>
                                 </li>
@@ -122,11 +157,11 @@ function FreePage() {
             <div className="write-btn">
             {
                 sessionStorage.getItem("loginStatus") == "Y" && 
-                <div><Link state={{category: 'free'}} to={'/free/write'}>글쓰기</Link></div>
+                <Link state={{category: 'free'}} to={'/free/write'}><div>글쓰기</div></Link>
             }
             {
                 sessionStorage.getItem("loginId") == "admin1234" &&
-                <div><Link state={{category: 'notice'}} to={'/free/write'}>공지 등록</Link></div>
+                <Link state={{category: 'notice'}} to={'/free/write'}><div>공지 등록</div></Link>
             }
             </div>
 

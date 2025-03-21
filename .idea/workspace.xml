@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="d760d160-1394-48b7-9111-d751611df8c4" name="Changes" comment="" />
+    <list default="true" id="d760d160-1394-48b7-9111-d751611df8c4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/css/privacy.css" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/css/privacy.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/css/termsofuse.css" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/css/termsofuse.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/serv">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,9 +44,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.serv [:com.ke.serv.ServApplication.main()].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev-강재현",
+    "git-widget-placeholder": "dev-dongeun",
+    "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/ict_mini_2/serv"
   }
 }]]></component>

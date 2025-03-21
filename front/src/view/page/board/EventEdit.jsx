@@ -126,7 +126,7 @@ function EventEdit() {
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <table className="EventWrite_custom-table">
                     <tbody>
-                        <tr><th>제목</th><td><input type="text" value={title} readOnly onChange={e => setTitle(e.target.value)} className="EventWrite_custom-input"/></td></tr>
+                        <tr><th>제목</th><td><input type="text" value={title} onChange={e => setTitle(e.target.value)} className="EventWrite_custom-input"/></td></tr>
                         <tr><th>내용</th><td><textarea value={content} onChange={e => setContent(e.target.value)}  className="EventWrite_custom-textarea"/></td></tr>
                         <tr><th>시작 날짜</th><td><input type="datetime-local" value={startDate} onChange={e => setStartDate(e.target.value)} className="EventWrite_custom-input"/></td></tr>
                         <tr><th>종료 날짜</th><td><input type="datetime-local" value={endDate} onChange={e => setEndDate(e.target.value)} className="EventWrite_custom-input"/></td></tr>
