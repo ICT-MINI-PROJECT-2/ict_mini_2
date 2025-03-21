@@ -37,7 +37,7 @@ function FreeWrite() {
         axios.post('http://localhost:9977/free/writeOk', writeData)
         .then(res=>{
             if (res.data == 'success') {
-                navigate('/free');
+                navigate('/boardpage?category=BOARD');
             } else if (res.data == 'fail') {
                 alert("게시글이 등록되지 않았습니다.");
             }
