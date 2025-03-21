@@ -190,7 +190,7 @@ function InquiryList() {
                             className="InquiryList_col InquiryList_p-2 InquiryList_text-center"
                             id={`inquiry-title-${record.id}`}
                         >
-                            {record.category === 'FAQ' && <span>[<strong>공지사항</strong>] </span>}
+                            {record.category === 'FAQ' && <span>[<strong>자주 묻는 질문</strong>] </span>}
                             {record.subject}
                         </div>
                         <div
