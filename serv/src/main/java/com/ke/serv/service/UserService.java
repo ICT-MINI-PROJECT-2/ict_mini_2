@@ -22,6 +22,10 @@ public class UserService {
     private final WishRepository wishRepo;
     private final ReviewRepository reviewRepo;
 
+    public UserEntity editEnterChk(UserEntity entity){
+        return repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());
+    }
+
     public UserEntity signup(UserEntity entity) {
         return repo.save(entity);
     }
@@ -61,9 +65,13 @@ public class UserService {
         return reviewRepo.findAllByUser(entity, PageRequest.of(prVO.getNowPage()-1,prVO.getOnePageRecord()));
     }
 
-    public int totalReviewRecord(PagingWishVO prVO){
+    public int totalReviewRecord(PagingWishVO prVO) {
         return reviewRepo.countIdBy();
-    public List<WishlistEntity> selectWishList(RestaurantEntity re) {
-        return wishRepo.findAllByRestaurant(re);
     }
+
+    public List<WishlistEntity> selectWishList(RestaurantEntity re) {
+       return wishRepo.findAllByRestaurant(re);
+    }
+
+
 }
