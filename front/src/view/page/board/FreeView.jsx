@@ -27,6 +27,7 @@ function FreeView(){
             console.log(res.data);
             setRecord({
                 id: res.data.id,
+                category: res.data.category,
                 userid: res.data.user.userid,
                 username: res.data.user.username,
                 hit: res.data.hit,
@@ -60,23 +61,33 @@ function FreeView(){
     return (
         <div className="view-container">
             <div className="view-box">
-                <div>글번호 {record.id}</div>
-                <div>제목 {record.title}</div>
-                <div>작성자 {record.username}</div>
-                <div>조회수 {record.hit}</div>
-            </div>
-            <div>등록일 {record.writedate}</div>
-            <div>글내용 {record.content}</div>
+                <div className="view-header">
+                    <div style={{textAlign: 'left'}}>
+                        {record.category === 'notice' && <span id="notice-sticker">공지</span>}
+                        {record.title}
+                        </div>
+                    <div>👤{record.username}</div>
+                    <div>댓글수</div>
+                    <div>👁 {record.hit}</div>
+                </div>
+                <div id="view-content">{record.content}</div>
 
-
-            {
-                sessionStorage.getItem("loginId") == record.userid && (
-                    <div>
-                        <Link to={`/free/edit/${record.id}`}>수정</Link>
-                        <div onClick={boardDel}>삭제</div>
+                <div className="view-footer">
+                    <div id="view-writedate">작성일: {record.writedate}</div>
+                        <div className="view-btn">
+                            <div onClick={()=>{navigate('/boardpage?category=BOARD')}}>목록</div>
+                    {
+                        
+                        sessionStorage.getItem("loginId") == record.userid && (
+                            <>
+                                <div><Link to={`/free/edit/${record.id}`}>수정</Link></div>
+                                <div onClick={boardDel}>삭제</div>
+                            </>
+                        )
+                    }
                     </div>
-                )
-            }
+                </div>
+            </div>
         </div>
     )
 }
