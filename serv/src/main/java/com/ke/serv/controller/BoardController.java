@@ -56,7 +56,6 @@ public class BoardController {
         System.out.println("- searchType: " + searchType);
         System.out.println("- searchTerm: " + searchTerm);
 
-        try {
             Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
 
             Map<String, Object> response = new HashMap<>();

@@ -19,7 +19,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     void deleteById(int id);
 
     List<ReviewEntity> findAllByUser(UserEntity entity, PageRequest of);
-    int countIdBy();
+
     List<ReviewEntity> findTop3ByOrderByRatingDesc();
 
     @Query(value = "SELECT * " +
@@ -28,4 +28,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
             "ORDER BY hit DESC LIMIT 3",
             nativeQuery = true)
     List<ReviewEntity> findPopReviews();
+
+    int countIdByUser(UserEntity user);
 }

@@ -15,6 +15,7 @@ public interface WishRepository extends JpaRepository<WishlistEntity, Integer> {
 
     List<WishlistEntity> findAllByUser(UserEntity entity, PageRequest of);
     List<WishlistEntity> findAllByUser(UserEntity entity);
-    int countIdBy();
     List<WishlistEntity> findAllByRestaurant(RestaurantEntity re);
+
+    int countIdByUser(UserEntity user);
 }

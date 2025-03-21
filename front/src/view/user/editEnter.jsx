@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import Faded from "../../effect/Faded";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
-function editEnter() {
+function EditEnter() {
     const id = sessionStorage.getItem("id");
     const userId = sessionStorage.getItem("loginId");
     const [data, setData] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
       setData({
@@ -22,6 +24,7 @@ function editEnter() {
 
     const doEdit = (de) =>{
       //대충 링크 들어갈 예정정
+      <Link to="/editPage" />
     }
 
   const editChk = () =>{
@@ -36,7 +39,7 @@ function editEnter() {
       alert_pw.style.opacity = 1;
     }else{
       axios.post('http://localhost:9977/user/editEnterChk', {
-        userid:userid,
+        userid:data.userid,
         userpw:userpw
       }).then(res => {
         if(res.data.id===-1){
@@ -46,7 +49,7 @@ function editEnter() {
           alert_pw.innerHTML = "비밀번호를 확인하세요(8~15글자,영문,숫자,특수문자)";
           alert_pw.style.opacity = 1;
         }else{
-          doEdit(res.data);
+          navigate("/editPage"); 
         }
       })
       .catch(err => console.log(err))  
@@ -57,12 +60,12 @@ function editEnter() {
     <Faded>
     <div className="editEnter-container">
         <div id="editEnter-title">로그인</div>
-        <form name="editEnterForm" method="post">
+        <form name="editEnterForm" method="post" onSubmit={(e) => { e.preventDefault(); editChk() }}>    
             <div id="editEnter-box">
                 <div id="editEnter-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="editEnter-right"><input type="text" id="userid" name="userid" placeholder={userId}/><div id="alert-id"></div></div>
                 <div id="editEnter-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="editEnter-right"><input type="password" id="userpw" name="userpw" onChange={setFormData}/><div id="alert-pw"></div></div>
             </div>
-            <input className="editEnter-submit" type="button" value="Login"/>
+            <input className="editEnter-submit" type="submit" value="비밀번호 확인"/>
             <div id="idpw-find">
                 <div id="id-find"><a>아이디 찾기</a></div>
                 <div id="pw-find"><a>비밀번호 찾기</a></div>
@@ -72,4 +75,4 @@ function editEnter() {
 </Faded>
   );
 }
-export default editEnter; 
+export default EditEnter; 
