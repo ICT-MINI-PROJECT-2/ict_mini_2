@@ -12,12 +12,6 @@ function Login(){
         })
     }
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key == 'Enter') {
-            loginChk();
-        }
-    });
-
     const doLogin = (dt) => {
         sessionStorage.setItem("loginStatus", "Y");
         sessionStorage.setItem("loginName",dt.username);
@@ -66,12 +60,15 @@ function Login(){
         <Faded>
             <div className="login-container">
                 <div id="login-title">로그인</div>
-                <form name="loginForm" method="post">
-                    <div id="signup-box">
+                <form name="loginForm" method="post" onSubmit={(e) => { e.preventDefault(); loginChk() }}>                    <div id="signup-box">
                         <div id="login-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="text" id="userid" name="userid" onChange={setFormData}/><div id="alert-id"></div></div>
                         <div id="login-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="password" id="userpw" name="userpw" onChange={setFormData}/><div id="alert-pw"></div></div>
                     </div>
-                    <input className="login-submit" type="button" onClick={loginChk} value="Login"/>
+                    <input className="login-submit" type="submit" value="Login" />
+                    <div id="idpw-find">
+                        <div id="id-find"><a>아이디 찾기</a></div>
+                        <div id="pw-find"><a>비밀번호 찾기</a></div>
+                    </div>
                 </form>
             </div>
         </Faded>
