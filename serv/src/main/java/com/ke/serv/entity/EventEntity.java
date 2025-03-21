@@ -25,7 +25,7 @@ public class EventEntity {
     private int id;
     private String subject;
 
-    @Column(name = "content",  length = 1000000) // ✅ content 필드에 @Column 어노테이션 확인
+    @Column(name = "content",  length = 1000000000) // ✅ content 필드에 @Column 어노테이션 확인
     private String content; // ✅ @Lob 어노테이션 제거!
     private int hit;
 

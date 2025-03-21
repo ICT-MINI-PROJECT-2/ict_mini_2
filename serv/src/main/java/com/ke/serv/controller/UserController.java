@@ -73,6 +73,17 @@ public class UserController {
     }
 
 
+
+
+    @PostMapping("/editEnterChk")
+    public UserEntity editEnterChk(@RequestBody UserEntity entity){
+        UserEntity uec = new UserEntity();
+
+
+        return uec;
+    }
+
+
     @PostMapping("/idChk")
     public String idChk(@RequestBody UserEntity entity) {
         if(service.idChk(entity) == null) return "0";

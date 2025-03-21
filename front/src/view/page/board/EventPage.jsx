@@ -155,6 +155,12 @@ const EventList = memo(function EventList() {
         return [`eventList`, category, currentPage, searchType, searchTerm, showOnlyWithImages];
     }, [currentPage, searchType, searchTerm, showOnlyWithImages]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, searchType]);
+
+    
+
     // useQuery를 EventList 안에서 사용
     const { data, fetchStatus, isLoading } = useQuery({ // isLoading 추가
         queryKey: getSearchKey(),
@@ -169,6 +175,9 @@ const EventList = memo(function EventList() {
                         searchType,
                         searchTerm,
                         withImages,
+                        sort: "endDate,asc" // 백엔드에서 종료일 기준 정렬
+                        
+
                     },
                 })
                 .then((res) => res.data);
@@ -186,6 +195,10 @@ const EventList = memo(function EventList() {
             setTotalPages(1);
         }
     }, [data]);
+    
+
+    
+    
 
     const sortedEvents = React.useMemo(() => {
         if (data && data.list) {
@@ -206,8 +219,9 @@ const EventList = memo(function EventList() {
             e.preventDefault();
             setCurrentPage(1);
         },
-        [] // searchTerm, searchType 제거
+        [searchTerm, searchType]
     );
+    
     const renderEventList = useCallback(() => {
         const containerStyle = {
             opacity: isLoading ? 0 : 1, //isLoading으로 변경
@@ -234,7 +248,7 @@ const EventList = memo(function EventList() {
                 </div>
             </div>
         );
-    }, [events]); // isLoading 제거
+    }, [events]); 
 
 
     const renderPagination = useCallback(() => {
@@ -274,6 +288,7 @@ const EventList = memo(function EventList() {
                         <option value="제목내용">제목+내용</option>
                         <option value="제목만">제목만</option>
                         <option value="작성자">작성자</option>
+                     
                     </select>
                     <form onSubmit={handleSearch} style={{ display: "flex" }}>
                         <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="검색어를 입력하세요" style={{

@@ -1,159 +1,333 @@
 /* 전체 페이지 스타일 */
 .mypage-container {
-   position: relative;
-   padding-top: 150px;
-   margin: 0 auto;
-   width: 80%;
-   min-height: 690px;
-    max-width: 900px;
-    overflow: hidden;
-  }
-  
-  
-  /* 테이블 스타일 */
-  .table-wrapper {
-    padding: 20px;
-    overflow-x: auto;
-    height: 320px;
-  }
-  
-  .list-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  
-  .list-table th,
-  .list-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .list-table th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .list-table tr:last-child td {
-    border-bottom: none;
-  }
-  
-  .list-table tr:hover {
-    background-color: #f5f5f5;
-  }
-  
-  /* 삭제 링크 스타일 */
-  .delete-link {
-    color: #e74c3c;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  
-  .delete-link:hover {
-    color: #c0392b;
-  }
-  
-  /* 페이지네이션 스타일 */
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .pagination {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    justify-content: center;
-  }
-  
-  .page-item {
-    padding: 0;
-  }
-  
-  .page-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    min-width: 32px;
-    height: 32px;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid #ddd;
-    padding: 0;
+  position: relative;
+  padding-top: 150px;
+  margin: 0 auto;
+  width: 80%;
+  min-height: 690px;
+  max-width: 900px;
+  overflow: hidden;
+}
 
+/* 테이블 스타일 */
+.table-wrapper {
+  padding: 20px;
+  overflow-x: auto;
+  height: 320px;
+}
+
+.list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: fixed
+}
+
+.list-table th,
+.list-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #b21848; /* 테이블 헤더에 색상 적용 */
+}
+
+.list-table tr:last-child td {
+  border-bottom: none;
+}
+
+.list-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* 삭제 링크 스타일 */
+.delete-link {
+  color: #e74c3c;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.delete-link:hover {
+  color: #c0392b;
+}
+
+/* 페이지네이션 스타일 - 고유한 클래스명으로 변경 */
+.my-pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.my-pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  border-radius: 0;
+}
+
+.my-page-item {
+  padding: 0;
+  margin: 0;
+}
+
+.my-page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  min-width: 40px;
+  height: 38px;
+  background-color: #fff;
+  color: #007bff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #dee2e6;
+  padding: 0;
+  border-radius: 0;
+  margin-left: -1px; /* 버튼 사이 겹치는 테두리 처리 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* 첫 번째 버튼의 왼쪽 테두리 */
+.my-pagination .my-page-item:first-child .my-page-link {
+  margin-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* 마지막 버튼의 오른쪽 테두리 */
+.my-pagination .my-page-item:last-child .my-page-link {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.my-page-item.active {
+  padding: 0;
+  margin: 0;
+}
+
+/* 호버 효과 강화 */
+.my-page-link:hover {
+  background-color: #f0f0f0;
+  color: #0056b3;
+  z-index: 2;
+}
+
+/* 클릭 효과 (active 상태) */
+.my-page-item.active .my-page-link {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  z-index: 3;
+  font-weight: 500;
+}
+
+/* 클릭 시 물결 효과 */
+.my-page-link::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+.my-page-link:active::after {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
   }
-  .page-item.active{
-    padding: 0;
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
   }
-  
-  .page-item.active .page-link {
-    background-color: #007bff;
-    padding:0;
-    color: #fff;
-    border-color: #007bff;
+}
+
+/* 테이블 및 페이지네이션 위치 고정 */
+.my-pagination-box {
+  position: relative;
+  margin-top: 20px;
+  height: 40px; /* 고정 높이 설정 */
+}
+
+/* 페이지네이션 스타일 */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  border-radius: 0;
+}
+
+.page-item {
+  padding: 0;
+  margin: 0;
+}
+
+.page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  min-width: 40px;
+  height: 38px;
+  background-color: #fff;
+  color: #007bff;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #dee2e6;
+  padding: 0;
+  border-radius: 0;
+  margin-left: -1px; /* 버튼 사이 겹치는 테두리 처리 */
+}
+
+/* 첫 번째 버튼의 왼쪽 테두리 */
+.pagination .page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* 마지막 버튼의 오른쪽 테두리 */
+.pagination .page-item:last-child .page-link {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.page-item.active {
+  padding: 0;
+  margin: 0;
+}
+
+.page-item.active .page-link {
+  background-color: #fff;
+  color: #007bff;
+  border-color: #dee2e6;
+  z-index: 3; /* 활성화된 버튼이 다른 버튼 위에 표시되도록 */
+}
+
+.page-link:hover {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #0056b3;
+  text-decoration: none;
+}
+
+.page-item.active .page-link:hover {
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+
+/* 차트 스타일 */
+.graph-box {
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* 테이블 및 페이지네이션 위치 고정 */
+.pagination-box {
+  position: relative;
+  margin-top: 20px;
+  height: 40px; /* 고정 높이 설정 */
+}
+
+/* #b21848 색상 적용 - 테이블 제목과 테이블 헤더에 적용 */
+#wishlist-title,
+#reviewlist-title,
+#graph-title {
+  border-bottom: 2px solid #b21848;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+/* 개인정보 수정 버튼 스타일 */
+.edit-profile-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.edit-profile-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.edit-profile-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    font-size: 13px;
   }
-  
-  .page-link:hover {
-    background-color: #f0f0f0;
+
+  .section-title {
+    font-size: 1.3rem;
   }
-  
-  .page-item.active .page-link:hover {
-    background-color: #0069d9;
+
+  .chart-container {
+    padding: 10px;
   }
-  
-  /* 차트 스타일 */
-  .graph-box {
-    padding: 20px;
-    max-width: 500px;
-    margin: 0 auto;
+}
+
+@media (max-width: 576px) {
+  .mypage-container {
+    padding: 10px;
   }
-  
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    .data-table th,
-    .data-table td {
-      padding: 8px 10px;
-      font-size: 13px;
-    }
-  
-    .section-title {
-      font-size: 1.3rem;
-    }
-  
-    .chart-container {
-      padding: 10px;
-    }
+
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px;
+    font-size: 12px;
   }
-  
-  @media (max-width: 576px) {
-    .mypage-container {
-      padding: 10px;
-    }
-  
-    .data-table th,
-    .data-table td {
-      padding: 6px 8px;
-      font-size: 12px;
-    }
-  
-    .section-title {
-      font-size: 1.2rem;
-      padding: 12px 15px;
-    }
-  
-    .page-link {
-      min-width: 28px;
-      height: 28px;
-      font-size: 13px;
-    }
+
+  .section-title {
+    font-size: 1.2rem;
+    padding: 12px 15px;
   }
-  
-  
+
+  .page-link {
+    min-width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+}
+
