@@ -23,7 +23,7 @@ function InquiryWrite() {
 
         // 카테고리에 따른 제목 초기값 설정
         if (categoryParam === 'FAQ') {
-          setSubject('FAQ');  // FAQ 제목
+          setSubject('');  // FAQ 제목
         } else {
           setSubject('1:1 문의'); // 1:1 문의 제목
         }
@@ -78,7 +78,7 @@ function InquiryWrite() {
 
     return (
         <div className="InquiryWrite_inquiry-write-container">
-            <h1>{category === 'FAQ' ? 'FAQ 작성' : '1:1 문의 작성'}</h1>
+            <h1>{category === 'FAQ' ? '글 작성' : '1:1 문의 작성'}</h1>
             <form onSubmit={handleSubmit} >
                 <table className="InquiryWrite_inquiry-write-table">
                     <tbody>
@@ -135,7 +135,7 @@ function InquiryWrite() {
                     </tbody>
                 </table>
                 <div className="InquiryWrite_button-container">
-                    <button type="button" onClick={() => navigate(`/boardPage?category=${category}`)} className="InquiryWrite_btn-style-list">목록</button>
+                    <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="InquiryWrite_btn-style-list">목록</button>
                     <button type="submit" className="InquiryWrite_btn-style-sign">등록</button>
                 </div>
             </form>

@@ -4,6 +4,9 @@ import Faded from '../../../effect/Faded';
 import activatedLogo from '../../../img/kickeat_logo.png';
 import disabledLogo from '../../../img/kickeat_logo_disabled.png';
 import emptyImage from '../../../img/empty_select_menu.png';
+import searchIcon from '../../../img/search.png';
+import refreshIcon from '../../../img/refresh.png';
+import questionMarkIcon from '../../../img/questionMarkIcon.png';
 import Post from '../../user/Post';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -170,8 +173,44 @@ function Recommend() {
     }, [isMenuSelected])
 
 
+    const countSelectedMenu = () => {
+        let selectedMenuCnt = 0;
+
+        for (let i = 1; i <= 4; i++) {
+            if (isMenuSelected[i- 1]) {
+                selectedMenuCnt++;
+            }
+        }
+
+        return selectedMenuCnt;
+    }
+
+    const countExceptMenu = () => {
+
+        let exceptMenuCnt = 0;
+
+        for (let i = 0; i < menuArr.length; i++) {
+            for (let j = 0; j < menuArr[i].length; j++) {
+                if (menuArr[i][j] == -1) {
+                    exceptMenuCnt++;
+                }
+            }
+        }
+
+        return exceptMenuCnt;
+    }
+
     const kickMenu = (option) => {
-        console.log(selectedMenu);
+        if (countExceptMenu() == 42) {
+            alert("표시할 메뉴가 부족합니다.");
+            window.location.reload();
+            return;
+        }
+
+        if (countSelectedMenu() == 4) {
+            return;
+        }
+
         for (let i = 1; i <= 4; i++) {
 
             if (!isMenuSelected[i - 1]) {
@@ -198,6 +237,16 @@ function Recommend() {
         }
     }
     const selectMenu = (option) => {
+        if (countExceptMenu() == 42) {
+            alert("표시할 메뉴가 부족합니다.");
+            window.location.reload();
+            return;
+        }
+
+        if (countSelectedMenu() == 4) {
+            return;
+        }
+
         for (let i = 1; i <= 4; i++) {
 
             if (!isMenuSelected[i - 1]) {
@@ -280,6 +329,11 @@ function Recommend() {
     }
 
     const showRecommendList = () => {
+        if (sessionStorage.getItem("loginStatus") != "Y") {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+
         if (!document.getElementById("kickEatListButton").style.backgroundImage.includes("disable")) {
             var recommnedContainer = document.getElementsByClassName("recommend-container")[0];
             let menuCon = document.getElementsByClassName('menu-container')[0];
@@ -288,10 +342,13 @@ function Recommend() {
             let selCon = document.getElementsByClassName('select-menu-container')[0];
             selCon.style.transition='all 2s';
             selCon.style.transform='translateY(-700px)';
+            selCon.style.height = '0px';
             recommnedContainer = document.getElementsByClassName("recommend-container")[0];
             recommnedContainer.style.transition = 'all 1.5s';
             recommnedContainer.style.paddingTop = '75px';
             recommnedContainer.style.height = '0px';
+            let recCon = document.getElementById('recommend-list');
+            recCon.style.height = '850px';
 
 
             for (let i = 1; i <= 4; i++) {
@@ -341,7 +398,7 @@ function Recommend() {
         position: 'fixed',
         left: '50%',
         top: '50%',
-        transform: 'translate(-50%,-30%)',
+        transform: 'translate(-50%,-45%)',
         border: '2px solid black',
         borderRadius: '5px'
     }
@@ -489,25 +546,25 @@ function Recommend() {
         reqeustToServer();
     }
 
-    const resetResultStyle = () => {
-        document.querySelectorAll(".recommendResult").forEach((element) => {
-            element.style.backgroundColor = "white";
-        });
+    // const resetResultStyle = () => {
+    //     document.querySelectorAll(".recommendResult").forEach((element) => {
+    //         element.style.backgroundColor = "white";
+    //     });
 
-        setSelectedRecommendId(0);
-    }
+    //     setSelectedRecommendId(0);
+    // }
 
-    const clickRecommendElement = (event) => {
-        document.querySelectorAll(".recommendResult").forEach((element) => {
-            element.style.backgroundColor = "white";
-        });
+    // const clickRecommendElement = (event) => {
+    //     document.querySelectorAll(".recommendResult").forEach((element) => {
+    //         element.style.backgroundColor = "white";
+    //     });
 
-        const parentElement = event.currentTarget;
-        const siblings = parentElement.parentNode.children;
-        const index = Array.from(siblings).indexOf(parentElement);
-        parentElement.style.backgroundColor = 'lightgray';
-        setSelectedRecommendId(recommendResultId[index]);
-    }
+    //     const parentElement = event.currentTarget;
+    //     const siblings = parentElement.parentNode.children;
+    //     const index = Array.from(siblings).indexOf(parentElement);
+    //     parentElement.style.backgroundColor = 'lightgray';
+    //     setSelectedRecommendId(recommendResultId[index]);
+    // }
 
     return (
         <Faded>
@@ -540,6 +597,13 @@ function Recommend() {
                                 }
                             </div>
                         </div>
+                        <div style={{position: 'absolute', border: '1px solid #b21848', borderRadius: '10px',width: '16vw',height: '5vw', maxHeight: '100px', maxWidth: '320px', transform: 'translate(320%, 50%)', fontSize: 'clamp(0.7px, 0.7vw, 15px)'}}>
+                            <div style={{position: 'absolute', width: '10%', height: '32%', transform: 'translate(0%, -140%)'}}><img src={questionMarkIcon} style={{width: '100%'}}/></div>
+                            <div style={{textAlign: 'center'}}>🍽️맛집 추천 사용법🍽️</div>
+                            &nbsp;1. 메뉴 카테고리를 EAT 또는 KICK하여 선택<br/>
+                            &nbsp;2. KICK EAT 로고를 클릭<br/>
+                            &nbsp;3. 입력된 장소 주변 맛집 추천 받기<br/>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -558,15 +622,16 @@ function Recommend() {
                         </div>
                         <button className='kickEatListButton' id='kickEatListButton' style={{ backgroundImage: `url(${disabledLogo})` }} onClick={showRecommendList}></button>
                     </div>
+                    
                 </div>
                    <div id="recommend-list">
                   { rest_info.category != '' && 
                   <>
-                  <h4>당신을 위한 추천 음식집 리스트</h4>
+                  <h4 style={{marginTop: '0px', marginBottom: '10px'}}>당신을 위한 추천 음식집 리스트</h4>
                   <div id="locationSearch">
                         <input id="locationSearchBox" type="text" value={addr.address} disabled></input>
-                        <button id="locationSearchButton" onClick={handleComplete}>찾기</button>
-                        <button id="locationSearchButton" onClick={refreshResult}>갱신</button>
+                        <div onClick={handleComplete} style={{backgroundColor: '#b21848', width: '34px', height: '34px',border: '1px solid gray', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}><img src={searchIcon} style={{width: '80%'}}/></div>
+                        <div onClick={refreshResult} style={{backgroundColor: '#b21848', width: '34px', height: '34px',border: '1px solid gray', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}><img src={refreshIcon} style={{width: '80%'}}/></div>
                     </div></>}
                     { rest_info.category != '' &&    <div className='find-rec-list' id="find-rec-list">
                         <div className='recommendResult' onClick={() => onClickDetail(rest_info.id)}>
@@ -689,6 +754,3 @@ function Recommend() {
 }
 
 export default Recommend;
-
-// 이미 선택된 이미지 클릭했을땐 아무반응 없게
-// 카카오맵 길찾기 추가하기

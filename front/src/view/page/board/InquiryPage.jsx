@@ -168,7 +168,7 @@ function InquiryList() {
                 )}
 
                 {sessionStorage.getItem("loginId") === 'admin1234' && (
-                    <Link to="/boardwrite?category=FAQ" id='inquiry-write-button'>공지사항</Link>
+                    <Link to="/boardwrite?category=FAQ" id='inquiry-write-button'>자주묻는질문</Link>
                 )}
             </div>
 
@@ -190,7 +190,7 @@ function InquiryList() {
                             className="InquiryList_col InquiryList_p-2 InquiryList_text-center"
                             id={`inquiry-title-${record.id}`}
                         >
-                            {record.category === 'FAQ' && <span>[<strong>공지사항</strong>] </span>}
+                            {record.category === 'FAQ' && <span>[<strong>자주 묻는 질문</strong>] </span>}
                             {record.subject}
                         </div>
                         <div

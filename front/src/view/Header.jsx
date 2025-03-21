@@ -33,7 +33,7 @@ function Header() {
                     <Link to="/recommend">맛집 추천</Link>
                 </li>
                 <li>
-                    <Link to="/boardPage?category=EVENT">자유게시판</Link>
+                    <Link to="/boardPage?category=BOARD">자유게시판</Link>
                 </li>
                 <li>
                     <Link to="/boardpage">1:1문의</Link>
