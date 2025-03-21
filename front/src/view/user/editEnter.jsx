@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import Faded from "../../effect/Faded";
 import axios from "axios";
+import EditPage from "./EditPage";
 import { Link, useNavigate } from "react-router-dom";
 
 function EditEnter() {
     const id = sessionStorage.getItem("id");
     const userId = sessionStorage.getItem("loginId");
     const [data, setData] = useState({});
+    const [editWhere, setEditWhere] = useState(0);
     const navigate = useNavigate();
+    const [editParam, setEditParam] = useState({});
 
     useEffect(() => {
       setData({
@@ -23,8 +26,8 @@ function EditEnter() {
     }
 
     const doEdit = (de) =>{
-      //대충 링크 들어갈 예정정
-      <Link to="/editPage" />
+     setEditWhere(1);
+     
     }
 
   const editChk = () =>{
@@ -45,11 +48,11 @@ function EditEnter() {
         if(res.data.id===-1){
           alert_id.innerHTML = "아이디를 확인하세요";
           alert_id.style.opacity = 1;
-        }else if(res.data.id===-2){
+        }else if(res.data.id=== -2){
           alert_pw.innerHTML = "비밀번호를 확인하세요(8~15글자,영문,숫자,특수문자)";
           alert_pw.style.opacity = 1;
         }else{
-          navigate("/editPage"); 
+         doEdit(res.data);
         }
       })
       .catch(err => console.log(err))  
@@ -58,6 +61,7 @@ function EditEnter() {
 
   return (
     <Faded>
+      {editWhere === 0 &&
     <div className="editEnter-container">
         <div id="editEnter-title">로그인</div>
         <form name="editEnterForm" method="post" onSubmit={(e) => { e.preventDefault(); editChk() }}>    
@@ -72,6 +76,12 @@ function EditEnter() {
             </div>
         </form>
     </div>
+}
+{editWhere === 1 &&
+  <div>
+    <EditPage editWhere={editWhere} setEditWhere={setEditWhere}/>
+  </div>
+}
 </Faded>
   );
 }
