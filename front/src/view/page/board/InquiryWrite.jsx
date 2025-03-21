@@ -135,7 +135,7 @@ function InquiryWrite() {
                     </tbody>
                 </table>
                 <div className="InquiryWrite_button-container">
-                    <button type="button" onClick={() => navigate(`/boardPage?category=${category}`)} className="InquiryWrite_btn-style-list">목록</button>
+                    <button type="button" onClick={() => navigate(`/boardPage?category=INQUIRY`)} className="InquiryWrite_btn-style-list">목록</button>
                     <button type="submit" className="InquiryWrite_btn-style-sign">등록</button>
                 </div>
             </form>

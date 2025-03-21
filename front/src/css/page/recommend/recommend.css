@@ -21,8 +21,9 @@
 }
 
 #recommend-list{
-  height:15vw;
-  min-height:900px;
+  height: 75px;
+  /* height:15vw; */
+  /* min-height:900px; */
 }
 
 .left-menu-container,
