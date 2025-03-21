@@ -48,16 +48,27 @@ public class BoardController {
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false) String searchTerm) {
 
-        // ✅ 디버깅 로그 추가
-        System.out.println("📢 검색 요청 - searchType: " + searchType + ", searchTerm: " + searchTerm);
+        // 상세 로깅 추가
+        System.out.println("📢 요청 파라미터:");
+        System.out.println("- category: " + category);
+        System.out.println("- page: " + pageable.getPageNumber());
+        System.out.println("- size: " + pageable.getPageSize());
+        System.out.println("- searchType: " + searchType);
+        System.out.println("- searchTerm: " + searchTerm);
 
-        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
+        try {
+            Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("list", boardPage.getContent());
-        response.put("page", boardPage.getNumber());
-        response.put("totalPages", boardPage.getTotalPages());
-        response.put("totalElements", boardPage.getTotalElements());
+            Map<String, Object> response = new HashMap<>();
+            response.put("list", boardPage.getContent());
+            response.put("page", boardPage.getNumber());
+            response.put("totalPages", boardPage.getTotalPages());
+            response.put("totalElements", boardPage.getTotalElements());
+
+            System.out.println("✅ 응답 데이터:");
+            System.out.println("- 총 페이지 수: " + boardPage.getTotalPages());
+            System.out.println("- 총 항목 수: " + boardPage.getTotalElements());
+            System.out.println("- 현재 페이지 항목 수: " + boardPage.getContent().size());
 
         return ResponseEntity.ok(response);
     }
