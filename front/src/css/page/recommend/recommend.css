@@ -163,3 +163,16 @@
   text-align: center;
   margin-bottom:10px;
 }
+#recommend-list > h4 {
+  text-align: center;
+  font-size:24px;
+}
+#locationSearch{
+  text-align: center;
+}
+#locationSearchBox {
+  width:400px;
+  height: 30px;
+  text-align: center;
+  margin-bottom:40px;
+}

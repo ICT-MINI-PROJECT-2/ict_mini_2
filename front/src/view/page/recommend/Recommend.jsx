@@ -511,6 +511,9 @@ function Recommend() {
 
     return (
         <Faded>
+            {popup && <div style={postBox}>
+            <button title="X" style={postButtonStyle} onClick={() => setPopup(false)}>X</button>
+            <Post addr={addr} setAddr={setAddr} setPopup={setPopup} /></div>}
             <div className="top-recommend-container">
                 <div className="recommend-container">
                     <div className="menu-container">
@@ -557,11 +560,14 @@ function Recommend() {
                     </div>
                 </div>
                    <div id="recommend-list">
-                  { rest_info.category != '' && <div id="locationSearch">
+                  { rest_info.category != '' && 
+                  <>
+                  <h4>당신을 위한 추천 음식집 리스트</h4>
+                  <div id="locationSearch">
                         <input id="locationSearchBox" type="text" value={addr.address} disabled></input>
                         <button id="locationSearchButton" onClick={handleComplete}>찾기</button>
                         <button id="locationSearchButton" onClick={refreshResult}>갱신</button>
-                    </div>}
+                    </div></>}
                     { rest_info.category != '' &&    <div className='find-rec-list' id="find-rec-list">
                         <div className='recommendResult' onClick={() => onClickDetail(rest_info.id)}>
                         <img src={`/img/find/${rest_info.category}.png`}/>
