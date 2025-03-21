@@ -278,8 +278,8 @@ function Find(){
                         <div className='sort-btn'>
                             <div onClick={()=>{setSort("hit")}} style={sort == 'hit' ? {color: '#b21848', fontWeight: 'bold'} : {}}>조회수 순</div>
                             <div onClick={()=>{setSort("rating")}} style={sort == 'rating' ? {color: '#b21848', fontWeight: 'bold'} : {}}>평점 순</div>
-                            <div onClick={()=>{setSort("reviewCount")}} style={sort == 'reviewCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
-                            <div onClick={()=>{setSort("wishCount")}} style={sort == 'wishCount' ? {color: '#b21848', fontWeight: 'bold'} : {}}>찜 순</div>
+                            <div onClick={()=>{setSort("review_count")}} style={sort == 'review_count' ? {color: '#b21848', fontWeight: 'bold'} : {}}>리뷰 순</div>
+                            <div onClick={()=>{setSort("wish_count")}} style={sort == 'wish_count' ? {color: '#b21848', fontWeight: 'bold'} : {}}>찜 순</div>
                         </div>
                         <div id="total-record">총 식당 수:
                             {
