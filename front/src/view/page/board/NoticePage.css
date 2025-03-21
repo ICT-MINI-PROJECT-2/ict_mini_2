@@ -1,19 +1,24 @@
 .notice-page-container {
-    width: 64vw;
-    margin: 0px auto;
+    padding-top: 80px;  /* 헤더 높이 + 추가 여백 */
+    padding-bottom: 100px;
+    min-height: calc(100vh - 100px);  /* 전체 높이에서 패딩 값을 뺀 만큼 */
+    position: relative;
+    width: 100%;
+    max-width: 1200px;  /* 또는 현재 사용 중인 최대 너비 */
+    margin: 0 auto;
 }
 
 .notice-page-header {
     display: flex;
     font-weight: bold;
     border-bottom: 1px solid #ccc;
-    padding: 10px 0;
+    padding: 10px 10px;
 }
 
 .notice-page-row {
     display: flex;
     border-bottom: 1px solid #ccc;
-    padding: 10px 0;
+    padding: 13px;
     align-items: center;
 }
 
@@ -25,13 +30,14 @@
 }
 
 .notice-col-num { width: 15.5%; }
-.notice-col-title { width: 45.3%; }
+.notice-col-title { width: 45%; }
 .notice-col-author { width: 14.6%; }
-.notice-col-views { width: 14.4%; }
+.notice-col-views { width: 10%; }
 .notice-col-date { width: 10%; }
 .notice-col-manage { width: 10%; }
 
 .notice-title-link {
+    
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -46,17 +52,19 @@
 }
 
 .notice-delete-btn {
-    padding: 2px 8px;
+    padding: 10px 20px;
     font-size: 12px;
     background-color: #dc3545;
     color: white;
     border: none;
-    border-radius: 3px;
+    border-radius: 15px;
     cursor: pointer;
 }
 
 .notice-delete-btn:hover {
     background-color: #c82333;
+    border-radius: 2px;
+    transition: all 0.3s ease;
 }
 
 .notice-pagination {
@@ -82,6 +90,7 @@
     background-color: #007bff;
     color: white;
     border-color: #007bff;
+    cursor: pointer;
 }
 
 .notice-page-item.disabled .notice-page-link {

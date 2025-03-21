@@ -55,38 +55,38 @@ public class BoardService {
     public Page<EventEntity> getBoardList(BoardCategory category, Pageable pageable, String searchType, String searchTerm) {
         Page<EventEntity> boardPage;
 
-        if (StringUtils.hasText(searchTerm)) {
-            String keyword = searchTerm.trim();
+        try {
+            if (StringUtils.hasText(searchTerm)) {
+                String keyword = searchTerm.trim();
+                log.info("검색 조건: category={}, searchType={}, keyword={}", category, searchType, keyword);
 
-            if ("제목내용".equals(searchType)) {
-                boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCaseOrContentContainingIgnoreCase(
-                        category, keyword, keyword, pageable);
-            } else if ("제목만".equals(searchType)) {
-                boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCase(
-                        category, keyword, pageable);
-            } else if ("작성자".equals(searchType)) {
-                System.out.println("🔍 작성자 검색 - keyword: " + keyword);
-                boardPage = boardRepository.searchByCategoryAndUserId(
-                        category, keyword, pageable);
+                if ("제목내용".equals(searchType)) {
+                    boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCaseOrContentContainingIgnoreCase(
+                            category, keyword, pageable);
+                } else if ("제목만".equals(searchType)) {
+                    boardPage = boardRepository.findByCategoryAndSubjectContainingIgnoreCase(
+                            category, keyword, pageable);
+                } else if ("작성자".equals(searchType)) {
+                    log.info("작성자 검색: category={}, keyword={}", category, keyword);
+                    boardPage = boardRepository.searchByCategoryAndUserId(
+                            category, keyword, pageable);
+                } else {
+                    log.warn("알 수 없는 검색 타입: {}", searchType);
+                    boardPage = boardRepository.findByCategory(category, pageable);
+                }
             } else {
+                log.info("전체 목록 조회: category={}", category);
                 boardPage = boardRepository.findByCategory(category, pageable);
             }
-        } else {
-            boardPage = boardRepository.findByCategory(category, pageable);
+
+            log.info("조회 결과: totalElements={}, totalPages={}", 
+                    boardPage.getTotalElements(), boardPage.getTotalPages());
+            return boardPage;
+
+        } catch (Exception e) {
+            log.error("게시글 목록 조회 중 오류 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("게시글 목록을 조회하는 중 오류가 발생했습니다.", e);
         }
-
-        boardPage.forEach(event -> {
-            UserEntity user = event.getUser();
-            if (user != null) {
-                userRepository.findByUserid(user.getUserid());
-            }
-
-            List<FileEntity> files = fileRepository.findByEvent(event);
-            setFileUrls(event); //수정된 setFileUrls 사용
-            event.setFiles(files);
-        });
-
-        return boardPage;
     }
 
     @Transactional
@@ -591,5 +591,16 @@ public class BoardService {
     }
     public List<EventEntity> getEventByDate(BoardCategory category){
         return boardRepository.findAllByCategoryOrderByStartDateAsc(category);
+    }
+
+    // ✅ findById 메서드 추가
+    public EventEntity findById(Long id) {
+        Optional<EventEntity> optionalBoard = boardRepository.findById(Math.toIntExact(id));
+        return optionalBoard.orElse(null);
+    }
+
+    // ✅ update 메서드 추가
+    public EventEntity update(EventEntity board) {
+        return boardRepository.save(board);
     }
 }

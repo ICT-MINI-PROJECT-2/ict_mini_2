@@ -18,8 +18,11 @@ function FreeView(){
     let [record, setRecord] = useState({});
 
     function getBoardChoice(){
-
-        axios.get(`http://localhost:9977/free/view/${id}`)
+        let url = `http://localhost:9977/free/view/${id}`;
+        if (sessionStorage.getItem("id")) {
+            url += '?userNo=' + sessionStorage.getItem("id");
+        }
+        axios.get(url)
         .then(res=>{
             console.log(res.data);
             setRecord({

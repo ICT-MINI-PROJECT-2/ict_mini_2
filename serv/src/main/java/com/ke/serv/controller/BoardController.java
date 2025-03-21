@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,18 +48,28 @@ public class BoardController {
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false) String searchTerm) {
 
-        // ✅ 디버깅 로그 추가
-        System.out.println("📢 검색 요청 - searchType: " + searchType + ", searchTerm: " + searchTerm);
+        // 상세 로깅 추가
+        System.out.println("📢 요청 파라미터:");
+        System.out.println("- category: " + category);
+        System.out.println("- page: " + pageable.getPageNumber());
+        System.out.println("- size: " + pageable.getPageSize());
+        System.out.println("- searchType: " + searchType);
+        System.out.println("- searchTerm: " + searchTerm);
 
-        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
+        try {
+            Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("list", boardPage.getContent());
-        response.put("page", boardPage.getNumber());
-        response.put("totalPages", boardPage.getTotalPages());
-        response.put("totalElements", boardPage.getTotalElements());
+            Map<String, Object> response = new HashMap<>();
+            response.put("list", boardPage.getContent());
+            response.put("page", boardPage.getNumber());
+            response.put("totalPages", boardPage.getTotalPages());
+            response.put("totalElements", boardPage.getTotalElements());
 
-        System.out.println(response);
+            System.out.println("✅ 응답 데이터:");
+            System.out.println("- 총 페이지 수: " + boardPage.getTotalPages());
+            System.out.println("- 총 항목 수: " + boardPage.getTotalElements());
+            System.out.println("- 현재 페이지 항목 수: " + boardPage.getContent().size());
+
         return ResponseEntity.ok(response);
     }
 
@@ -219,5 +230,27 @@ public class BoardController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("대화 내용 조회 중 오류 발생: " + e.getMessage());
         }
+    }
+
+    // ✅ FAQ 수정 API 추가
+    @PutMapping("/update/{id}")
+    public ResponseEntity<EventEntity> updateBoard(@PathVariable Long id, @RequestBody EventEntity updatedBoard) {
+        EventEntity board = boardService.findById(id);
+
+        if (board == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        //권한 검사
+        if (!"admin1234".equals(board.getUser().getUserid())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        board.setSubject(updatedBoard.getSubject());
+        board.setContent(updatedBoard.getContent());
+        board.setModifiedDate(LocalDateTime.now());
+
+        EventEntity savedBoard = boardService.update(board);
+        return ResponseEntity.ok(savedBoard);
     }
 }

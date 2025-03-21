@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
 function ImageModal({imageList, setImageModal, restaurant}) {
-    console.log(imageList);
     const mount = useRef(true);
         
         useEffect(()=>{
