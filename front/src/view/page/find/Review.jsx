@@ -2,7 +2,7 @@ import {useState , useEffect, useRef} from 'react';
 import axios from 'axios';
 
 import ReviewModal from './ReviewModal';
-
+import Interact from '../Interact';
 function Review({getReview, review_list, restaurant_id, isLogin}){
     const review_mount = useRef(false);
     const dataTransfer = new DataTransfer();
@@ -15,10 +15,14 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
 
     const [reviewModal, setReviewModal] = useState({
         isOpen: false,
-        selected:0
+        selected:{}
     });
 
-
+    const [interact, setInteract] = useState({
+        isOpen:false,
+        selected:0
+    });
+    
     useEffect(() => {
         axios.get('http://localhost:9977/review/getReviewById?id='+sessionStorage.getItem("id"))
         .then(res => {
@@ -103,7 +107,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
         const listItems = review_list.map((item, idx) =>
             (
             <li key={'review-' + idx} className="review-chat-box"><div className="container-msg">
-                <div className='message-who'>{item.entity.user.username}</div>
+                <div style={{cursor:'pointer'}} className='message-who'>{interact.isOpen && sessionStorage.getItem("id") != item.entity.user.id && <Interact interact={interact} setInteract={setInteract}/>}<span onClick={()=>setInteract({selected:item.entity.user, isOpen:true})}>{item.entity.user.username}</span></div>
                 <div className="message-container">
                   <div className='message-box' onClick={()=>setReviewModal({isOpen:true, selected:item.entity.id})}>
                     <ul>
@@ -234,7 +238,7 @@ function Review({getReview, review_list, restaurant_id, isLogin}){
                         <label className="input-file-button" htmlFor="review_files"/>:
                         <label className="input-file-button" htmlFor=""/>
                         }
-                        <input type='file' style={{display:'none'}} id='review_files' name='review_files' className='review-input-image' onChange={changeFile} multiple/>
+                        <input key={'1'} type='file' style={{display:'none'}} id='review_files' name='review_files' className='review-input-image' onChange={changeFile} multiple/>
                         { isLogin && !isReviewWrite ? 
                         <span className='all-button' id='review-submit-button' onClick={doSubmit}>리뷰작성</span>
                         /*<button className='review-input-button' onClick={doSubmit}>리뷰작성</button>*/ :

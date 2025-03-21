@@ -74,4 +74,7 @@ public class RestaurantService {
     public void hitUpdate(RestaurantEntity entity) {
         repository.save(entity);
     }
+    public List<Integer> popRestaurantSelect() {
+        return repository.findPopRestaurants();
+    }
 }

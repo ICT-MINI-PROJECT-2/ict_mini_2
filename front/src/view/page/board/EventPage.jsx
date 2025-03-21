@@ -5,6 +5,7 @@ import React, { useState, memo, useCallback, useEffect } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import './EventPage.css'
 
 // QueryClient 인스턴스
 export const queryClient = new QueryClient();
@@ -50,23 +51,25 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                 </div>
                 <div style={{
                     width: "100%",
-                    height: "200px",
+                    height: "16vw",
                     overflow: "hidden",
                     borderRadius: "4px",
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    maxHeight: '240px'
                 }}>
+                    <Link to={`/events/${event.id}`} style={{width:'100%', height:'100%'}}>
                     <img
                         src={thumbnailUrl || "/placeholder-simple.svg"}
                         alt={event.subject}
                         style={{
                             width: "100%",
                             height: "100%",
-                            objectFit: "contain",
+                            objectFit: "cover",
                             display: "block",
-                            maxWidth: '100%',
-                            maxHeight: '100%',
+                            maxWidth: '384px',
+                            maxHeight: '240px',
                         }}
                         onError={(e) => {
                             if (e.target.src !== window.location.origin + "/placeholder-simple.svg") {
@@ -76,7 +79,9 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                         }}
                         loading="lazy"
                     />
+                    </Link>
                 </div>
+                <Link to={`/events/${event.id}`}>
                 <div
                     style={{
                         position: "absolute",
@@ -94,6 +99,7 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                         <p>종료일: {formatDate(event.endDate)}</p>
                     </p>
                 </div>
+                </Link>
             </div>
             <div style={{ padding: "10px 0" }}>
                 <Link to={`/events/${event.id}`} style={{ textDecoration: "none", color: "inherit" }}>
@@ -257,7 +263,7 @@ const EventList = memo(function EventList() {
 
     return (
         <div className="EventPage_event-list-container" style={{ minHeight: '600px' }}>
-            <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop:'60px' }}>
                 <div style={{ display: "flex" }}>
                     <select value={searchType} onChange={(e) => setSearchType(e.target.value)} style={{
                         padding: "8px",
@@ -276,16 +282,7 @@ const EventList = memo(function EventList() {
                             border: "1px solid #ddd",
                             marginRight: "5px",
                         }} />
-                        <button type="submit" style={{
-                            background: "#f8f9fa",
-                            color: "#343a40",
-                            padding: "8px 12px",
-                            border: "1px solid #ddd",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                        }}>
-                            <span role="img" aria-label="search">🔍</span>
-                        </button>
+
                     </form>
                 </div>
             </div>
@@ -294,17 +291,7 @@ const EventList = memo(function EventList() {
             <div className='EventPage_btn-write' style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ display: "flex" }}></div>
                 {sessionStorage.getItem("loginId") === 'admin1234' && (
-                    <Link
-                        to="/events/write"
-                        style={{
-                            padding: "10px 15px",
-                            backgroundColor: "#b21848", // 원하는 배경색
-                            color: "white",        // 글자색
-                            textDecoration: "none", // 밑줄 제거
-                            borderRadius: "4px",     // 둥근 모서리
-                            display: "inline-block", // padding이 제대로 적용되도록
-                        }}
-                    >
+                    <Link className='all-button' id='board-write-button' to="/events/write">
                         글쓰기
                     </Link>
                 )}

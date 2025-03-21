@@ -45,4 +45,10 @@ public class RestaurantEntity {
 
     @Column(nullable = false, columnDefinition = "float default 0.0")
     private float rating;
+
+    @Column(name="review_count", columnDefinition = "int default 0")
+    private int reviewCount;
+
+    @Column(name="wish_count", columnDefinition = "int default 0")
+    private int wishCount;
 }

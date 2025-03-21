@@ -1,47 +1,97 @@
-import { useEffect, useState } from 'react';
+import { act, useEffect, useState } from 'react';
 import '../../../css/page/recommend/recommend.css';
 import Faded from '../../../effect/Faded';
 import activatedLogo from '../../../img/kickeat_logo.png';
 import disabledLogo from '../../../img/kickeat_logo_disabled.png';
 import emptyImage from '../../../img/empty_select_menu.png';
+import Post from '../../user/Post';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+const { kakao } = window;
+
 
 function Recommend() {
-    // var menuCategory = ["koreanFood", "japaneseFood", "asianFood", "bar", "buffet", "fastFood", "chineseFood", "westernFood", "flourBasedFood"];
-    var menuCategory = ["koreanFood", "japaneseFood", "asianFood", "bar", "buffet"];
+    var menuCategory = ["asia", "buffet", "bunsik", "china", "fastfood", "hansik", "japan", "joojeom", "western"];
     const [menuArr, setMenuArr] = useState(new Array(menuCategory.length).fill([]).map(() => [0, 1, 2, 3, 4]));
+    const [selectedMenu, setSelectedMenu] = useState([]);
+    const [lastestSelectedMenu, setLastestSelectedMenu] = useState("");
+
+    const [left_hover, setLeft_hover] = useState(false);
+    const [right_hover, setRight_hover] = useState(false);
+
+    const [dist_one,setDist_one] = useState(0);
+    const [dist_two,setDist_two] = useState(0);
+    const [dist_three,setDist_three] = useState(0);
+    const [dist_four,setDist_four] = useState(0);
+
+    const [rest_info, setRest_info] = useState({
+        id:0,
+        name:'',
+        location:'',
+        distance:0,
+        rating:0,
+        wish:0,
+        hit:0,
+        category:0,
+        review:0
+    });
+    const [rest_info_two, setRest_info_two] = useState({
+        id:0,
+        name:'',
+        location:'',
+        distance:0,
+        rating:0,
+        wish:0,
+        hit:0,
+        category:0,
+        review:0
+    });
+    const [rest_info_three, setRest_info_three] = useState({
+        id:0,
+        name:'',
+        location:'',
+        distance:0,
+        rating:0,
+        wish:0,
+        hit:0,
+        category:0,
+        review:0
+    });
+    const [rest_info_four, setRest_info_four] = useState({
+        id:0,
+        name:'',
+        location:'',
+        distance:0,
+        rating:0,
+        wish:0,
+        hit:0,
+        category:0,
+        review:0
+    });
+
+    useEffect(() => {
+        axios.get('http://localhost:9977/tech/getUserInfo?id='+sessionStorage.getItem('id'))
+        .then(res => {
+            console.log(res.data);
+            setAddr({ address: res.data.addr });
+        })
+        .catch(err => console.log(err));
+    }, []);
 
     useEffect(() => {
         var imagePath = '/img/recommend/menuCategory/';
-        var imageExt = '.png';
-        
+        var imageExt = '.jpg';
+
         var result = getRandomMenu();
 
         setMenuImage((prev) => ({
             // 새로운 메뉴 이미지로 변경
-            leftImage: imagePath + result[0] + result[1] + imageExt,
-            rightImage: imagePath + result[2] + result[3] + imageExt
+            leftImage: imagePath + result[0] + '_' + result[1] + imageExt,
+            rightImage: imagePath + result[2] + '_' + result[3] + imageExt
         }));
 
         console.log(menuArr);
     }, [menuArr]);
-
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var randomMenuCategoryNumber = getRamdomNumberRangeCountN(0, menuCategory.length - 1, 2);
-    var randomNumber = getRamdomNumberRangeCountN(0, 4, 2);
-    function getRamdomNumberRangeCountN(min, max, N) {
-        const uniqueNumbers = new Set();
-        while (uniqueNumbers.size < N) {
-            const randomNumber = Math.floor(Math.random() * (max - min + 1) + min);
-            // if (!exceptNumber.includes(randomNumber)) {
-            // }
-            uniqueNumbers.add(randomNumber);
-        }
-
-        return Array.from(uniqueNumbers);
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function getRandomMenu() {
         // 중복되지 않는 카테고리 먼저 선택
@@ -101,68 +151,53 @@ function Recommend() {
     }
 
     const [menuImage, setMenuImage] = useState({
-        leftImage: "",
-        rightImage: ""
+        leftImage: null,
+        rightImage: null
     });
 
-    const [logoState, setLogoState] = useState(false);
     const [isListPrinted, setIsListPrinted] = useState(false);
     const [isMenuSelected, setIsMenuSelected] = useState([false, false, false, false]);
 
-
-    const clickMenuImage = (option) => {
-
-        if (option === "left") {
-
-            if (document.getElementById("left-menu-image").style.filter === 'none') {
-                document.getElementById("left-menu-image").style.filter = 'blur(5px)';
-                document.getElementById("left-menu-image").style.opacity = 0.5;
-                var leftDetail = document.getElementById("left-menu-detail");
-                leftDetail.innerHTML = "<div>왼쪽 메뉴 세부 정보</div>";
-                leftDetail.innerHTML += "<div>상세 정보A</div>";
-                leftDetail.innerHTML += "<div>상세 정보B</div>";
-                leftDetail.innerHTML += "<div>상세 정보C</div>";
-                leftDetail.innerHTML += "<div><button id='left-select-button'>KICK EAT!!</button></div>";
-                document.getElementById("left-select-button").addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    selectMenu("left");
-                });
-            } else {
-                document.getElementById("left-menu-image").style.filter = 'none';
-                document.getElementById("left-menu-image").style.opacity = 1;
-                document.getElementById("left-menu-detail").innerHTML = "";
+    useEffect(() => {
+        for (let i = 0; i < isMenuSelected.length; i++) {
+            var logo = disabledLogo;
+            if (isMenuSelected[i]) {
+                logo = activatedLogo;
+                break;
             }
-        } else if (option === "right") {
-            if (document.getElementById("right-menu-image").style.filter === 'none') {
-                document.getElementById("right-menu-image").style.filter = 'blur(5px)';
-                document.getElementById("right-menu-image").style.opacity = 0.5;
-                var rightDetail = document.getElementById("right-menu-detail");
-                rightDetail.innerHTML = "오른쪽 메뉴 세부 정보";
-                rightDetail.innerHTML += "<div>상세 정보A</div>";
-                rightDetail.innerHTML += "<div>상세 정보B</div>";
-                rightDetail.innerHTML += "<div>상세 정보C</div>";
-                rightDetail.innerHTML += "<div><button id='right-select-button'>KICK EAT!!</button></div>";
-                document.getElementById("right-select-button").addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    selectMenu("right");
-                });
-            } else {
-                document.getElementById("right-menu-image").style.filter = 'none';
-                document.getElementById("right-menu-image").style.opacity = 1;
-                document.getElementById("right-menu-detail").innerHTML = "";
+        }
+        document.getElementById('kickEatListButton').style.backgroundImage = `url(${logo})`;
+    }, [isMenuSelected])
+
+
+    const kickMenu = (option) => {
+        console.log(selectedMenu);
+        for (let i = 1; i <= 4; i++) {
+
+            if (!isMenuSelected[i - 1]) {
+                if (option === 'left') {
+
+                    var fileName = menuImage.leftImage.substring(28, menuImage.leftImage.length - 4);
+                    var menuName = fileName.substring(0, fileName.length - 2);
+                    var menuNum = fileName.substring(fileName.length - 1);
+
+                    exceptMenu(menuName, menuNum);
+
+                    break;
+                } else if (option === 'right') {
+
+                    var fileName = menuImage.rightImage.substring(28, menuImage.rightImage.length - 4);
+                    var menuName = fileName.substring(0, fileName.length - 2);
+                    var menuNum = fileName.substring(fileName.length - 1);
+
+                    exceptMenu(menuName, menuNum);
+
+                    break;
+                }
             }
         }
     }
-
     const selectMenu = (option) => {
-        if (document.getElementById("left-menu-image").style.filter !== 'none') {
-            clickMenuImage("left");
-        }
-
-        if (document.getElementById("right-menu-image").style.filter !== 'none') {
-            clickMenuImage("right");
-        }
-
         for (let i = 1; i <= 4; i++) {
 
             if (!isMenuSelected[i - 1]) {
@@ -171,16 +206,22 @@ function Recommend() {
                     document.getElementById("select-menu" + i).querySelector("img").style.opacity = 0;
 
                     var fileName = menuImage.leftImage.substring(28, menuImage.leftImage.length - 4);
-                    var menuName = fileName.substring(0, fileName.length - 1);
+                    var menuName = fileName.substring(0, fileName.length - 2);
                     var menuNum = fileName.substring(fileName.length - 1);
-            
+
                     exceptMenu(menuName, menuNum);
 
                     setIsMenuSelected((prev) => {
                         const newState = [...prev];
                         newState[i - 1] = true;
                         return newState;
-                    })
+                    });
+
+                    setSelectedMenu((prev) => {
+                        const newState = [...prev];
+                        newState[i - 1] = menuName;
+                        return newState;
+                    });
 
                     setTimeout(() => {
                         document.getElementById("select-menu" + i).querySelector("img").src = menuImage.leftImage;
@@ -190,20 +231,15 @@ function Recommend() {
                     setTimeout(() => {
                         document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 0s ease-in-out';
                     }, 1500);
-
-                    if (i === 4) {
-                        document.getElementById('kickEatListButton').style.backgroundImage = `url(${activatedLogo})`;
-                        setLogoState(true);
-                    }
                     break;
                 } else if (option === 'right') {
                     document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 1s ease-in-out';
                     document.getElementById("select-menu" + i).querySelector("img").style.opacity = 0;
 
                     var fileName = menuImage.rightImage.substring(28, menuImage.rightImage.length - 4);
-                    var menuName = fileName.substring(0, fileName.length - 1);
+                    var menuName = fileName.substring(0, fileName.length - 2);
                     var menuNum = fileName.substring(fileName.length - 1);
-            
+
                     exceptMenu(menuName, menuNum);
 
                     setIsMenuSelected((prev) => {
@@ -211,6 +247,12 @@ function Recommend() {
                         newState[i - 1] = true;
                         return newState;
                     })
+
+                    setSelectedMenu((prev) => {
+                        const newState = [...prev];
+                        newState[i - 1] = menuName;
+                        return newState;
+                    });
 
                     setTimeout(() => {
                         document.getElementById("select-menu" + i).querySelector("img").src = menuImage.rightImage;
@@ -220,11 +262,6 @@ function Recommend() {
                     setTimeout(() => {
                         document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 0s ease-in-out';
                     }, 1500);
-
-                    if (i === 4) {
-                        document.getElementById('kickEatListButton').style.backgroundImage = `url(${activatedLogo})`;
-                        setLogoState(true);
-                    }
                     break;
                 }
             }
@@ -234,7 +271,7 @@ function Recommend() {
         var imageExt = '.png';
 
         var result = getRandomMenu();
-        
+
         setMenuImage((prev) => ({
             // 새로운 메뉴 이미지로 변경
             leftImage: imagePath + result[0] + result[1] + imageExt,
@@ -242,93 +279,34 @@ function Recommend() {
         }));
     }
 
-    const clickSelectedMenu = (object) => {
-
-        if (object.style.filter === 'none' && object.src !== emptyImage) {
-
-            for (var i = 1; i <= 4; i++) {
-                if (document.getElementById("select-menu" + i).querySelector("button")) {
-                    document.getElementById("select-menu" + i).querySelector("img").style.opacity = 1;
-                    document.getElementById("select-menu" + i).querySelector("img").style.filter = 'none';
-                    document.getElementById("select-menu" + i).querySelector("button").remove();
-                }
-            }
-
-            object.style.opacity = 0.5;
-            object.style.filter = 'blur(5px)';
-            const button = document.createElement("button");
-            button.textContent = "X";
-            button.addEventListener("click", () => {
-                object.style.opacity = 1;
-                object.style.filter = 'none';
-                object.src = emptyImage;
-                object.parentElement.querySelector("button").remove();
-                checkImageAndSort();
-            });
-            object.parentElement.append(button);
-        } else {
-            object.style.opacity = 1;
-            object.style.filter = 'none';
-            if (object.parentElement.querySelector("button")) {
-                object.parentElement.querySelector("button").remove();
-            }
-        }
-    }
-
-    const checkImageAndSort = () => {
-        let imgSrc = [];
-
-        for (var i = 1; i <= 4; i++) {
-            if (document.getElementById("select-menu" + i).querySelector("img").src !== emptyImage) {
-                imgSrc.push(document.getElementById("select-menu" + i).querySelector("img").src);
-            }
-        }
-
-        for (i = 1; i <= 4; i++) {
-            if (imgSrc[i - 1] != null) {
-                document.getElementById("select-menu" + i).querySelector("img").src = imgSrc[i - 1];
-            } else {
-                document.getElementById("select-menu" + i).querySelector("img").src = emptyImage;
-            }
-        }
-
-        setIsMenuSelected((prev) => {
-            return prev.map((_, index) => imgSrc[index] !== undefined);
-        });
-
-        document.getElementById('kickEatListButton').style.backgroundImage = `url(${disabledLogo})`;
-        setLogoState(false);
-    }
-
     const showRecommendList = () => {
-        if (logoState) {
+        if (!document.getElementById("kickEatListButton").style.backgroundImage.includes("disable")) {
             var recommnedContainer = document.getElementsByClassName("recommend-container")[0];
+            let menuCon = document.getElementsByClassName('menu-container')[0];
+            menuCon.style.transition='all 2s';
+            menuCon.style.transform='translateY(-700px)';
+            let selCon = document.getElementsByClassName('select-menu-container')[0];
+            selCon.style.transition='all 2s';
+            selCon.style.transform='translateY(-700px)';
+            recommnedContainer = document.getElementsByClassName("recommend-container")[0];
             recommnedContainer.style.transition = 'all 1.5s';
             recommnedContainer.style.paddingTop = '75px';
             recommnedContainer.style.height = '0px';
+
+
+            for (let i = 1; i <= 4; i++) {
+                if (i == 1) {
+                    setLastestSelectedMenu(selectedMenu[0]);
+                } 
+                if (document.getElementById("select-menu" + i).querySelector("button")) {
+                    document.getElementById("select-menu" + i).querySelector("button").remove();
+                }
+            }
+            setIsListPrinted(true);
         }
-
-        // 테스트용 삭제할것
-        recommnedContainer = document.getElementsByClassName("recommend-container")[0];
-        recommnedContainer.style.transition = 'all 1.5s';
-        recommnedContainer.style.paddingTop = '75px';
-        recommnedContainer.style.height = '0px';
-
-        var recommendList = document.getElementById("recommend-list");
-        recommendList.style.transition = 'height 1.5s';
-        if (window.innerWidth > 1920) {
-            recommendList.style.height = '576px';
-        } else {
-            recommendList.style.height = '30vw';
-        }
-
-        setTimeout(() => {
-            recommendList.style.transition = 'height 0s';
-        }, 1500);
-
-        setIsListPrinted(true);
     }
 
+    /*
     useEffect(() => {
         if (isListPrinted) {
             const handleResize = () => {
@@ -343,48 +321,367 @@ function Recommend() {
                 }
             };
 
-            window.addEventListener('resize', handleResize);
         }
     }, [isListPrinted]);
+    */
+
+    const postButtonStyle = {
+        position: 'absolute',
+        top: '8px',
+        right: '8px',
+        width: '30px',
+        height: '30px',
+        fontSize: '20px'
+    }
+
+    const postBox = {
+        backgroundColor: 'white',
+        width: '800px',
+        height: '450px',
+        position: 'fixed',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%,-30%)',
+        border: '2px solid black',
+        borderRadius: '5px'
+    }
+
+    const [popup, setPopup] = useState(false);
+    const [addr, setAddr] = useState({ addr: '' });
+    const handleComplete = (data) => {
+        setPopup(!popup);
+    }
+    const calcDist = (addrs, iddx) => {
+        let dists=0;
+        var geocoder = new kakao.maps.services.Geocoder();
+
+        if(addr.address != undefined)
+        geocoder.addressSearch(addrs, function(result, status) {
+
+            if (status === kakao.maps.services.Status.OK) {
+                geocoder.addressSearch(addr.address , (ress, stat) => {
+                    if(ress) {
+                        let x = ress[0].road_address.x;
+                        let y = ress[0].road_address.y;
+                        let ax = result[0].x;
+                        let ay = result[0].y;
+                        dists = getDistanceFromLatLonInKm(x,y,ax,ay)*1000;
+                        if(dists/1000 > 0) dists = getDistanceFromLatLonInKm(x,y,ax,ay).toFixed(2)+'km';
+                        else dists= parseInt(dists)+'m';
+                        if(iddx===1) setDist_one(dists);
+                        else if(iddx===2) setDist_two(dists);
+                        else if(iddx===3) setDist_three(dists);
+                        else setDist_four(dists);  
+                        return;
+                    }
+                })
+            } 
+        });
+    }
+
+
+    // const initialRequest = () => {
+    //     // 정규 표현식으로 구 추출
+    //     const regex = /([가-힣]+구)/;
+
+    //     const trimAddress = addr.address.match(regex) ? addr.address.match(regex)[0] : null;
+
+    //     axios.post("http://localhost:9977/recommend/list", {
+    //         menuCategory: selectedMenu[0],
+    //         address: trimAddress
+    //     })
+    //         .then(function (response) {
+
+    //         })
+    //         .catch(function (error) {
+
+    //         });
+    // }
+
+    useEffect(() => {
+        if (addr.address != undefined) {
+            reqeustToServer();
+        }
+    }, [lastestSelectedMenu]);
+
+    const [recommendResultId, setRecommendResultId] = useState([]);
+    const [selectedRecommendId, setSelectedRecommendId] = useState(0);
+    const navigate = useNavigate();
+
+    function onClickDetail(id){
+        navigate('/findInfo',{state: {id: id}})
+    }
+    function getDistanceFromLatLonInKm(lat1,lng1,lat2,lng2) {
+        function deg2rad(deg) {
+            return deg * (Math.PI/180)
+        }
+        var R = 6371;
+        var dLat = deg2rad(lat2-lat1);
+        var dLon = deg2rad(lng2-lng1);
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d; 
+      }
+    function reqeustToServer() {
+        // 정규 표현식으로 구 추출
+        const regex = /([가-힣]+구)/;
+
+        const trimAddress = addr.address.match(regex) ? addr.address.match(regex)[0] : null;
+
+        let x = '';
+
+        for(var i=0; i<selectedMenu.length; i++) x+=selectedMenu[i]+'/';
+
+        axios.get("http://localhost:9977/recommend/list?menuCategory="+x+'&address='+trimAddress)
+            .then(function (response) {
+                console.log(response.data);
+                let z = parseInt(Math.random() *response.data.length);
+                if(z >= response.data.length-4) z-=4;
+                let idd = 1;
+                for (let i = z; i < z+4; i++) {
+                    if(i===z) {
+                        setRest_info({...rest_info,name:response.data[i-1].name,
+                            category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
+                            ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
+                        });
+                    }
+                    if(i===z+1) {
+                        setRest_info_two({...rest_info_two,name:response.data[i-1].name,
+                            category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
+                            ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
+                        });
+                    }
+                    if(i===z+2) {
+                        setRest_info_three({...rest_info_three,name:response.data[i-1].name,
+                            category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
+                            ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
+                        });
+                    }
+                    if(i===z+3) {
+                        setRest_info_four({...rest_info_four,name:response.data[i-1].name,
+                            category:response.data[i-1].categoryOne, id:response.data[i-1].id, location:response.data[i-1].location
+                            ,rating:response.data[i-1].rating, wish:response.data[i-1].wishCount, hit:response.data[i-1].hit, review:response.data[i-1].reviewCount
+                        });
+                    }
+                    calcDist(response.data[i-1].location, idd++);
+                    /*
+                    const imgElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector("img");
+                    imgElement.src = '/img/find/' + response.data[i - 1].categoryOne + '.png';
+                    const nameElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector(".restaurantName");
+                    nameElement.innerHTML = response.data[i - 1].name;
+                    const addressElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector(".restaurantAddress");
+                    addressElement.innerHTML = response.data[i - 1].location;*/
+                    setRecommendResultId(prev => {
+                        const newState = [...prev];
+                        newState[i - 1] = response.data[i - 1].id;
+                        return newState;
+                    });
+                }
+            })
+            .catch(function (error) {
+
+            });
+    }
+
+    const refreshResult = () => {
+        //resetResultStyle();
+        reqeustToServer();
+    }
+
+    const resetResultStyle = () => {
+        document.querySelectorAll(".recommendResult").forEach((element) => {
+            element.style.backgroundColor = "white";
+        });
+
+        setSelectedRecommendId(0);
+    }
+
+    const clickRecommendElement = (event) => {
+        document.querySelectorAll(".recommendResult").forEach((element) => {
+            element.style.backgroundColor = "white";
+        });
+
+        const parentElement = event.currentTarget;
+        const siblings = parentElement.parentNode.children;
+        const index = Array.from(siblings).indexOf(parentElement);
+        parentElement.style.backgroundColor = 'lightgray';
+        setSelectedRecommendId(recommendResultId[index]);
+    }
 
     return (
         <Faded>
+            {popup && <div style={postBox}>
+            <button title="X" style={postButtonStyle} onClick={() => setPopup(false)}>X</button>
+            <Post addr={addr} setAddr={setAddr} setPopup={setPopup} /></div>}
             <div className="top-recommend-container">
                 <div className="recommend-container">
                     <div className="menu-container">
                         <div className="left-menu-container" style={{ position: 'relative' }}>
-                            <div className="menu-image" id="left-menu-image" style={{ filter: 'none' }} onClick={() => clickMenuImage("left")}>
-                                <img src={menuImage.leftImage} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                            <div className="menu-image" id="left-menu-image" onMouseOut={() => setLeft_hover(false) }  onMouseOver={() => setLeft_hover(true)}>
+                                <img src={menuImage.leftImage} style={{ width: '100%', height: '100%', objectFit: 'cover',filter: left_hover && 'blur(5px)', transition:'all 0.8s'}} alt="" />
+                                { left_hover &&
+                                <div className="menu-detail" style={{width:'0',height:'0'}} id="left-menu-detail">
+                                    <span className='all-button' id='left-select-button-eat' onClick={()=>selectMenu('left')}>&nbsp;EAT!!&nbsp;</span>
+                                <span className='all-button' id='left-select-button-kick' onClick={()=>kickMenu('left')}>KICK!!</span>
+                                </div>
+                                }
                             </div>
-                            <div className="menu-detail" id="left-menu-detail" onClick={() => clickMenuImage("left")}></div>
+                            <div className="menu-detail" id="left-menu-detail"></div>
                         </div>
                         <div className="right-menu-container" style={{ position: 'relative' }}>
-                            <div className="menu-image" id="right-menu-image" style={{ filter: 'none' }} onClick={() => clickMenuImage("right")}>
-                                <img src={menuImage.rightImage} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                            <div className="menu-image" id="right-menu-image" onMouseOut={() => setRight_hover(false) } onMouseOver={() => setRight_hover(true)}>
+                                <img src={menuImage.rightImage} style={{ width: '100%', height: '100%', objectFit: 'cover',filter: right_hover && 'blur(5px)', transition:'all 0.8s'}} alt="" />
+                                { right_hover &&
+                                <div className="menu-detail" style={{width:'0',height:'0'}} id="right-menu-detail">
+                                <span className='all-button' id='right-select-button-eat' onClick={()=>selectMenu('right')}>&nbsp;EAT!!&nbsp;</span>
+                                <span className='all-button' id='right-select-button-kick' onClick={()=>kickMenu('right')}>KICK!!</span>
+                                </div>
+                                }
                             </div>
-                            <div className="menu-detail" id="right-menu-detail" onClick={() => clickMenuImage("right")}></div>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div className='select-menu-container'>
-                        <div className='kickEatListText'>나의 KICK EAT 메뉴</div>
                         <div className="select-menu" id="select-menu1" style={{ backgroundImage: '' }}>
-                            <img src={emptyImage} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} onClick={(event) => clickSelectedMenu(event.target)} alt="" />
+                            <img src={emptyImage} id="select-menu-image1" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} alt="" />
                         </div>
                         <div className="select-menu" id="select-menu2" style={{ backgroundImage: '' }}>
-                            <img src={emptyImage} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} onClick={(event) => clickSelectedMenu(event.target)} alt="" />
+                            <img src={emptyImage} id="select-menu-image2" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} alt="" />
                         </div>
                         <div className="select-menu" id="select-menu3" style={{ backgroundImage: '' }}>
-                            <img src={emptyImage} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} onClick={(event) => clickSelectedMenu(event.target)} alt="" />
+                            <img src={emptyImage} id="select-menu-image3" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} alt="" />
                         </div>
                         <div className="select-menu" id="select-menu4" style={{ backgroundImage: '' }}>
-                            <img src={emptyImage} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} onClick={(event) => clickSelectedMenu(event.target)} alt="" />
+                            <img src={emptyImage} id="select-menu-image4" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'none', opacity: '1' }} alt="" />
                         </div>
                         <button className='kickEatListButton' id='kickEatListButton' style={{ backgroundImage: `url(${disabledLogo})` }} onClick={showRecommendList}></button>
                     </div>
                 </div>
-                <div id="recommend-list">
+                   <div id="recommend-list">
+                  { rest_info.category != '' && 
+                  <>
+                  <h4>당신을 위한 추천 음식집 리스트</h4>
+                  <div id="locationSearch">
+                        <input id="locationSearchBox" type="text" value={addr.address} disabled></input>
+                        <button id="locationSearchButton" onClick={handleComplete}>찾기</button>
+                        <button id="locationSearchButton" onClick={refreshResult}>갱신</button>
+                    </div></>}
+                    { rest_info.category != '' &&    <div className='find-rec-list' id="find-rec-list">
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info.id)}>
+                        <img src={`/img/find/${rest_info.category}.png`}/>
+                            <div className='restaurantName'>{rest_info.name}</div>
+                            <div className='restaurantAddress'>{rest_info.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_one}
+                                </li>
+                                <li>
+                                👁{rest_info.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    ♥{rest_info.wish}
+                                </li>
+                                <li>
+                                📖{rest_info.review}
+                                </li>
+                            </ul>
+                        </div>
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info_two.id)}>
+                            {<img src={`/img/find/${rest_info_two.category}.png`}/>}
+                            <div className='restaurantName'>{rest_info_two.name}</div>
+                            <div className='restaurantAddress'>{rest_info_two.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info_two.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info_two.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_two}
+                                </li>
+                                <li>
+                                👁{rest_info_two.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                ♥{rest_info_two.wish}
+                                </li>
+                                <li>
+                                📖{rest_info_two.review}
+                                </li>
+                            </ul>
+                        </div>
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info_three.id)}>
+                        <img src={`/img/find/${rest_info_three.category}.png`}/>
+                            <div className='restaurantName'>{rest_info_three.name}</div>
+                            <div className='restaurantAddress'>{rest_info_three.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info_three.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info_three.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_three}
+                                </li>
+                                <li>
+                                👁{rest_info_three.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                ♥{rest_info_three.wish}
+                                </li>
+                                <li>
+                                📖{rest_info_three.review}
+                                </li>
+                            </ul>
+                        </div>
+                        <div className='recommendResult' onClick={() => onClickDetail(rest_info_four.id)}>
+                            <img src={`/img/find/${rest_info_four.category}.png`}/>
+                            <div className='restaurantName'>{rest_info_four.name}</div>
+                            <div className='restaurantAddress'>{rest_info_three.location}</div>
+                            <ul>
+                                <li>
+                                <span className='star-rating'>
+                                    <span style ={{width:`${rest_info_four.rating*20}%`}}></span>
+                                </span>&nbsp;{rest_info_four.rating}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                🚶🏻‍♂️{dist_four}
+                                </li>
+                                <li>
+                                👁{rest_info_four.hit}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                ♥{rest_info_four.wish}
+                                </li>
+                                <li>
+                                📖{rest_info_four.review}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>}
                 </div>
             </div>
         </Faded>
@@ -392,3 +689,6 @@ function Recommend() {
 }
 
 export default Recommend;
+
+// 이미 선택된 이미지 클릭했을땐 아무반응 없게
+// 카카오맵 길찾기 추가하기
