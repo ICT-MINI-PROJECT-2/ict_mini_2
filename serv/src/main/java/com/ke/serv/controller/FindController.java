@@ -28,7 +28,7 @@ public class FindController {
             if (pvo.getSort().equals("restaurant_no")) pvo.setSort("id");
 
             else if(pvo.getSort().equals("wish_count")) pvo.setSort("wishCount");
-            else pvo.setSort("reviewCount");
+            else if(pvo.getSort().equals("review_count")) pvo.setSort("reviewCount");
             pvo.setTotalRecord(service.totalRecord(pvo));
             list = service.findListSelect(pvo);
         }
