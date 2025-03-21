@@ -62,7 +62,7 @@ public class UserService {
     }
 
     public int totalReviewRecord(PagingWishVO prVO){
-        return reviewRepo.countIdBy();
+        return reviewRepo.countIdBy();}
     public List<WishlistEntity> selectWishList(RestaurantEntity re) {
         return wishRepo.findAllByRestaurant(re);
     }
