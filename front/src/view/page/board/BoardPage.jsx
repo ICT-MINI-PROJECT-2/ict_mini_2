@@ -59,6 +59,7 @@ function BoardPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
+  const [isRowVisible, setIsRowVisible] = useState(true); // 버튼 영역의 가시성 상태
 
   // 현재 URL에서 카테고리 가져오기
   const getActiveCategory = () => {
@@ -183,11 +184,36 @@ function BoardPage() {
     height: "100%",
   }
 
+    // 헤더 겹침 감지 로직
+    useEffect(() => {
+      const checkHeaderOverlap = () => {
+        const header = document.querySelector('header'); // 실제 헤더 선택자
+        const row = document.querySelector('.BoardPage_row');
+  
+        if (!header || !row) return;
+  
+        const headerRect = header.getBoundingClientRect();
+        const rowRect = row.getBoundingClientRect();
+  
+        // 겹침 여부 확인
+        const isOverlapping = headerRect.bottom > rowRect.top;
+        setIsRowVisible(!isOverlapping); // 겹치면 숨김
+      };
+  
+      // 초기 로드 및 스크롤 이벤트 시 겹침 확인
+      checkHeaderOverlap();
+      window.addEventListener('scroll', checkHeaderOverlap);
+  
+      return () => {
+        window.removeEventListener('scroll', checkHeaderOverlap);
+      };
+    }, []);
+
   return (
     <div style={pageContainerStyle}>
       <div className="BoardPage_container">
         { activeCategory !=='INQUIRY' &&
-        <div className="BoardPage_row">
+        <div className="BoardPage_row" style={{ display: isRowVisible ? 'flex' : 'none' }}>
           {[
             { category: "BOARD", icon: <Clipboard2/>, text: "BOARD" },
             { category: "EVENT", icon: <CalendarHeart />, text: "EVENT" },

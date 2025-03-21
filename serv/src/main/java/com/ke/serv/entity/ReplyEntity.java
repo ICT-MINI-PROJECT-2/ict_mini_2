@@ -26,6 +26,7 @@ public class ReplyEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(length = 1000000000) // ✅ content 필드에 @Column 어노테이션 확인
     private String content;
 
     @CreationTimestamp
