@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useRef, useEffect } from "react";
+import axios from 'axios';
 
-function ImageModal({imageList, setImageModal, restaurant}) {
-    const mount = useRef(true);
-        
+function MessageView({msg_box, setMsg_box}){
+        const mount = useRef(true);
         useEffect(()=>{
             if(!mount.current) mount.current = false;
             else {
-                let modal=document.getElementById("review-image-modal");
+                let modal=document.getElementsByClassName("message-view-container")[0];
     
                 modal.style.opacity=1;
                 modal.style.zIndex=5;
@@ -27,7 +27,7 @@ function ImageModal({imageList, setImageModal, restaurant}) {
     
                 document.addEventListener('keyup', (e)=>{
                     if(e.key ==='Escape') {
-                        setImageModal(false);
+                        setMsg_box({...msg_box, isOpen:false});
                     }
                 })
     
@@ -91,57 +91,66 @@ function ImageModal({imageList, setImageModal, restaurant}) {
             
             return result;
         }
+    const readMessage = (id) => {
+        const det = document.getElementById('comment-detail-'+id);
+        console.log(det.style.display);
+        if(det.style.display == 'inline-block') det.style.display='none';
+        else det.style.display='inline-block';
+        axios.post('http://localhost:9977/tech/readMessage',{id:id})
+        .then(res => {
+            setMsg_box({...msg_box, msg_list:res.data});
+        })
+        .catch(err => console.log(err))
+    }
 
-        const zoomImage = (item)=>{
-            let zoom = document.getElementById("zoom");
-            
-            zoom.setAttribute("src", `http://localhost:9977/uploads/review/${item.id}/${item.filename}`);
-            zoom.style.display = 'block';
-        }
+    const delMsg = (id) => {
+        axios.post('http://localhost:9977/tech/deleteMessage',{id:id})
+        .then(res => {
+            setMsg_box({...msg_box, msg_list:res.data});
+        })
+        .catch(err => console.log(err))
+    }
 
-        const imgRender = () => {
-            const res = [];
-            imageList.forEach((item,idx)=>{
-                res.push(
-                    <div id="image-box">
-                        <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}
-                                onClick={()=>{zoomImage(item)}}/>
-                        <div>{item.writedate}</div>
-                    </div>
-                    )
-                // if (idx >= 9 * (page - 1) && idx < 9 * page) {
-                //     res.push(<img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}/>);
-                //     res.push(<div>{item.writedate}</div>)
-                // }
+    return(<div className='message-view-container'>
+        <div id="message-view-exit" onClick={()=>setMsg_box({...msg_box,isOpen:false})}>×</div>
+        <div style={{textAlign:'center',fontSize:'24px'}}>쪽지 보관함</div>
+        <ul className='msg-ul'>
+            <li>날짜</li>
+            <li style={{paddingLeft:'10px'}}>내용</li>
+            <li>보낸이</li>
+            <li></li>
+        </ul>
+        {
+            msg_box.msg_list.map((item) => {
+                return (
+                    <>
+                    {
+                        item.state != 2 &&
+                        <>
+                        <ul>
+                            <li style={item.state!=0 ? {color:'gray'} : {}}>
+                                {item.writedate.substring(0,10)}
+                            </li>
+                            <li className='msg-comm' style={item.state==0 ? {cursor:'pointer'}: {cursor:'pointer', color:'gray'}}onClick={()=> readMessage(item.id)}>
+                                {item.comment}
+                            </li>
+                            <li style={item.state!=0 ? {color:'gray'} : {}}>
+                                {item.userFrom.username}
+                            </li>
+                            <li id='view-del-btn' onClick={()=>delMsg(item.id)}>
+                                X
+                            </li>
+                        </ul>
+                        <div className='comment-detail' id={'comment-detail-'+item.id} style={{display:'none'}}>
+                            {item.comment}
+                        </div>
+                        </>
+                    }
+                    </>
+                );
             })
-            
-            return res;
         }
-
-        return (
-            <div id='review-image-modal'>
-                <div>{restaurant.rstrName}</div>
-                <div id="review-image-modal-exit" onClick={()=>setImageModal(false)}>×</div>
-
-                <div className='gallery-box'>
-                    {imgRender()}
-                </div>
-
-                <img id="zoom" onClick={()=>{document.getElementById("zoom").style.display = 'none'}}/>
-
-                {/* <div className='gallery-page-button'>
-                    {
-                        page > 1 &&
-                        <div className='gallery-left-button' onClick={()=> goPage(-1)}>◀</div>
-                    }
-                    <div className='gallery-page'>{page}</div>
-                    {
-                        imageList.length > page * 9 &&
-                        <div className='gallery-right-button' onClick={()=> goPage(1)}>▶</div>
-                    }
-                </div> */}
-            </div>
-        );
+    </div>);
 }
 
-export default ImageModal;
+export default MessageView;

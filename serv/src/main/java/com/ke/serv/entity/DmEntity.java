@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Data
@@ -26,6 +27,10 @@ public class DmEntity {
 
     @Column(columnDefinition = "int default 0")
     private int state;
+
+    @CreationTimestamp
+    @Column(columnDefinition = "DATETIME default now()")
+    private String writedate;
 
     private String comment;
 }
