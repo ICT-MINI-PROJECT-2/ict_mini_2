@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import Faded from "../../effect/Faded";
 import axios from "axios";
 import EditPage from "./EditPage";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function EditEnter() {
+function EnterEdit() {
     const id = sessionStorage.getItem("id");
     const userId = sessionStorage.getItem("loginId");
     const [data, setData] = useState({});
     const [editWhere, setEditWhere] = useState(0);
-    const navigate = useNavigate();
     const [editParam, setEditParam] = useState({});
 
     useEffect(() => {
@@ -27,7 +26,8 @@ function EditEnter() {
 
     const doEdit = (de) =>{
      setEditWhere(1);
-     
+     setEditParam(de);
+
     }
 
   const editChk = () =>{
@@ -79,10 +79,10 @@ function EditEnter() {
 }
 {editWhere === 1 &&
   <div>
-    <EditPage editWhere={editWhere} setEditWhere={setEditWhere}/>
+    <EditPage editParam={editParam} setEditParam={setEditParam} editWhere={editWhere} setEditWhere={setEditWhere}/>
   </div>
 }
 </Faded>
   );
 }
-export default EditEnter; 
+export default EnterEdit; 

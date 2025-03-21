@@ -25,7 +25,7 @@ import FreeWrite from "./page/board/FreeWrite";
 import FreePage from "./page/board/FreePage";
 import FreeView from "./page/board/FreeView";
 import FreeEdit from "./page/board/FreeEdit";
-import EditEnter from "./user/EditEnter";
+import EnterEdit from "./user/EnterEdit";
 import EditPage from "./user/EditPage";
 
 function Body() {
@@ -72,7 +72,7 @@ function Body() {
       <Route path="/mypage" element={<MyPage />} />
       <Route path="/findInfo" element={<FindInfo />} />
       <Route path="/test" element={<Test />} />
-      <Route path="/editEnter" element={<EditEnter/>} />
+      <Route path="/editEnter" element={<EnterEdit/>} />
       <Route path="/editPage" element={<EditPage/>} />
 
       {/* 기본적으로 이벤트 게시판으로 이동 */}
