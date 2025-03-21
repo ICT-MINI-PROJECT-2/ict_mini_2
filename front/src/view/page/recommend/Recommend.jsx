@@ -612,8 +612,8 @@ function Recommend() {
                             </div>
                         </div>
                         <div style={{ position: 'absolute', transition: 'border 1s ease-in-out', border: '1px solid white', borderRadius: '10px', width: '16vw', height: '5vw', maxHeight: '100px', maxWidth: '320px', transform: 'translate(320%, 50%)', fontSize: 'clamp(0.7px, 0.7vw, 15px)' }}>
-                            <div style={{ position: 'absolute', width: '10%', height: '32%', transform: 'translate(0%, -140%)'}}><img src={questionMarkIcon} style={{ width: '100%' }} onClick={clickQuestionMark} /></div>
-                            <div id="howToUse" style={{opacity: 0, transition: 'opacity 1s ease-in-out'}}>
+                            <div style={{ position: 'absolute', width: '10%', height: '32%', transform: 'translate(0%, -140%)' }}><img src={questionMarkIcon} style={{ width: '100%' }} onClick={clickQuestionMark} /></div>
+                            <div id="howToUse" style={{ opacity: 0, transition: 'opacity 1s ease-in-out'}}>
                                 <div style={{ textAlign: 'center' }}>🍽️맛집 추천 사용법🍽️</div>
                                 &nbsp;1. 메뉴 카테고리를 EAT 또는 KICK하여 선택<br />
                                 &nbsp;2. KICK EAT 로고를 클릭<br />
@@ -653,112 +653,80 @@ function Recommend() {
                         <div className='recommendResult' onClick={() => onClickDetail(rest_info.id)}>
                             <img src={`/img/find/${rest_info.category}.png`} />
                             <div className='restaurantName'>{rest_info.name}</div>
-                            <div className='restaurantAddress'>{rest_info.location}</div>
-                            <ul>
-                                <li>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{display: 'flex', justifyContent: 'center'}}>
                                     <span className='star-rating'>
                                         <span style={{ width: `${rest_info.rating * 20}%` }}></span>
                                     </span>&nbsp;{rest_info.rating}
                                 </li>
                             </ul>
-                            <ul>
-                                <li>
-                                    🚶🏻‍♂️{dist_one}
-                                </li>
-                                <li>
-                                    👁{rest_info.hit}
-                                </li>
-                            </ul>
-                            <ul>
-                                <li>
-                                    ♥{rest_info.wish}
-                                </li>
-                                <li>
-                                    📖{rest_info.review}
+                            <div className='restaurantAddress'>{rest_info.location}</div>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{ display: 'flex', justifyContent: 'space-between', width: '70%'}}>
+                                    <span>🚶🏻‍♂️{dist_one}</span>
+                                    <span>👁️‍🗨️{rest_info.hit}</span>
+                                    <span>❤️{rest_info.wish}</span>
+                                    <span>📖{rest_info.review}</span>
                                 </li>
                             </ul>
                         </div>
                         <div className='recommendResult' onClick={() => onClickDetail(rest_info_two.id)}>
                             {<img src={`/img/find/${rest_info_two.category}.png`} />}
                             <div className='restaurantName'>{rest_info_two.name}</div>
-                            <div className='restaurantAddress'>{rest_info_two.location}</div>
-                            <ul>
-                                <li>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{display: 'flex', justifyContent: 'center'}}>
                                     <span className='star-rating'>
                                         <span style={{ width: `${rest_info_two.rating * 20}%` }}></span>
                                     </span>&nbsp;{rest_info_two.rating}
                                 </li>
                             </ul>
-                            <ul>
-                                <li>
-                                    🚶🏻‍♂️{dist_two}
-                                </li>
-                                <li>
-                                    👁{rest_info_two.hit}
-                                </li>
-                            </ul>
-                            <ul>
-                                <li>
-                                    ♥{rest_info_two.wish}
-                                </li>
-                                <li>
-                                    📖{rest_info_two.review}
+                            <div className='restaurantAddress'>{rest_info_two.location}</div>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{ display: 'flex', justifyContent: 'space-between', width: '70%'}}>
+                                    <span>🚶🏻‍♂️{dist_two}</span>
+                                    <span>👁️‍🗨️{rest_info_two.hit}</span>
+                                    <span>❤️{rest_info_two.wish}</span>
+                                    <span>📖{rest_info_two.review}</span>
                                 </li>
                             </ul>
                         </div>
                         <div className='recommendResult' onClick={() => onClickDetail(rest_info_three.id)}>
                             <img src={`/img/find/${rest_info_three.category}.png`} />
                             <div className='restaurantName'>{rest_info_three.name}</div>
-                            <div className='restaurantAddress'>{rest_info_three.location}</div>
-                            <ul>
-                                <li>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{display: 'flex', justifyContent: 'center'}}>
                                     <span className='star-rating'>
                                         <span style={{ width: `${rest_info_three.rating * 20}%` }}></span>
                                     </span>&nbsp;{rest_info_three.rating}
                                 </li>
                             </ul>
-                            <ul>
-                                <li>
-                                    🚶🏻‍♂️{dist_three}
-                                </li>
-                                <li>
-                                    👁{rest_info_three.hit}
-                                </li>
-                            </ul>
-                            <ul>
-                                <li>
-                                    ♥{rest_info_three.wish}
-                                </li>
-                                <li>
-                                    📖{rest_info_three.review}
+                            <div className='restaurantAddress'>{rest_info_three.location}</div>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{ display: 'flex', justifyContent: 'space-between', width: '70%'}}>
+                                    <span>🚶🏻‍♂️{dist_three}</span>
+                                    <span>👁️‍🗨️{rest_info_three.hit}</span>
+                                    <span>❤️{rest_info_three.wish}</span>
+                                    <span>📖{rest_info_three.review}</span>
                                 </li>
                             </ul>
                         </div>
                         <div className='recommendResult' onClick={() => onClickDetail(rest_info_four.id)}>
                             <img src={`/img/find/${rest_info_four.category}.png`} />
                             <div className='restaurantName'>{rest_info_four.name}</div>
-                            <div className='restaurantAddress'>{rest_info_three.location}</div>
-                            <ul>
-                                <li>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{display: 'flex', justifyContent: 'center'}}>
                                     <span className='star-rating'>
                                         <span style={{ width: `${rest_info_four.rating * 20}%` }}></span>
                                     </span>&nbsp;{rest_info_four.rating}
                                 </li>
                             </ul>
-                            <ul>
-                                <li>
-                                    🚶🏻‍♂️{dist_four}
-                                </li>
-                                <li>
-                                    👁{rest_info_four.hit}
-                                </li>
-                            </ul>
-                            <ul>
-                                <li>
-                                    ♥{rest_info_four.wish}
-                                </li>
-                                <li>
-                                    📖{rest_info_four.review}
+                            <div className='restaurantAddress'>{rest_info_four.location}</div>
+                            <ul style={{display: 'flex', justifyContent: 'center'}}>
+                                <li style={{ display: 'flex', justifyContent: 'space-between', width: '70%'}}>
+                                    <span>🚶🏻‍♂️{dist_four}</span>
+                                    <span>👁️‍🗨️{rest_info_four.hit}</span>
+                                    <span>❤️{rest_info_four.wish}</span>
+                                    <span>📖{rest_info_four.review}</span>
                                 </li>
                             </ul>
                         </div>
