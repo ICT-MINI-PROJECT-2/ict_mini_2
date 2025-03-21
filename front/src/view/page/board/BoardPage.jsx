@@ -2,10 +2,11 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { ClipboardX, CalendarHeart, PatchQuestion} from 'react-bootstrap-icons'; // ClipboardX 아이콘 추가
+import { Clipboard2, CalendarHeart, PatchQuestion} from 'react-bootstrap-icons'; // ClipboardX 아이콘 추가
 import InquiryPage from "./../board/InquiryPage"
 import EventList from "./EventPage"
 import NoticePage from "./NoticePage"
+import FreePage from "./FreePage";
 import "./../board/BoardPage.css"
 
 // 로딩 컴포넌트
@@ -161,7 +162,9 @@ function BoardPage() {
       case "EVENT":
         return <EventList key={`event-list-${Date.now()}`} />
       case "INQUIRY":
-        return <InquiryPage key={`inquiry-page-${Date.now()}`} />
+        return <InquiryPage key={`inquiry-page-${Date.now()}`}/>
+      case "BOARD":
+        return <FreePage key={`board-page-${Date.now()}`} />
       case "NOTICE":
         return <NoticePage key={`notice-${Date.now()}`}/>
       case "FAQ":
@@ -183,16 +186,17 @@ function BoardPage() {
   return (
     <div style={pageContainerStyle}>
       <div className="BoardPage_container">
+        { activeCategory !=='INQUIRY' &&
         <div className="BoardPage_row">
           {[
             { category: "EVENT", icon: <CalendarHeart />, text: "EVENT" },
-            { category: "INQUIRY", icon: <PatchQuestion/>, text: "INQUIRY" },
+            { category: "BOARD", icon: <Clipboard2/>, text: "BOARD" },
             // { category: "NOTICE", icon: <ClipboardX />, text: "NOTICE" },
           ].map(({ category, icon, text }) => (
             <div
               key={category}
               className={`BoardPage_category-button ${activeCategory === category ? "BoardPage_active" : ""}`}
-              onClick={() => handleCategoryClick(category)}
+              onClick={() => category!='BOARD' && handleCategoryClick(category)}
             >
               <Link
                 to={`/boardpage?category=${category}`}
@@ -204,11 +208,11 @@ function BoardPage() {
               >
                 <div className="icon">{icon}</div>
                 <div className="text">{text}</div>
-              </Link>
+              </Link> 
             </div>
           ))}
-          <Link to={'/free'}><div>자유게시판</div></Link>
         </div>
+        }
 
         <Suspense fallback={<LoadingFallback />}>
           {isLoading ? (

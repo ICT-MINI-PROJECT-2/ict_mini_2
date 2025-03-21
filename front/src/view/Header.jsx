@@ -30,10 +30,13 @@ function Header() {
                     <Link to="/find">음식점 찾기</Link>
                 </li>
                 <li>
-                    <Link to="/boardpage">자유게시판</Link>
+                    <Link to="/recommend">맛집 추천</Link>
                 </li>
                 <li>
-                    <Link to="/recommend">맛집 추천</Link>
+                    <Link to="/boardPage?category=EVENT">자유게시판</Link>
+                </li>
+                <li>
+                    <Link to="/boardpage">1:1문의</Link>
                 </li>
             </ul>
         </li>
