@@ -70,12 +70,7 @@ public class BoardController {
             System.out.println("- 총 항목 수: " + boardPage.getTotalElements());
             System.out.println("- 현재 페이지 항목 수: " + boardPage.getContent().size());
 
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.err.println("❌ 에러 발생: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(null);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/eventWriteOk")

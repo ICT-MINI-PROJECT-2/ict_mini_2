@@ -1,8 +1,15 @@
-import {useEffect} from 'react';
+import {useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
 import '../css/menu.css';
+import MessageBox from './MessageBox';
+import MessageView from "./MessageView";
 
 function Menu(){
+    const [open, setOpen] = useState(false);
+    const [msg_box, setMsg_box] = useState({
+        isOpen:false,
+        msg_list:[]
+    })
     useEffect(()=>{
         let menu_button = document.getElementsByClassName('menu-button')[0];
         let menu_list = document.getElementsByClassName('menu-list')[0];
@@ -11,11 +18,13 @@ function Menu(){
                 menu_list.style.right='0%';
                 menu_list.style.transform='translateY(-50%) rotateY(0deg)';
                 menu_button.style.right='-90px';
+                setOpen(true);
             });
             menu_list.addEventListener('mouseover', () =>{
                 menu_list.addEventListener('mouseleave', () => {
                     menu_list.style.transform='translateY(-50%) rotateY(-90deg)';
                     menu_button.style.right='-43px';
+                    setOpen(false);
                 });
             })
         }
@@ -31,6 +40,8 @@ function Menu(){
     }
 
     return(
+        <>
+        {msg_box.isOpen && <MessageView msg_box={msg_box} setMsg_box={setMsg_box}/>}
         <div className='menu-bar'>
             <div className='menu-button'>
             <br/><br/>
@@ -50,10 +61,13 @@ function Menu(){
                 <Link to="/find">음식점 찾기</Link>
                 </li>
                 <li>
-                <Link to="/BoardPage">자유게시판</Link>
+                <Link to="/recommend">맛집 추천</Link>
                 </li>
                 <li>
-                <Link to="/">맛집 추천</Link>
+                <Link to="/free">자유게시판</Link>
+                </li>
+                <li>
+                <Link to="/BoardPage">이벤트</Link>
                 </li>
                 {sessionStorage.getItem("loginStatus") === 'Y' ? <li>
                     <Link onClick={logout}>로그아웃</Link>
@@ -63,8 +77,10 @@ function Menu(){
                 <div id="up-button" onClick={()=>scrollUp()}>
                     ▲
                 </div>
+                {sessionStorage.getItem("loginStatus") === 'Y' && <MessageBox msg_box={msg_box} setMsg_box={setMsg_box} open={open}/>} 
             </ul>
         </div>
+        </>
     );
 }
 

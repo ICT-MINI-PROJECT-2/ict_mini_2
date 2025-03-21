@@ -3,6 +3,7 @@ package com.ke.serv.controller;
 import com.ke.serv.entity.FreeBoardEntity;
 import com.ke.serv.service.FreeBoardService;
 import com.ke.serv.vo.PagingVO;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,12 +27,12 @@ public class FreeBoardController {
         pVO.setOnePageRecord(10);
         pVO.setTotalRecord(service.totalRecord(pVO));
 
-        System.out.println(pVO);
-
+        List<FreeBoardEntity> noticeList = service.noticeSelect();
         List<FreeBoardEntity> list = service.freePageSelect(pVO);
 
         Map map = new HashMap();
         map.put("pVO", pVO);
+        map.put("noticeList", noticeList);
         map.put("list", list);
 
         return map;
@@ -49,12 +50,13 @@ public class FreeBoardController {
     }
 
     @GetMapping("/view/{id}")
-    public FreeBoardEntity boardView(@PathVariable("id") int id) {
-
+    public FreeBoardEntity boardView(@PathVariable("id") int id, String userNo) {
         FreeBoardEntity entity = service.boardSelect(id);
-        entity.setHit(entity.getHit() + 1);
 
-        System.out.println(entity);
+        if (userNo != null && entity.getUser().getId() != Integer.parseInt(userNo)) {
+            entity.setHit(entity.getHit() + 1);
+        }
+
         return service.boardInsert(entity);
     }
 

@@ -1,5 +1,3 @@
-// footer.jsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/footer.css';
@@ -14,25 +12,21 @@ function Footer({ loginStatus, contextPath }) {
 
     return (
         <ul className="footer">
-            <li className="footer-left">
+            <li className="footer-info">
+                <h3>(주)KickEat</h3>
                 <ul>
-                <li>
-                        <Link to="/privacy-policy">Privacy Policy</Link>
-                    </li>
-                    <li>
-                        <Link to="/terms-of-use">Site Terms of Use</Link>
-                    </li>            
+                    <li>대표 : 쩝쩝박사</li>
+                    <li>사업자번호 : 123-45-67890</li>
+                    <li>Tel : <a href="tel:010-0000-0000">010-0000-0000</a></li>
+                    <li>서울특별시 성동구 아차산로 113, 2층</li>
+                    <li><a href="mailto:kickeat@gmail.com">kickeat@gmail.com</a></li>
                 </ul>
             </li>
-            <li className="footer-center">
-                <p>
-                    e-mail.
-                    <a href="mailto:kickeat@gmail.com">kickeat@gmail.com</a>
-                    <br/>  
-                    Tel.
-                    <a href="tel:010-0000-0000">010-0000-0000</a>
-                </p>
-                <div className="image-container"> {/* 이미지 컨테이너 추가 */}
+            <li className="footer-links">
+                    <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+                    <li><Link to="/terms-of-use">Site Terms of Use</Link></li>                   
+             </li>
+                <li className="footer-icons">
                     <a href="https://www.kakao.com" target="_blank" rel="noopener noreferrer">
                         <img src={kakaoIcon} alt="Kakao" />
                     </a>
@@ -42,10 +36,9 @@ function Footer({ loginStatus, contextPath }) {
                     <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
                         <img src={facebookIcon} alt="Facebook" />
                     </a>
-                </div>
-            </li>
-            <li className="footer-right">
-                ⓒ 2025 kick Eat Inc.
+                </li>
+            <li className="footer-copyright">
+                Copyright ⓒ 2025 KickEat Inc. All rights reserved.
             </li>
         </ul>
     );

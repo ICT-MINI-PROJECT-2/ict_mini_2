@@ -16,17 +16,28 @@ public class FreeBoardService {
     private final FreeBoardRepository repository;
     public int totalRecord(PagingVO pVO) {
         if (pVO.getSearchWord() == null || pVO.getSearchWord().isEmpty()){
-            return repository.countIdBy();
+            return repository.countIdByCategory("free");
         } else {
-            return repository.countIdByTitleContaining(pVO.getSearchWord());
+            return repository.countIdByCategoryAndTitleContaining("free", pVO.getSearchWord());
         }
+    }
+
+    public List<FreeBoardEntity> noticeSelect() {
+        return repository.noticeSelect();
     }
 
     public List<FreeBoardEntity> freePageSelect(PagingVO pVO) {
         if (pVO.getSearchWord() == null || pVO.getSearchWord().isEmpty()) {
-            return repository.findAllByOrderByIdDesc(PageRequest.of(pVO.getNowPage() - 1, pVO.getOnePageRecord()));
+            return repository.findAllByCategoryOrderByIdDesc(
+                    "free",
+                    PageRequest.of(pVO.getNowPage() - 1, pVO.getOnePageRecord())
+            );
         } else {
-            return repository.findAllByTitleContainingOrderByIdDesc(pVO.getSearchWord(), PageRequest.of(pVO.getNowPage() - 1, pVO.getOnePageRecord()));
+            return repository.findAllByCategoryAndTitleContainingOrderByIdDesc(
+                    "free",
+                    pVO.getSearchWord(),
+                    PageRequest.of(pVO.getNowPage() - 1, pVO.getOnePageRecord())
+            );
         }
     }
 

@@ -60,7 +60,7 @@
 
 .menu-list > li {
     width:80%;
-    height:11.5%;
+    height:9.8%;
     line-height: 20px;
     font-size:2vw;
     margin:auto;
@@ -104,6 +104,98 @@
     color:#666;
 }
 
+#view-del-btn:hover{
+    cursor: pointer;
+    color:#666;
+}
+
+.message-box-container{
+    position:relative;
+    bottom: 10px;
+    left:10px;
+    font-size:3vw;
+    cursor: pointer;
+}
+
+.message-box-container>span{
+    position: absolute;
+    left:2.8vw;
+    top:0.4vw;
+    background-color: red;
+    font-size:1vw;
+    width:1.5vw;
+    height:1.5vw;
+    border-radius: 100%;
+    text-align: center;
+    color: white;
+}
+
+.message-view-container {
+    position: fixed;
+    width:600px;
+    height:400px;
+    background-color: white;
+    z-index: 10;
+    border-radius: 10px;
+    border: 3px solid #b21848;
+    overflow-y: scroll;
+    padding:20px;
+}
+
+.message-view-container > ul {
+    display: flex;
+    width:90%;
+    margin:auto;
+    text-align: center;
+    margin-top:10px;
+    border-bottom:1px solid #ddd;
+}
+
+.msg-ul {
+    text-align: center;
+    font-weight: bold;
+    margin-top:20px;
+}
+
+.comment-detail {
+    width:86.4%;
+    border:1px solid #ddd;
+    margin-left: 5%;
+    padding:10px;
+    margin-top:10px;
+}
+
+.message-view-container > ul> li:nth-child(1){
+    width:20%;
+}
+.message-view-container > ul> li:nth-child(2){
+    width:60%;
+}
+.message-view-container > ul> li:nth-child(3){
+    width:15%;
+}
+
+#message-view-exit{
+    position: absolute;
+    font-size: 30px;
+    right:2px;
+    top:12px;
+    line-height: 0;
+    cursor: pointer;
+}
+
+.msg-comm {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    overflow: hidden;
+    padding-left: 10px;
+}
+
+#message-view-exit:hover{
+    color:gray;
+}
+
 @media(min-width:1000px){
     #menu-title{
         font-size:25px;
@@ -111,6 +203,16 @@
         margin-top:20px;
     }
     
+    .message-box-container{
+        font-size:30px;
+    }
+    .message-box-container>span {
+        font-size: 10px;
+        width:15px;
+        height:15px;
+        left:28px;
+        top:4px;
+    }
     .menu-list > li {
         font-size:20px;
     }
