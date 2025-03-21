@@ -25,7 +25,10 @@
     transform: translateY(-50%) rotateY(-90deg);
     position: fixed;
     width:250px;
-    height:400px;
+    width:25%;
+    max-width: 250px;
+    height:40vw;
+    max-height: 400px;
     right:0px;
     border: 3px solid #b21848;
     border-right: 15px solid #b21848;
@@ -48,18 +51,18 @@
 }
 
 #menu-title{
-    font-family: "Gowun Dodum", sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     text-align: center;
-    font-size:1.8em;
-    margin-bottom:20px;
-    margin-top:20px;
+    font-size:2.5vw;
+    margin-bottom:2vw;
+    margin-top:2vw;
 }
 
 .menu-list > li {
     width:80%;
     height:11.5%;
     line-height: 20px;
-    font-size:1.3em;
+    font-size:2vw;
     margin:auto;
     padding-left:30px;
 }
@@ -90,13 +93,32 @@
 }
 
 #up-button{
-    font-size:35px;
+    font-size:3.5vw;
     line-height: 10px;
-    margin-left:200px;
+    margin-left:20vw;
     transition: all 0.5s;
 }
 
 #up-button:hover{
     cursor:pointer;
     color:#666;
+}
+
+@media(min-width:1000px){
+    #menu-title{
+        font-size:25px;
+        margin-bottom:20px;
+        margin-top:20px;
+    }
+    
+    .menu-list > li {
+        font-size:20px;
+    }
+
+    #up-button{
+        font-size:35px;
+        line-height: 10px;
+        margin-left:200px;
+        transition: all 0.5s;
+    }
 }

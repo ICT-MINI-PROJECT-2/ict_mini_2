@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import { ClipboardX, CalendarHeart, PatchQuestion} from 'react-bootstrap-icons'; // ClipboardX 아이콘 추가
 import InquiryPage from "./../board/InquiryPage"
 import EventList from "./EventPage"
 import NoticePage from "./NoticePage"
@@ -71,10 +72,10 @@ function BoardPage() {
   const [currentCategory, setCurrentCategory] = useState(null)
 
   // 디버깅 로그
-  console.log("현재 URL:", location.pathname + location.search)
-  console.log("활성 카테고리:", activeCategory)
-  console.log("현재 표시 카테고리:", currentCategory)
-  console.log("컨텐츠 가시성:", contentVisible)
+  // console.log("현재 URL:", location.pathname + location.search)
+  // console.log("활성 카테고리:", activeCategory)
+  // console.log("현재 표시 카테고리:", currentCategory)
+  // console.log("컨텐츠 가시성:", contentVisible)
 
   // 해시 라우팅(#) 문제 해결을 위한 useEffect
   useEffect(() => {
@@ -87,7 +88,7 @@ function BoardPage() {
   // URL 변경 감지 및 activeCategory 업데이트
   useEffect(() => {
     const newCategory = getActiveCategory()
-    console.log("URL 변경 감지:", activeCategory, "->", newCategory)
+    // console.log("URL 변경 감지:", activeCategory, "->", newCategory)
 
     if (newCategory !== activeCategory) {
       setActiveCategory(newCategory)
@@ -120,7 +121,7 @@ function BoardPage() {
 
   // activeCategory 변경 감지 및 컨텐츠 업데이트
   useEffect(() => {
-    console.log("activeCategory 변경 감지:", currentCategory, "->", activeCategory)
+    // console.log("activeCategory 변경 감지:", currentCategory, "->", activeCategory)
 
     // activeCategory가 변경되면 페이드 아웃 후 페이드 인
     if (currentCategory !== null && currentCategory !== activeCategory) {
@@ -151,7 +152,7 @@ function BoardPage() {
 
   // 카테고리 컴포넌트 렌더링
   const renderCategoryComponent = () => {
-    console.log("렌더링 카테고리:", currentCategory)
+    // console.log("렌더링 카테고리:", currentCategory)
 
     if (!currentCategory) return null
 
@@ -181,27 +182,32 @@ function BoardPage() {
 
   return (
     <div style={pageContainerStyle}>
-      <div className="BoardPage_container" >
-        <div className="BoardPage_row" >
-          {["EVENT", "INQUIRY", "NOTICE", "FAQ"].map((category) => (
+      <div className="BoardPage_container">
+        <div className="BoardPage_row">
+          {[
+            { category: "EVENT", icon: <CalendarHeart />, text: "EVENT" },
+            { category: "INQUIRY", icon: <PatchQuestion/>, text: "INQUIRY" },
+            // { category: "NOTICE", icon: <ClipboardX />, text: "NOTICE" },
+          ].map(({ category, icon, text }) => (
             <div
               key={category}
-              className={`BoardPage_p-2 ${activeCategory === category ? "BoardPage_active" : ""}`}
-              
+              className={`BoardPage_category-button ${activeCategory === category ? "BoardPage_active" : ""}`}
               onClick={() => handleCategoryClick(category)}
             >
               <Link
                 to={`/boardpage?category=${category}`}
-                className={activeCategory === category? "BoardPage_active-link":"BoardPage_link"}
+                className="BoardPage_link"
                 onClick={(e) => {
-                  e.preventDefault() // 기본 링크 동작 방지
-                  handleCategoryClick(category)
+                  e.preventDefault(); // 기본 링크 동작 방지
+                  handleCategoryClick(category);
                 }}
               >
-                {category}
+                <div className="icon">{icon}</div>
+                <div className="text">{text}</div>
               </Link>
             </div>
           ))}
+          <Link to={'/free'}><div>자유게시판</div></Link>
         </div>
 
         <Suspense fallback={<LoadingFallback />}>

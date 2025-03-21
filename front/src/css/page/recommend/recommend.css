@@ -1,26 +1,27 @@
 .top-recommend-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid black;
+  margin:auto;
 }
 
 .recommend-container {
-  padding-top: 100px;
+  padding-top: 140px;
   display: flex;
-  width: 60vw;
-  height: 27vw;
+
   justify-content: center;
-  border: 1px solid black;
-  overflow: hidden;
+  /* border: 1px solid black; */
 }
 
 .menu-container {
+  position: relative;
   display: flex;
   width: 50vw;
+  max-width:1000px;
+  max-height:500px;
   height: 25vw;
-  gap: 1vw;
-  border: 1px solid black;
+  gap: 3vw;
+}
+
+#recommend-list{
+  height:800px;
 }
 
 .left-menu-container,
@@ -30,7 +31,6 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px solid black;
 }
 
 .menu-image {
@@ -39,7 +39,15 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px solid black;
+  border: 2px solid #b21848;
+  border-radius: 5px;
+  box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+    5px 5px 15px 0px rgba(0,0,0,.6),
+    2px 2px 5px 0px rgba(0,0,0,.6);
+}
+
+.menu-image >img {
+  border-radius: 5px;
 }
 
 .menu-detail {
@@ -54,16 +62,8 @@
   color: black;
   font-size: 1.1vw;
   font-weight: bold;
-  border: 1px solid black;
-  width: 60%;
-  height: 50%;
 }
 
-#right-select-button, #left-select-button {
-  width: 9vw;
-  height: 2.5vw;
-  font-size: 1.1vw;
-}
 
 .kickEatListText {
   position: absolute;
@@ -72,106 +72,102 @@
 }
 
 .kickEatListButton {
-  width: 6vw;
-  height: 6vw;
-  position: absolute;
-  transform: translate(400%, 0%);
+  width: 8vw;
+  max-width: 112px;
+  height: 8vw;
+  max-height: 112px;
   background-size: cover;
   cursor: pointer;
-  
 }
+
 
 .select-menu-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin:auto;
   width: 60vw;
+  max-width:600px;
   height: 10vw;
-  border: 1px solid black;
+  max-height:100px;
   gap: 1vw;
+  margin-top:40px;
 }
 
 .select-menu {
   width: 8vw;
   height: 8vw;
+  max-width: 112px;
+  max-height: 112px;
   border: 1px solid black;
 }
 
-#recommend-list {
-  width: 60vw;
-  height: 0vw;
-  border: 1px solid black;
+#locationSearch {
+  display: flex;
+  flex-direction: row;
+  width: 25vw;
+  height: 2vw;
+}
+
+#locationSearchBox, #locationSearchButton {
+  height: 100%; /* 원하는 동일한 높이로 설정 */
+  box-sizing: border-box; /* padding과 border를 height에 포함 */
+}
+
+#locationSearchBox {
+  width: 80%; /* 부모 요소의 75% */
+  border: 1px solid red;
+}
+
+#locationSearchButton {
+  width: 20%; /* 부모 요소의 25% */
+  border: 1px solid red;
+  font-size: 0.75vw;
+}
+
+#distanceOption {
+  font-size: 1vw;
+  width: 30%;
+}
+
+
+
+
+#left-select-button-kick, #right-select-button-kick,#left-select-button-eat, #right-select-button-eat{
+  margin-bottom:20px;
+  margin-top:20px;
+  background-color: white;
+}
+
+#left-select-button-kick:hover,#left-select-button-eat:hover, #right-select-button-kick:hover,#right-select-button-eat:hover{
+  color:white;
+  background-color: transparent;
+}
+
+.find-rec-list{
+  margin-top:60px;
+  display:grid;
+  grid-template-columns: repeat(4,1fr);
+  width:100%;
+}
+.recommendResult{
+  width:80%;
+  margin:auto;
+  padding:20px;
+  border:2px solid #b21848;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.recommendResult>img{
+  width:100%;
+}
+
+.restaurantName{
+  text-align: center;
+  font-size:17px;
+}
+.restaurantAddress {
   overflow: hidden;
-}
-
-@media (max-width: 1920px) and (min-width: 1281px) {
-  .recommend-container {
-    padding-top: 120px;
-    display: flex;
-    width: 60vw;
-    height: 27vw;
-    justify-content: center;
-    border: 1px solid black;
-  }
-}
-
-@media (min-width: 1921px) {
-
-  .recommend-container {
-    padding-top: 150px;
-    display: flex;
-    width: 1152px;
-    height: 518px;
-    justify-content: center;
-  }
-
-  .menu-container {
-    display: flex;
-    width: 960px;
-    height: 480px;
-    gap: 19px;
-    border: 1px solid black;
-  }
-
-  .menu-detail {
-    font-size: 20px;
-  }
-
-  #right-select-button, #left-select-button {
-    width: 173px;
-    height: 48px;
-    font-size: 20px;
-  }
-
-  .kickEatListText {
-    position: absolute;
-    font-size: 19.2px;
-  }
-
-  .kickEatListButton {
-    width: 115px;
-    height: 115px;
-    position: absolute;
-    transform: translate(400%, 0%);
-  }
-
-  .select-menu-container {
-    width: 1152px;
-    height: 192px;
-    border: 1px solid black;
-    gap: 19.2px;
-  }
-
-  .select-menu {
-    width: 153.6px;
-    height: 153.6px;
-    border: 1px solid black;
-  }
-
-  #recommend-list {
-    width: 1152px;
-    height: 0px;
-    border: 1px solid black;
-    overflow: hidden;
-  }
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -1,3 +1,4 @@
+// EventEdit.js
 "use client"
 
 import React, { useState, useEffect } from 'react';
@@ -155,8 +156,11 @@ function EventEdit() {
                         ))}
                     </tbody>
                 </table>
-                <button type="submit" className="EventWrite_btn-style">저장</button>
-                <button type="button" onClick={() => navigate(`/events/${id}`)} className="EventWrite_btn-style">취소</button>
+                {/* 버튼 그룹을 div로 감싸고 클래스 적용 */}
+                <div className="EventWrite_button-group">
+                    <button type="submit" className="EventWrite_btn-style">저장</button>
+                    <button type="button" onClick={() => navigate(`/events/${id}`)} className="EventWrite_btn-style">취소</button>
+                </div>
             </form>
         </div>
     );

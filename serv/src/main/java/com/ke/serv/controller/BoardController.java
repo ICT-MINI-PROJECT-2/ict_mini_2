@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +41,17 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/boardPage")
-    @Transactional(readOnly = true) // ✅ 읽기 전용 트랜잭션 적용 (목록 조회)
+    @Transactional(readOnly = true)
     public ResponseEntity<Map<String, Object>> boardPage(
-            @RequestParam(defaultValue = "EVENT") BoardCategory category, // 기본값 EVENT
+            @RequestParam(defaultValue = "EVENT") BoardCategory category,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) String searchType, // ✅ 검색 타입 파라미터 추가 (required = false)
-            @RequestParam(required = false) String searchTerm, // ✅ 검색어 파라미터 추가 (required = false)
-            HttpServletRequest req
-    ) {
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchTerm) {
 
-        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm); // ✅ Service 메소드에 검색 파라미터 전달
+        // ✅ 디버깅 로그 추가
+        System.out.println("📢 검색 요청 - searchType: " + searchType + ", searchTerm: " + searchTerm);
+
+        Page<EventEntity> boardPage = boardService.getBoardList(category, pageable, searchType, searchTerm);
 
         Map<String, Object> response = new HashMap<>();
         response.put("list", boardPage.getContent());
@@ -57,6 +59,7 @@ public class BoardController {
         response.put("totalPages", boardPage.getTotalPages());
         response.put("totalElements", boardPage.getTotalElements());
 
+        System.out.println(response);
         return ResponseEntity.ok(response);
     }
 
@@ -217,5 +220,27 @@ public class BoardController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("대화 내용 조회 중 오류 발생: " + e.getMessage());
         }
+    }
+
+    // ✅ FAQ 수정 API 추가
+    @PutMapping("/update/{id}")
+    public ResponseEntity<EventEntity> updateBoard(@PathVariable Long id, @RequestBody EventEntity updatedBoard) {
+        EventEntity board = boardService.findById(id);
+
+        if (board == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        //권한 검사
+        if (!"admin1234".equals(board.getUser().getUserid())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        board.setSubject(updatedBoard.getSubject());
+        board.setContent(updatedBoard.getContent());
+        board.setModifiedDate(LocalDateTime.now());
+
+        EventEntity savedBoard = boardService.update(board);
+        return ResponseEntity.ok(savedBoard);
     }
 }
