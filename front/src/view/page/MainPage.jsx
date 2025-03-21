@@ -133,7 +133,7 @@ function MainPage(){
                 <li onClick={() => { setReviewRank(2) }} style={reviewRank == 2 ? {color: '#b21848', fontWeight: 'bold',zIndex:'3'} : {zIndex:'1',top:'10px'}}>3</li>
               </ul>
 
-              {popReview.review_list != undefined && (
+              {popReview.review_list != undefined && popReview.review_list[reviewRank] != undefined && (
                 <div style={{cursor:'pointer'}}onClick={()=>setReviewModal({isOpen:true, selected:popReview.review_list[reviewRank].id})}>
                   <div className='pop-img-box'>
                     <img
