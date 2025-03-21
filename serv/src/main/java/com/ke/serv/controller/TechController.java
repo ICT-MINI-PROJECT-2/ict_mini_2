@@ -142,6 +142,24 @@ public class TechController {
         tech_service.insertDm(entity);
         return "ok";
     }
+    @PostMapping("/getMessage")
+    public List<DmEntity> getMessage(@RequestBody UserEntity user) {
+        return tech_service.selectDmById(user);
+    }
+    @PostMapping("/readMessage")
+    public List<DmEntity> readMessage(@RequestBody DmEntity dm) {
+        DmEntity sel_dm = tech_service.selectDm(dm);
+        sel_dm.setState(1);
+        tech_service.insertDm(sel_dm);
+        return tech_service.selectDmById(sel_dm.getUserTo());
+    }
+    @PostMapping("/deleteMessage")
+    public List<DmEntity> deleteMessage(@RequestBody DmEntity dm) {
+        DmEntity sel_dm = tech_service.selectDm(dm);
+        UserEntity ue = sel_dm.getUserTo();
+        tech_service.deleteMessageById(dm.getId());
+        return tech_service.selectDmById(ue);
+    }
     /*
     @PostMapping("/getImg")
     public List<String> getImg(@RequestBody List<String> ids) {
