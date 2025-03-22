@@ -94,8 +94,8 @@ function FreePage() {
             <div id="search">
                 {
                     currentView === 'all' ? 
-                    <div onClick={()=>{setCurrentView('notice')}}>공지 전체 목록▷</div>
-                    : <div onClick={()=>{setCurrentView('all')}}>게시글 목록▷</div>
+                    <div onClick={()=>{setCurrentView('notice')}}>공지 전체 목록</div>
+                    : <div onClick={()=>{setCurrentView('all')}}>게시글 목록</div>
                 }
                 <input type="text" placeholder="검색어를 입력하세요" name="searchWord"
                     value={''||searchWord}  onChange={searchWordChange} onKeyUp={(e) => handleSearch(e)}
