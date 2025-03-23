@@ -69,7 +69,7 @@ function FreePage() {
         return data.map((record) => (
             <ul className="free-list" key={record.id}>
                 <li>{record.id}</li>
-                <li style={{ textAlign: 'left' }}>
+                <li style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',display:'inline-block', textAlign:'left'}}>
                     <Link to={`/free/view/${record.id}`}>
                         {isNotice && <span id="notice-sticker">공지</span>}
                         <span>{record.title}</span>
@@ -119,7 +119,7 @@ function FreePage() {
                         {boardData.map((record) => (
                             <ul className="free-list" key={record.id}>
                                 <li>{record.id}</li>
-                                <li style={{ textAlign: 'left' }}>
+                                <li style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',display:'inline-block', textAlign:'left'}}>
                                     <Link to={`/free/view/${record.id}`}>
                                         <span>{record.title}</span>
                                     </Link>
