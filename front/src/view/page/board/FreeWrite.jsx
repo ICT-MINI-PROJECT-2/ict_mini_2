@@ -48,7 +48,7 @@ function FreeWrite() {
     }
     return (
         <div className="free-write">
-            <h1>게시판 글쓰기 폼</h1>
+            <h2>글쓰기</h2>
             <div>
                 <label htmlFor="title">제목</label>
                 <input type="text" id="title" placeholder="글제목 입력" name="title"
@@ -63,9 +63,7 @@ function FreeWrite() {
                 ></textarea>
             </div>
 
-            <div>
-                <button type="button" onClick={boardSubmit}>글등록</button>
-            </div>
+            <div id='write-btn' onClick={boardSubmit}>글등록</div>
         </div>  
     );
 }
