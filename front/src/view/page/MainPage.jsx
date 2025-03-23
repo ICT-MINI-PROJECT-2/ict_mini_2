@@ -111,7 +111,6 @@ function MainPage(){
       else {
         axios.get('http://localhost:9977/tech/event')
         .then(res => {
-          console.log(res.data);
           let elist = [];
           for(var i=0; i<res.data.length;i++) {
             if(i>=5) break;
@@ -178,7 +177,6 @@ function MainPage(){
     useEffect(()=>{
       axios.get('http://localhost:9977/find/getPopRestaurant')
       .then(res=>{
-        console.log(res.data);
         setPopRstr(res.data);
       })
       .catch(err=>console.log(err));
@@ -187,7 +185,6 @@ function MainPage(){
     useEffect(()=>{
       axios.get('http://localhost:9977/find/getPopReview')
       .then(res=>{
-        console.log(res.data);
         setPopReview(res.data);
       })
       .catch(err=>console.log(err));

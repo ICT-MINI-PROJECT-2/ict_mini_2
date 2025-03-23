@@ -46,72 +46,196 @@ body {
     opacity: 1;
 }
 
-.interact-container{
-    border:1px solid gray;
+/* General popup styling */
+.interact-popup {
     position: absolute;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 12px;
     z-index: 5;
-    background-color: white;
-    padding:20px 10px 20px 10px;
-    cursor: default;
+    width: 120px;
+    animation: fadeIn 0.3s ease-out;
 }
-.interact-container-two{
-    border:1px solid gray;
-    position: absolute;    
-    z-index: 5;
-    background-color: white;
-    padding:20px 10px 20px 10px;
-    cursor: default;
-}
-.interact-container-two>li{
-    font-size:14px;
-    padding: 5px 5px 0;
-    font-weight:400;
+
+/* Exit button styling */
+.interact-exit {
+    font-size: 16px;
+    font-weight: bold;
+    color: #888;
     cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    transition: color 0.2s;
 }
-.interact-container>li{
-    font-size:14px;
-    padding: 5px 5px 0;
-    font-weight:400;
+
+.interact-exit:hover {
+    color: #ff4f4f;
+}
+
+/* List styling */
+.interact-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.interact-item {
+    padding: 10px 15px;
     cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
-.interact-container-two>li:hover,.interact-container>li:hover, #interact-exit:hover,#dm-exit:hover,#dm-submit:hover{
+
+.interact-item:hover {
+    background-color: #f1f1f1;
+}
+
+.interact-item:active {
+    background-color: #e0e0e0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dm-container {
+    position: absolute;
+    width: 300px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.dm-exit {
+    align-self: flex-end;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+    color: #d9534f;
+}
+
+.dm-header {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.dm-recipient {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.dm-recipient-label {
     font-weight: 600;
 }
 
-#interact-exit, #dm-exit{
-    position: absolute;
-    right:3px;
-    top:1px;
-    font-weight: 400;
-    cursor: pointer;
-}
-#dm-exit{
-    font-size:18px;
+.dm-recipient-username {
+    margin-left: 10px;
+    font-size: 16px;
 }
 
-.dm-container{
-    position: absolute;
-    width:300px;
-    height:200px;
-    border:1px solid gray;
-    background-color: white;
-    z-index: 6;
-    cursor: default;
+.dm-error {
+    color: red;
+    font-size: 12px;
+    margin-left: auto;
 }
-.dm-container>span {
-    line-height:40px;
-}
-.dm-textarea{
-    width:80%;
-    margin-left:25px;
-    margin-top:10px;
-    height:80px;
+
+.dm-textarea {
+    width: 90%;
+    height: 100px;
+    padding: 10px;
+    margin:auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
     resize: none;
-    font-family: "IBM Plex Sans KR", sans-serif;
-    padding:5px;
+    outline: none;
+    transition: border-color 0.2s ease;
 }
-#dm-submit{
-    font-weight: 400;
-    margin-top: -5px;
+
+.dm-textarea:focus {
+    border-color: black;
+}
+
+.report-container {
+    position: absolute;
+    width: 300px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.report-exit {
+    align-self: flex-end;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+    color: #d9534f;
+}
+
+.report-header {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.report-recipient {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.report-recipient-label {
+    font-weight: 600;
+}
+
+.report-recipient-username {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.report-error {
+    color: red;
+    font-size: 12px;
+    margin-left: auto;
+}
+
+.report-textarea {
+    width: 90%;
+    height: 100px;
+    padding: 10px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.report-textarea:focus {
+    border-color: black;
 }
