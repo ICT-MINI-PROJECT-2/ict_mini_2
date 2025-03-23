@@ -26,7 +26,7 @@ function EnterEdit() {
     }else{
       axios.post(`${serverIP}/user/editEnterChk`, {
         userid:data.userid,
-        userpw:userpw
+        userpw:''
       }).then(res => {
         console.log(res.data)
         if(res.data.id===-1){
