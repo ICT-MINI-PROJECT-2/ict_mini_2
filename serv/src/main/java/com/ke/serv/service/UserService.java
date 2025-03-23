@@ -21,8 +21,8 @@ public class UserService {
     private final WishRepository wishRepo;
     private final ReviewRepository reviewRepo;
 
-    public UserEntity idEditChk(UserEntity entity){return  repo.findByUserid(entity.getUserid());}
-    public UserEntity pwEditChk(UserEntity entity){return  repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());}
+    public UserEntity idEditChk(UserEntity entity){return  repo.findById(entity.getId());}
+    public UserEntity pwEditChk(UserEntity entity){return  repo.findByIdAndUserpw(entity.getId(), entity.getUserpw());}
 
     public UserEntity signup(UserEntity entity) {
         return repo.save(entity);
@@ -33,6 +33,9 @@ public class UserService {
     }
     public UserEntity pwChk(UserEntity entity) {
         return repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());
+    }
+    public UserEntity updateEdit(UserEntity entity){
+        return repo.save(entity);
     }
 
     public UserEntity selectUser(UserEntity entity) {
