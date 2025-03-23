@@ -62,7 +62,7 @@ function FreeEdit() {
     }
     return (
         <div className="free-write">
-            <h1>게시판 글수정 폼</h1>
+            <h1>글수정</h1>
             <div>
                 <label htmlFor="title">제목</label>
                 <input type="text" id="title" placeholder="글제목 입력" name="title"
@@ -77,9 +77,7 @@ function FreeEdit() {
                 ></textarea>
             </div>
 
-            <div>
-                <button type="button" onClick={boardSubmit}>글수정</button>
-            </div>
+            <div id='write-btn' onClick={boardSubmit}>글수정</div>
         </div>  
     );
 }

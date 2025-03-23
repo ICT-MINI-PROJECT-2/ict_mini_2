@@ -1,5 +1,6 @@
 package com.ke.serv.controller;
 
+import com.ke.serv.entity.CommentEntity;
 import com.ke.serv.entity.FreeBoardEntity;
 import com.ke.serv.service.FreeBoardService;
 import com.ke.serv.vo.PagingVO;
@@ -82,5 +83,27 @@ public class FreeBoardController {
     public int boardDel(@PathVariable("id") int id) {
         service.boardDelete(id);
         return service.countBoardSelect(id);
+    }
+
+    @GetMapping("/commentList/{id}")
+    public List<CommentEntity> commentList(@PathVariable("id") int board_id) {
+        return service.commentSelect(board_id);
+    }
+
+    @PostMapping("/addComment")
+    public String addComment(@RequestBody CommentEntity entity) {
+        CommentEntity result = service.commentInsert(entity);
+
+        if (result == null || result.getId() == 0) {
+            return "fail";
+        } else {
+            return "success";
+        }
+    }
+
+    @GetMapping("/commentDel/{id}")
+    public int commentDel(@PathVariable("id") int id) {
+        service.commentDelete(id);
+        return service.countCommentSelect(id);
     }
 }

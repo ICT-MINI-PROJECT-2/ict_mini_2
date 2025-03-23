@@ -26,4 +26,10 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoardEntity, Inte
             "order by free_board_id desc",
             nativeQuery = true)
     List<FreeBoardEntity> noticeSelect();
+
+    @Query("SELECT fb FROM FreeBoardEntity fb LEFT JOIN fb.comments c " +
+            "GROUP BY fb.id ORDER BY COUNT(c.id) DESC")
+    List<FreeBoardEntity> findAllByCommentCountDesc();
+
+    List<FreeBoardEntity> findAllByOrderByHitDesc();
 }

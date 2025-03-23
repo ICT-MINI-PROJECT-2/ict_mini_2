@@ -4,7 +4,6 @@ import axios from "axios";
 function MessageBox({open, msg_box,setMsg_box}){
     const [total, setTotal] = useState(0);
     useEffect(()=> {
-        console.log(msg_box);
         if(open) {
             axios.post('http://localhost:9977/tech/getMessage',{
                 id:sessionStorage.getItem("id")

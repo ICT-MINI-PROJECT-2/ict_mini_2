@@ -56,7 +56,6 @@ function FindListItem({restaurant}) {
             state: e.target.innerText
         })
         .then(res=>{
-            console.log(res.data);
             setWish(res.data.state);
         })
         .catch(err=>{

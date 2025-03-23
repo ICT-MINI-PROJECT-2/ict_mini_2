@@ -1,4 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import {useState,useEffect,useRef} from 'react';
+import axios from 'axios';
+
 import MainPage from "./page/MainPage";
 import About from "./page/About";
 import Login from "./user/Login";
@@ -26,9 +29,48 @@ import FreePage from "./page/board/FreePage";
 import FreeView from "./page/board/FreeView";
 import FreeEdit from "./page/board/FreeEdit";
 import EnterEdit from "./user/EnterEdit";
+import EditPage from "./user/EditPage";
+import Interact from "./page/Interact";
 
 function Body() {
+  const [interact, setInteract] = useState({
+    isOpen: false,
+    selected: 0,
+  });
+
+  const al_mount = useRef(false);
+
+  useEffect(() => {
+    if (!al_mount.current) {
+      al_mount.current = true;
+
+      const handleClick = (e) => {
+        if (e.target.className === 'message-who' || e.target.className === 'msg-who') {
+          axios.post('http://localhost:9977/tech/selUser', {
+            id: e.target.id.split('-')[1],
+          })
+          .then(res => {
+            if (sessionStorage.getItem('id') !== res.data.id) {
+              setInteract({
+                selected: res.data,
+                isOpen: true,
+                where: e,
+              });
+            }
+          })
+          .catch(err => console.log(err));
+        }
+      };
+
+      window.addEventListener('click', handleClick);
+
+      return () => {
+        window.removeEventListener('click', handleClick);
+      };
+    }
+  }, []);
   return (
+    <>{interact.isOpen && <Interact interact={interact} setInteract={setInteract}/>}
     <Routes>
       {/* 기본 페이지 */}
       <Route path="/" element={<MainPage />} />
@@ -76,6 +118,7 @@ function Body() {
       {/* 기본적으로 이벤트 게시판으로 이동 */}
       <Route path="/" element={<Navigate to="/boardpage?category=EVENT" />} />
     </Routes>
+    </>
   );
 }
 

@@ -1,10 +1,13 @@
 package com.ke.serv.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -34,4 +37,8 @@ public class FreeBoardEntity {
     @ManyToOne
     @JoinColumn(name = "USER_NO")
     private UserEntity user;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "freeBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CommentEntity> comments;
 }
