@@ -14,6 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
+import { useGlobalState } from '../../GlobalStateContext';
+
 // 카운트다운 컴포넌트
 const EventCountdown = ({ endDate }) => {
   const [timeLeft, setTimeLeft] = useState({});
@@ -68,9 +70,7 @@ const EventCountdown = ({ endDate }) => {
 
 // 소셜 미디어 공유 컴포넌트
 const SocialShareButtons = ({ eventId, eventTitle }) => {
-  const shareUrl = `http://localhost:3000/events/${eventId}`;
-  
-  const handleKakaoShare = () => {
+    const handleKakaoShare = () => {
     window.open('https://www.kakaocorp.com/page/');
   };
 
@@ -98,6 +98,7 @@ const SocialShareButtons = ({ eventId, eventTitle }) => {
 };
 
 function MainPage(){
+  const { serverIP } = useGlobalState();
   const navigate = useNavigate();
   const [reviewModal, setReviewModal] = useState({
       isOpen: false,
@@ -109,7 +110,7 @@ function MainPage(){
     useEffect(()=>{
       if(main_mount.current){}
       else {
-        axios.get('http://localhost:9977/tech/event')
+        axios.get(`${serverIP}/tech/event`)
         .then(res => {
           let elist = [];
           for(var i=0; i<res.data.length;i++) {
@@ -129,7 +130,7 @@ function MainPage(){
     },[]);
 
     const setAPI = () =>{
-        axios.get('http://localhost:9977/api')
+        axios.get(`${serverIP}:9977/api`)
         .then(res => {
           console.log(res.data);
         })
@@ -177,19 +178,19 @@ function MainPage(){
     // }, [popRestaurant])
 
     useEffect(()=>{
-      axios.get('http://localhost:9977/find/getPopRestaurant')
+      axios.get(`${serverIP}/find/getPopRestaurant`)
       .then(res=>{
         setPopRstr(res.data);
       })
       .catch(err=>console.log(err));
-      axios.get('http://localhost:9977/find/getPopReview')
+      axios.get(`${serverIP}/find/getPopReview`)
       .then(res=>{
         setPopReview(res.data);
       })
       .catch(err=>console.log(err));
     },[])
     useEffect(()=> {
-      axios.get('http://localhost:9977/find/getPopBoard?sort='+boardRank)
+      axios.get(`${serverIP}/find/getPopBoard?sort=`+boardRank)
       .then(res=> {
         console.log(res.data);
         var cnt=0;
@@ -261,7 +262,7 @@ function MainPage(){
                   return(
                   <div key={idx} className="slider-image-banner">
                     <img style={{width:'100%',height:'100%',objectFit:'fill'}}
-                      src={`http://localhost:9977/uploads/board/${item.id}/${item.files[0].fileName}`}/>
+                      src={`${serverIP}/uploads/board/${item.id}/${item.files[0].fileName}`}/>
                     
                     <EventCountdown endDate={item.endDate} />
                     <SocialShareButtons eventId={item.id} eventTitle={item.subject || '이벤트'} />
@@ -297,12 +298,12 @@ function MainPage(){
                   <div className='pop-img-box'>
                     <img
                       id="pop-rev-photo"
-                      src={`http://localhost:9977/uploads/review/${popReview.review_list[reviewRank].id}/${popReview.file_list[reviewRank].filename}`}
+                      src={`${serverIP}/uploads/review/${popReview.review_list[reviewRank].id}/${popReview.file_list[reviewRank].filename}`}
                     />
                     <img id="medal" src={`./img/main/medal${reviewRank+1}.png`}/>
                   </div>
                   <div style={{marginTop:'10px'}}>
-                    <span style={{fontWeight: 'bold'}}>👤{popReview.review_list[reviewRank].user.username}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📖{popReview.review_list[reviewRank].comment}</span><br/>
+                    <span style={{fontWeight: 'bold'}}>📖{popReview.review_list[reviewRank].comment}</span><br/>
                     <span className="star-rating">
                         <span
                           style={{
@@ -310,7 +311,9 @@ function MainPage(){
                             float: "left",
                           }}
                         ></span>
-                      </span>
+                      </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span>👤{popReview.review_list[reviewRank].user.username}</span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <span style={{padding: '0 20px', position: 'relative'}}>
                         <h5 style={{display:'inline', fontSize: '20px', fontWeight: '100'}}>👁</h5>
                         <span>{popReview.review_list[reviewRank].hit}</span>
@@ -336,7 +339,7 @@ function MainPage(){
                     <div className='pop-img-box'>
                       <img
                         id="pop-res-photo"
-                        src={`http://localhost:9977/uploads/review/${popRstr[rstrRank].review_file.review.id}/${popRstr[rstrRank].review_file.filename}`}
+                        src={`${serverIP}/uploads/review/${popRstr[rstrRank].review_file.review.id}/${popRstr[rstrRank].review_file.filename}`}
                       />
                       <img id="medal" src={`./img/main/medal${rstrRank+1}.png`}/>
                     </div>

@@ -4,8 +4,10 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import "./EventView.css"
 import { queryClient } from './EventPage'; // ✅ EventPage 컴포넌트에서 queryClient import
+import { useGlobalState } from "../../../GlobalStateContext";
 
 function EventView() {
+  const { serverIP } = useGlobalState();
   const { id } = useParams()
   const navigate = useNavigate()
   const [event, setEvent] = useState(null)
@@ -23,7 +25,7 @@ function EventView() {
     const fetchEvent = async () => {
       try {
         // 기존 API 엔드포인트 사용
-        const response = await fetch(`http://localhost:9977/board/view/${id}`)
+        const response = await fetch(`${serverIP}/board/view/${id}`)
         if (!response.ok) {
           throw new Error("이벤트를 불러오는데 실패했습니다.")
         }
@@ -116,7 +118,7 @@ function EventView() {
             event.files.slice(1).map((file, index) => ( // slice(1)로 첫 번째 요소(썸네일) 제외
               <div key={file.id || index} className="EventView_content-image-container" style={{ textAlign: 'center', margin: '20px 0' }}> {/* 이미지 중앙 정렬 및 margin */}
                 <img
-                  src={`http://localhost:9977${file.fileUrl}`}
+                  src={`${serverIP}${file.fileUrl}`}
                   alt={`첨부파일 ${index + 1}`}
                   style={{ maxWidth: '80%', maxHeight: '500px', display: 'block', margin: '0 auto' }} // 이미지 스타일 조정: 최대 너비, 최대 높이, 중앙 정렬
                   onError={(e) => {
@@ -153,7 +155,7 @@ function EventView() {
               onClick={async () => {
                 if (window.confirm("정말로 삭제하시겠습니까?")) {
                   try {
-                    const response = await fetch(`http://localhost:9977/board/delete/${id}`, {
+                    const response = await fetch(`${serverIP}/board/delete/${id}`, {
                       method: "DELETE",
                     })
 

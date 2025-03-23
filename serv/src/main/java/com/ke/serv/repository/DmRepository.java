@@ -11,4 +11,6 @@ public interface DmRepository extends JpaRepository<DmEntity, Integer> {
     DmEntity findById(int id);
 
     List<DmEntity> findAllByUserToOrderByIdDesc(UserEntity user);
+
+    List<DmEntity> findAllByState(int i);
 }

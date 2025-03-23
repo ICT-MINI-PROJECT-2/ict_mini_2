@@ -5,9 +5,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './EventWrite.css';
 // queryClient import (경로 확인 및 수정 필요)
 import { queryClient } from './EventPage'; // ✅ import { queryClient } 로 수정 (소문자 q, c)
-
+import { useGlobalState } from '../../../GlobalStateContext';
 
 function BoardWrite() {
+    const { serverIP } = useGlobalState();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -85,7 +86,7 @@ function BoardWrite() {
         formData.append('category', category); // category 추가
         formData.append('user_id', userId);
 
-        fetch('http://localhost:9977/board/eventWriteOk', { // URL 확인
+        fetch(`${serverIP}/board/eventWriteOk`, { // URL 확인
             method: 'POST',
             body: formData,
         })

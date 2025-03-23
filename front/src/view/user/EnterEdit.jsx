@@ -3,8 +3,9 @@ import Faded from "../../effect/Faded";
 import axios from "axios";
 import EditPage from "./EditPage";
 import { Link } from "react-router-dom";
-
+import { useGlobalState } from "../../GlobalStateContext";
 function EnterEdit() {
+    const { serverIP } = useGlobalState();
     const id = sessionStorage.getItem("id");
     const userId = sessionStorage.getItem("loginId");
     const [data, setData] = useState({});
@@ -41,7 +42,7 @@ function EnterEdit() {
       alert_pw.innerHTML = "비밀번호를 입력하세요";
       alert_pw.style.opacity = 1;
     }else{
-      axios.post('http://localhost:9977/user/editEnterChk', {
+      axios.post(`${serverIP}/user/editEnterChk`, {
         userid:data.userid,
         userpw:userpw
       }).then(res => {

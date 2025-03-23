@@ -146,6 +146,10 @@ public class TechController {
     public List<DmEntity> getMessage(@RequestBody UserEntity user) {
         return tech_service.selectDmById(user);
     }
+    @PostMapping("/getReport")
+    public List<DmEntity> getReport(@RequestBody UserEntity user) {
+        return tech_service.selectDmByReport(2);
+    }
     @PostMapping("/readMessage")
     public List<DmEntity> readMessage(@RequestBody DmEntity dm) {
         DmEntity sel_dm = tech_service.selectDm(dm);
@@ -159,6 +163,13 @@ public class TechController {
         UserEntity ue = sel_dm.getUserTo();
         tech_service.deleteMessageById(dm.getId());
         return tech_service.selectDmById(ue);
+    }
+    @PostMapping("/deleteReport")
+    public List<DmEntity> deleteReport(@RequestBody DmEntity dm) {
+        DmEntity sel_dm = tech_service.selectDm(dm);
+        UserEntity ue = sel_dm.getUserTo();
+        tech_service.deleteMessageById(dm.getId());
+        return tech_service.selectDmByReport(2);
     }
     @PostMapping("/selUser")
     public UserEntity selUser(@RequestBody UserEntity entity) {
