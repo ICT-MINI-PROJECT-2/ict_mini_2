@@ -363,25 +363,6 @@ function Recommend() {
         }
     }
 
-    /*
-    useEffect(() => {
-        if (isListPrinted) {
-            const handleResize = () => {
-                console.log(isListPrinted);
-                if (isListPrinted) {
-                    var recommendList = document.getElementById("recommend-list");
-                    if (window.innerWidth > 1920) {
-                        recommendList.style.height = '576px';
-                    } else {
-                        recommendList.style.height = '30vw';
-                    }
-                }
-            };
-
-        }
-    }, [isListPrinted]);
-    */
-
     const postButtonStyle = {
         position: 'absolute',
         top: '8px',
@@ -436,24 +417,6 @@ function Recommend() {
             });
     }
 
-
-    // const initialRequest = () => {
-    //     // 정규 표현식으로 구 추출
-    //     const regex = /([가-힣]+구)/;
-
-    //     const trimAddress = addr.address.match(regex) ? addr.address.match(regex)[0] : null;
-
-    //     axios.post("http://localhost:9977/recommend/list", {
-    //         menuCategory: selectedMenu[0],
-    //         address: trimAddress
-    //     })
-    //         .then(function (response) {
-
-    //         })
-    //         .catch(function (error) {
-
-    //         });
-    // }
 
     useEffect(() => {
         if (addr.address != undefined) {
@@ -526,13 +489,6 @@ function Recommend() {
                         });
                     }
                     calcDist(response.data[i - 1].location, idd++);
-                    /*
-                    const imgElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector("img");
-                    imgElement.src = '/img/find/' + response.data[i - 1].categoryOne + '.png';
-                    const nameElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector(".restaurantName");
-                    nameElement.innerHTML = response.data[i - 1].name;
-                    const addressElement = document.getElementsByClassName("recommendResult")[i - 1].querySelector(".restaurantAddress");
-                    addressElement.innerHTML = response.data[i - 1].location;*/
                     setRecommendResultId(prev => {
                         const newState = [...prev];
                         newState[i - 1] = response.data[i - 1].id;
@@ -546,29 +502,9 @@ function Recommend() {
     }
 
     const refreshResult = () => {
-        //resetResultStyle();
         reqeustToServer();
     }
 
-    // const resetResultStyle = () => {
-    //     document.querySelectorAll(".recommendResult").forEach((element) => {
-    //         element.style.backgroundColor = "white";
-    //     });
-
-    //     setSelectedRecommendId(0);
-    // }
-
-    // const clickRecommendElement = (event) => {
-    //     document.querySelectorAll(".recommendResult").forEach((element) => {
-    //         element.style.backgroundColor = "white";
-    //     });
-
-    //     const parentElement = event.currentTarget;
-    //     const siblings = parentElement.parentNode.children;
-    //     const index = Array.from(siblings).indexOf(parentElement);
-    //     parentElement.style.backgroundColor = 'lightgray';
-    //     setSelectedRecommendId(recommendResultId[index]);
-    // }
 
     const clickQuestionMark = () => {
         if (document.getElementById("howToUse").style.opacity != 0) {
@@ -612,7 +548,7 @@ function Recommend() {
                             </div>
                         </div>
                         <div style={{ position: 'absolute', transition: 'border 1s ease-in-out', border: '1px solid white', borderRadius: '10px', width: '16vw', height: '5vw', maxHeight: '100px', maxWidth: '320px', transform: 'translate(320%, 50%)', fontSize: 'clamp(0.7px, 0.7vw, 15px)' }}>
-                            <div style={{ position: 'absolute', width: '10%', height: '32%', transform: 'translate(0%, -140%)' }}><img src={questionMarkIcon} style={{ width: '100%' }} onClick={clickQuestionMark} /></div>
+                            <div style={{ position: 'absolute', width: '10%', height: '32%', transform: 'translate(0%, -140%)' }}><img src={questionMarkIcon} style={{ width: '100%' }} onMouseOver={clickQuestionMark} onMouseOut={clickQuestionMark}/></div>
                             <div id="howToUse" style={{ opacity: 0, transition: 'opacity 1s ease-in-out'}}>
                                 <div style={{ textAlign: 'center' }}>🍽️맛집 추천 사용법🍽️</div>
                                 &nbsp;1. 메뉴 카테고리를 EAT 또는 KICK하여 선택<br />

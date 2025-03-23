@@ -42,14 +42,14 @@
   background-position: center;
   background-repeat: no-repeat;
   border: 2px solid #b21848;
-  border-radius: 5px;
+  border-radius: 100%;
   box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    5px 5px 15px 0px rgba(0,0,0,.6),
-    2px 2px 5px 0px rgba(0,0,0,.6);
+    5px 5px 15px 0px rgba(146, 146, 146, 0.6),
+    2px 2px 5px 0px rgba(145, 145, 145, 0.6);
 }
 
 .menu-image >img {
-  border-radius: 5px;
+  border-radius: 100%;
 }
 
 .menu-detail {
@@ -74,7 +74,7 @@
   max-height: 112px;
   background-size: cover;
   cursor: pointer;
-  border: 3px solid #b21848;
+  border: 2px solid #b21848;
   border-radius: 10%;
 }
 
@@ -97,12 +97,12 @@
   height: 8vw;
   max-width: 112px;
   max-height: 112px;
-  border: 3px solid #b21848;
-  border-radius: 10%;
+  border: 2px solid #b21848;
+  border-radius: 100%;
 }
 
 .select-menu > img {
-  border-radius: 10%;
+  border-radius: 100%;
 }
 
 
@@ -135,6 +135,10 @@
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 20px;
+  transition: all 0.7s;
+  box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+  3px 3px 10px 0px rgba(139, 139, 139, 0.6),
+  2px 2px 5px 0px rgba(139, 139, 139, 0.6); 
 }
 
 .recommendResult > ul {
@@ -179,4 +183,7 @@
   height: 30px;
   text-align: center;
   margin-bottom:40px;
+}
+.recommendResult:hover{
+  transform: translateY(-10px);
 }

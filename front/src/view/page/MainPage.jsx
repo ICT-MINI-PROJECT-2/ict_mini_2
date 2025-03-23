@@ -1,5 +1,5 @@
 import {useState , useEffect, useRef, useMemo} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../css/page/mainpage.css';
 import Faded from '../../effect/Faded';
 import axios from 'axios';
@@ -98,7 +98,7 @@ const SocialShareButtons = ({ eventId, eventTitle }) => {
 };
 
 function MainPage(){
-
+  const navigate = useNavigate();
   const [reviewModal, setReviewModal] = useState({
       isOpen: false,
       selected:0
@@ -167,8 +167,10 @@ function MainPage(){
 
     const [popReview, setPopReview] = useState({});
     const [popRstr, setPopRstr] = useState([]);
+    const [popBoard, setPopBoard] = useState([]);
     const [reviewRank, setReviewRank] = useState(0);
     const [rstrRank, setRstrRank] = useState(0);
+    const [boardRank, setBoardRank] = useState('hit');
 
     // useEffect(()=>{
       
@@ -180,15 +182,47 @@ function MainPage(){
         setPopRstr(res.data);
       })
       .catch(err=>console.log(err));
-    },[])
-
-    useEffect(()=>{
       axios.get('http://localhost:9977/find/getPopReview')
       .then(res=>{
         setPopReview(res.data);
       })
       .catch(err=>console.log(err));
     },[])
+    useEffect(()=> {
+      axios.get('http://localhost:9977/find/getPopBoard?sort='+boardRank)
+      .then(res=> {
+        console.log(res.data);
+        var cnt=0;
+        var result=[];
+        for(var i=0;i<res.data.length;i++) {
+          if(cnt>=3) break;
+          if(boardRank=='notice') {
+            if(res.data[i].category=='notice') {
+              result.push(res.data[i]);
+              cnt++;
+            }
+          }
+          else if(boardRank=='hit') {
+            if(res.data[i].category!='notice'){
+              result.push(res.data[i]);
+              cnt++;
+            }
+          }
+          else {
+            if(res.data[i].category!='notice'){
+              result.push(res.data[i]);
+              cnt++;
+            }
+          }
+        }
+        setPopBoard(result);
+      })
+      .catch(err=>console.log(err))
+    },[boardRank])
+
+    const moveBoard = (where) => {
+      navigate('free/view/'+where);
+    }
 
     return (
       <Faded>
@@ -226,7 +260,7 @@ function MainPage(){
                 event_list.map((item,idx) => {
                   return(
                   <div key={idx} className="slider-image-banner">
-                    <img style={{width:'100%',height:'100%',objectFit:'cover',}}
+                    <img style={{width:'100%',height:'100%',objectFit:'fill'}}
                       src={`http://localhost:9977/uploads/board/${item.id}/${item.files[0].fileName}`}/>
                     
                     <EventCountdown endDate={item.endDate} />
@@ -259,7 +293,7 @@ function MainPage(){
               </ul>
 
               {popReview.review_list != undefined && popReview.review_list[reviewRank]!=undefined && (
-                <div style={{cursor:'pointer'}}onClick={()=>setReviewModal({isOpen:true, selected:popReview.review_list[reviewRank].id})}>
+                <div style={{cursor:'pointer'}} onClick={()=>setReviewModal({isOpen:true, selected:popReview.review_list[reviewRank].id})}>
                   <div className='pop-img-box'>
                     <img
                       id="pop-rev-photo"
@@ -327,8 +361,38 @@ function MainPage(){
                 </Link>
               )}
             </div>
+            <div className='main-today-three'>
+            <span>인기 게시글</span>
+            <ul className='main-today-btn'>
+              <li onClick={() => { setBoardRank('hit') }} style={boardRank == 'hit' ? {color: '#b21848', fontWeight: 'bold', zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'2',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>조회순</li>
+              <li onClick={() => { setBoardRank('comment') }} style={boardRank == 'comment' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'2',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>댓글순</li>
+              <li onClick={() => { setBoardRank('notice') }} style={boardRank == 'notice' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'1',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>공지</li>
+            </ul>
+            <div className='main-board-container'>
+              <div className='main-board-box' id='main-board-box-tt'>
+                <div>번호</div>
+                <div>제목</div>
+                <div>작성자</div>
+                {boardRank=='comment' ? <div>댓글수</div>:<div>조회수</div>}
+              </div>
+              {
+                popBoard.map((item,idx)=> {
+                  return(
+                    <div className='main-board-box'>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center'}}><img style={{width:'100%', height:'50%',margin:'0px',objectFit:'contain'}} src={`./img/main/medal${idx+1}.png`}/></div>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} onClick={() => moveBoard(item.id)}>{item.title}</div>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} id={`mgw-${item.user.id}`} className="msg-who">{item.user.username}</div>
+                      {boardRank=='comment' ? <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.comments.length}</div>:<div style={{display:'flex',padding:'0px', justifyContent:'center',alignItems:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.hit}</div>}
+                    </div>
+                  )
+                })
+              }
+            </div>
           </div>
-    
+          </div>
+
+              
+
           <button onClick={setAPI} style={{ display: 'none', marginTop: '300px' }}>
             절대 클릭 [X] api테스트용
           </button>
