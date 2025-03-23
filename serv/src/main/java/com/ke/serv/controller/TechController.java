@@ -160,6 +160,10 @@ public class TechController {
         tech_service.deleteMessageById(dm.getId());
         return tech_service.selectDmById(ue);
     }
+    @PostMapping("/selUser")
+    public UserEntity selUser(@RequestBody UserEntity entity) {
+        return service.selectUser(entity);
+    }
     /*
     @PostMapping("/getImg")
     public List<String> getImg(@RequestBody List<String> ids) {
