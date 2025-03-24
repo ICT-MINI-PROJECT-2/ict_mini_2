@@ -4,9 +4,10 @@ import axios from 'axios';
 import Faded from '../../effect/Faded';
 import Signup from './Singup';
 import Login from './Login';
-
+import { useGlobalState } from '../../GlobalStateContext';
 
 function CheckList({param, setParam, where, setWhere}){
+    const { serverIP } = useGlobalState();
     const [selectedFoods, setSelectedFoods] = useState([]);
     const [allChecked, setAllChecked] = useState(false);
     const allFoods = ["한식","중국식","일식","양식","아시아음식","패스트푸드","주점","뷔페","패밀리레스트랑","기타"];
@@ -38,7 +39,7 @@ function CheckList({param, setParam, where, setWhere}){
         console.log("보내는거", foodsString);
         setParam({...param, foods:foodsString});
         
-        axios.post('http://localhost:9977/user/checkList',{...param, foods:foodsString})
+        axios.post(`${serverIP}/user/checkList`,{...param, foods:foodsString})
         .then(response =>{
             console.log('보냄',response.data);
             setWhere(2);

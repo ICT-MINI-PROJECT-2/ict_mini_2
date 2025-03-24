@@ -31,13 +31,14 @@ import FreeEdit from "./page/board/FreeEdit";
 import EnterEdit from "./user/EnterEdit";
 import EditPage from "./user/EditPage";
 import Interact from "./page/Interact";
+import { useGlobalState } from "../GlobalStateContext";
 
 function Body() {
   const [interact, setInteract] = useState({
     isOpen: false,
     selected: 0,
   });
-
+  const { serverIP } = useGlobalState();
   const al_mount = useRef(false);
 
   useEffect(() => {
@@ -46,11 +47,12 @@ function Body() {
 
       const handleClick = (e) => {
         if (e.target.className === 'message-who' || e.target.className === 'msg-who') {
-          axios.post('http://localhost:9977/tech/selUser', {
+          axios.post(`${serverIP}/tech/selUser`, {
             id: e.target.id.split('-')[1],
           })
           .then(res => {
-            if (sessionStorage.getItem('id') !== res.data.id) {
+            console.log(res.data.id);
+            if (sessionStorage.getItem('id') != res.data.id) {
               setInteract({
                 selected: res.data,
                 isOpen: true,

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useGlobalState } from '../../../GlobalStateContext';
 
 import ReviewModal from './ReviewModal';
 
@@ -14,13 +15,14 @@ function Review({ getReview, review_list, restaurant_id, isLogin }) {
     selected: {},
   });
 
+  const { serverIP } = useGlobalState();
   const [starwid, setStarWid] = useState(0);
   const [comment, setComment] = useState('');
   const [files, setFiles] = useState([]);  // 상태로 파일 관리
 
   useEffect(() => {
     axios
-      .get('http://localhost:9977/review/getReviewById?id=' + sessionStorage.getItem('id'))
+      .get(`${serverIP}/review/getReviewById?id=` + sessionStorage.getItem('id'))
       .then((res) => {
         res.data.forEach((item) => {
           if (restaurant_id === item.restaurant.id) {
@@ -76,7 +78,7 @@ function Review({ getReview, review_list, restaurant_id, isLogin }) {
               <div className="message-comment">{item.entity.comment}</div>
               <img
                 id="review-img"
-                src={`http://localhost:9977/uploads/review/${item.entity.id}/${item.imgList[0].filename}`}
+                src={`${serverIP}/uploads/review/${item.entity.id}/${item.imgList[0].filename}`}
               />
             </div>
           </div>
@@ -121,7 +123,7 @@ function Review({ getReview, review_list, restaurant_id, isLogin }) {
       }
 
       axios
-        .post('http://localhost:9977/review/write', formData)
+        .post(`${serverIP}/review/write`, formData)
         .then((res) => {
           getReview();
           setStarWid(0);

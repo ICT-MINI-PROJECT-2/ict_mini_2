@@ -28,4 +28,8 @@ public class TechService {
     public void deleteMessageById(int id) {
         repo.deleteById(id);
     }
+
+    public List<DmEntity> selectDmByReport(int i) {
+        return repo.findAllByState(i);
+    }
 }

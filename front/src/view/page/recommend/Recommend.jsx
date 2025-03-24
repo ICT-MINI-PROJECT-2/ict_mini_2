@@ -10,10 +10,13 @@ import questionMarkIcon from '../../../img/questionMarkIcon.png';
 import Post from '../../user/Post';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalState } from '../../../GlobalStateContext';
+
 const { kakao } = window;
 
 
 function Recommend() {
+    const { serverIP } = useGlobalState();
     var menuCategory = ["asia", "buffet", "bunsik", "china", "fastfood", "hansik", "japan", "joojeom", "western"];
     const [menuArr, setMenuArr] = useState(new Array(menuCategory.length).fill([]).map(() => [0, 1, 2, 3, 4]));
     const [selectedMenu, setSelectedMenu] = useState([]);
@@ -73,7 +76,7 @@ function Recommend() {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:9977/tech/getUserInfo?id=' + sessionStorage.getItem('id'))
+        axios.get(`${serverIP}/tech/getUserInfo?id=` + sessionStorage.getItem('id'))
             .then(res => {
                 console.log(res.data);
                 setAddr({ address: res.data.addr });
@@ -453,7 +456,7 @@ function Recommend() {
 
         for (var i = 0; i < selectedMenu.length; i++) x += selectedMenu[i] + '/';
 
-        axios.get("http://localhost:9977/recommend/list?menuCategory=" + x + '&address=' + trimAddress)
+        axios.get(`${serverIP}/recommend/list?menuCategory=` + x + '&address=' + trimAddress)
             .then(function (response) {
                 console.log(response.data);
                 let z = parseInt(Math.random() * response.data.length);

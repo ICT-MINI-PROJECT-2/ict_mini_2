@@ -3,12 +3,14 @@
 import "../../css/user/mypage.css"
 import Faded from "../../effect/Faded"
 import { useEffect, useRef, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
 import { Doughnut } from "react-chartjs-2"
 import axios from "axios"
+import { useGlobalState } from "../../GlobalStateContext"
 
 function MyPage() {
+  const { serverIP } = useGlobalState();
   const [wishRecord, setWishRecord] = useState([])
   const [wishPageNumber, setWishPageNumber] = useState([])
   const [nowWishPage, setWishNowPage] = useState(1)
@@ -21,6 +23,8 @@ function MyPage() {
 
   const [graphRecord, setGraphRecord] = useState([])
   const [chartData, setChartDate] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+  const loc = useLocation();
 
   //페이지,마운트
   const mounted = useRef(false)
@@ -70,8 +74,10 @@ function MyPage() {
   const [wishvo, setWishvo] = useState([])
 
   function getWishList(page) {
-    const id = sessionStorage.getItem("id")
-    const url = `http://localhost:9977/user/getWishList?id=${id}&nowPage=${page}`
+    let id;
+    if(loc.state == null) id = sessionStorage.getItem("id");
+    else id = loc.state.id;
+    const url = `${serverIP}/user/getWishList?id=${id}&nowPage=${page}`
 
     axios
       .post(url)
@@ -105,8 +111,10 @@ function MyPage() {
 
   //리뷰리스트
   function getReviewList(page) {
-    const id = sessionStorage.getItem("id")
-    const url = `http://localhost:9977/user/getReviewList?id=${id}&nowPage=${page}`
+    let id;
+    if(loc.state == null) id = sessionStorage.getItem("id");
+    else id = loc.state.id;
+    const url = `${serverIP}/user/getReviewList?id=${id}&nowPage=${page}`
 
     axios
       .post(url)
@@ -136,8 +144,10 @@ function MyPage() {
   //그래프
   //불러오기
   function graphData() {
-    const id = sessionStorage.getItem("id")
-    const url = `http://localhost:9977/user/graphData?id=${id}`
+    let id;
+    if(loc.state == null) id = sessionStorage.getItem("id");
+    else id = loc.state.id;
+    const url = `${serverIP}/user/graphData?id=${id}`
 
     axios
       .get(url)
@@ -201,6 +211,7 @@ function MyPage() {
   return (
     <Faded>
       <div className="mypage-container">
+        { loc.state!=null && <h1 style={{marginBottom:'50px'}}>'{loc.state.username}' 님의 정보</h1>}
         <h2 id="graph-title">선호음식</h2>
         <div className="graph-box">
           <Doughnut data={data} options={options} />
@@ -215,7 +226,7 @@ function MyPage() {
                   <th>찜한식당</th>
                   <th>카테고리</th>
                   <th>주소</th>
-                  <th>삭제</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -225,7 +236,7 @@ function MyPage() {
                     <td>{wishlistup.categoryOne}</td>
                     <td>{wishlistup.location}</td>
                     <td>
-                      <a onClick={() => wishDel(wishlistup.id)}>삭제</a>
+                      { loc.state == null && <a onClick={() => wishDel(wishlistup.id)}>삭제</a>}
                     </td>
                   </tr>
                 ))}
@@ -268,7 +279,7 @@ function MyPage() {
                   <th>리뷰</th>
                   <th>별점</th>
                   <th>날짜</th>
-                  <th>삭제</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -288,7 +299,7 @@ function MyPage() {
                     <td>{reviewlistup.rating}</td>
                     <td>{reviewlistup.writedate.substring(0, 10)}</td>
                     <td>
-                      <a>삭제</a>
+                    { loc.state == null && <a>삭제</a>}
                     </td>
                   </tr>
                 ))}
@@ -320,10 +331,11 @@ function MyPage() {
                 </li>
               </ul>
             </div>
-
+        { loc.state == null && 
         <div className="edit-profile-button-container">
           <Link to="/editEnter" className="edit-profile-button"> 개인정보수정 </Link>
         </div>
+        }
       </div>
     </Faded>
   )

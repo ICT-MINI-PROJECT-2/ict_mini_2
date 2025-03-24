@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function ImageModal({ imageList, setImageModal, restaurant }) {
+  const { serverIP } = useGlobalState();
   const mount = useRef(true);
 
   useEffect(() => {
@@ -107,7 +108,7 @@ function ImageModal({ imageList, setImageModal, restaurant }) {
 
     zoom.setAttribute(
       "src",
-      `http://localhost:9977/uploads/review/${item.id}/${item.filename}`
+      `${serverIP}/uploads/review/${item.id}/${item.filename}`
     );
     zoom.style.display = "block";
   };
@@ -118,7 +119,7 @@ function ImageModal({ imageList, setImageModal, restaurant }) {
       res.push(
         <div id="image-box" key={idx}>
           <img
-            src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}
+            src={`${serverIP}/uploads/review/${item.id}/${item.filename}`}
             onClick={() => {
               zoomImage(item);
             }}

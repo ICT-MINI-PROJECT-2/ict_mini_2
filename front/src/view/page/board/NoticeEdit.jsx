@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './NoticeEdit.css';
-
+import { useGlobalState } from '../../../GlobalStateContext';
 const NoticeEdit = () => {
+    const { serverIP } = useGlobalState();
     const navigate = useNavigate();
     const { id } = useParams();
     const [title, setTitle] = useState('');
@@ -17,7 +18,7 @@ const NoticeEdit = () => {
 
     const fetchEventData = async () => {
         try {
-            const response = await axios.get(`http://localhost:9977/board/view/edit/${id}`);
+            const response = await axios.get(`${serverIP}/board/view/edit/${id}`);
             const eventData = response.data;
             setTitle(eventData.subject || '');
             setContent(eventData.content || '');
@@ -50,7 +51,7 @@ const NoticeEdit = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:9977/board/eventWriteOk', formData, {
+            const response = await axios.post(`${serverIP}/board/eventWriteOk`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }

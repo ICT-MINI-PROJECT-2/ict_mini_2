@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './NoticeView.css';
-
+import { useGlobalState } from '../../../GlobalStateContext';
 const NoticeView = () => {
+    const { serverIP } = useGlobalState();
     const { id } = useParams();
     const navigate = useNavigate();
     const [notice, setNotice] = useState(null);
@@ -15,7 +16,7 @@ const NoticeView = () => {
 
     const fetchNoticeData = async () => {
         try {
-            const response = await axios.get(`http://localhost:9977/board/view/${id}`);
+            const response = await axios.get(`${serverIP}/board/view/${id}`);
             setNotice(response.data);
         } catch (error) {
             console.error('데이터 불러오기 실패:', error);
@@ -36,7 +37,7 @@ const NoticeView = () => {
 
         if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
             try {
-                await axios.delete(`http://localhost:9977/board/delete/${id}`);
+                await axios.delete(`${serverIP}/board/delete/${id}`);
                 alert('게시글이 삭제되었습니다.');
                 navigate('/boardpage?category=NOTICE');
             } catch (error) {

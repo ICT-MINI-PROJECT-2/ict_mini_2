@@ -2,8 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import './NoticePage.css';
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function NoticePage() {
+    const { serverIP } = useGlobalState();
     const [boardData, setBoardData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -16,7 +17,7 @@ function NoticePage() {
     }, []);
 
     function getBoardPage(page, category) {
-        let url = `http://localhost:9977/board/boardPage?page=${page}&category=${category}`;
+        let url = `${serverIP}/board/boardPage?page=${page}&category=${category}`;
         if(searchWord){
             url += `&searchWord=${searchWord}`;
         }
@@ -43,7 +44,7 @@ function NoticePage() {
         }
 
         try {
-            await axios.delete(`http://localhost:9977/board/delete/${id}`);
+            await axios.delete(`${serverIP}/board/delete/${id}`);
             alert('글이 삭제되었습니다.');
             getBoardPage(currentPage, 'NOTICE');
         } catch (error) {
@@ -104,7 +105,7 @@ function NoticePage() {
                         <Link to={`/notice/view/${record.id}`} className="notice-title-link">
                             {record.files && record.files.length > 0 && (
                                 <img 
-                                    src={`http://localhost:9977${record.files[0].fileUrl}`} 
+                                    src={`${serverIP}${record.files[0].fileUrl}`} 
                                     alt="썸네일" 
                                     className="notice-thumbnail"
                                 />

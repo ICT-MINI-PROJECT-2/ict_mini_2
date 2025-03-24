@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './FaqUpdate.css';
+import { useGlobalState } from '../../../GlobalStateContext';
 
 function FaqUpdate() {
+  const { serverIP } = useGlobalState();
   const { id } = useParams();
   const navigate = useNavigate();
   const [faq, setFaq] = useState({ subject: '', content: '' });
@@ -11,7 +13,7 @@ function FaqUpdate() {
   useEffect(() => {
     const fetchFaq = async () => {
       try {
-        const response = await axios.get(`http://localhost:9977/board/view/${id}`);
+        const response = await axios.get(`${serverIP}/board/view/${id}`);
         setFaq(response.data);
       } catch (error) {
         console.error("FAQ 정보를 불러오는 중 오류 발생:", error);
@@ -36,7 +38,7 @@ function FaqUpdate() {
 
 
     try {
-      await axios.put(`http://localhost:9977/board/update/${id}`, faq);
+      await axios.put(`${serverIP}/board/update/${id}`, faq);
       alert("FAQ가 성공적으로 수정되었습니다.");
       navigate('/boardpage?category=INQUIRY'); // 변경된 부분
 
