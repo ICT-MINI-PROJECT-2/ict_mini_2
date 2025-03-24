@@ -241,12 +241,12 @@ function MainPage(){
 
             </div>
             {event_list.length > 0 && (
-              <div style={{ 
+              <div className="main-event-date" style={{ 
                 fontSize: '14px', 
                 color: '#666', 
                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
                 padding: '8px 15px',
-                borderRadius: '8px',
+                borderRadius: '50px',
                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
               }}>
                 <span style={{ fontWeight: 'bold', color: '#b21848' }}>시작일:</span> {new Date(event_list[currentSlide]?.startDate || new Date()).toLocaleDateString()} | 

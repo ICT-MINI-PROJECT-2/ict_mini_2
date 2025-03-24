@@ -120,7 +120,7 @@ function EventView() {
                 <img
                   src={`${serverIP}${file.fileUrl}`}
                   alt={`첨부파일 ${index + 1}`}
-                  style={{ maxWidth: '80%', maxHeight: '500px', display: 'block', margin: '0 auto' }} // 이미지 스타일 조정: 최대 너비, 최대 높이, 중앙 정렬
+                  style={{ maxWidth: '100%', maxHeight: '100%', display: 'block', margin: '0 auto' }} // 이미지 스타일 조정: 최대 너비, 최대 높이, 중앙 정렬
                   onError={(e) => {
                     e.target.onerror = null
                     e.target.src = "/placeholder-simple.svg"

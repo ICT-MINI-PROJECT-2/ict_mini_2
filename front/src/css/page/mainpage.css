@@ -23,7 +23,7 @@
 }
 
 .slider-container {
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
     margin: 0 auto;
     max-width: 1900px;
@@ -31,19 +31,25 @@
     margin-bottom: 1vw;
 }
 
+@media (max-width:1050px){
+    .slider-container{
+        width: 1017px;
+    }
+}
+
 .slider-image-banner {
     position: relative;
-    width: 100%;
+    width: 100vw;
     max-width: 1900px;
     height: 40vw;
     max-height: 600px;
-    border-radius: 20px;
+    border-radius: 40px;
     overflow: hidden;
 }
 
 /* 슬라이더 내부 요소에도 border-radius 적용 */
 .main-container .slick-slider {
-    border-radius: 20px;
+    border-radius: 40px;
     overflow: hidden;
 }
 
@@ -241,7 +247,7 @@
   backdrop-filter: blur(5px);
   padding: 8px 20px;
   border: 2px solid rgb(124, 100, 100);
-  border-radius: 10px;
+  border-radius: 40px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   text-decoration: none;
   color: #333;
@@ -332,4 +338,31 @@
 .social-share-button.twitter {
   background-color: #1DA1F2;
   color: white;
+}
+@media(max-width:350px){
+    .social-share-button{
+        display: none;
+    }
+    .event-button {
+        font-size: 10px;
+    }
+}
+@media (max-width:240px) {
+    .event-button {
+        display: none;
+    }
+    .countdown-badge {
+        display: none;
+    }
+}
+
+@media (max-width:1050px){
+    .slider-image-banner{
+        height: 409px;
+    }
+}
+@media (max-width:570px){
+    .main-event-date{
+        display: none;
+    }
 }
