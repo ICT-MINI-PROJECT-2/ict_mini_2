@@ -128,8 +128,8 @@ function FreeView(){
                         {record.title}
                         </div>
                     <div>👤{record.username}</div>
-                    <div>💬 {commentList.length}</div>
-                    <div>👁 {record.hit}</div>
+                    <div>💬{commentList.length}</div>
+                    <div>👁{record.hit}</div>
                 </div>
                 <div id="view-content" dangerouslySetInnerHTML={{ __html: record.content }}></div>
 

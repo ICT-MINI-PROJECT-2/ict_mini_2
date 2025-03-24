@@ -73,8 +73,7 @@ function FreePage() {
                 <li>
                     <Link to={`/free/view/${record.id}`}>
                         {isNotice && <span id="notice-sticker">공지</span>}
-                        <span id="free-list-title">{record.title}</span>
-                        <span>[{record.comments.length}]</span>
+                        <span>{record.title}[{record.comments.length}]</span>
                     </Link>
                 </li>
                 <li>{record.user.username}</li>
