@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useGlobalState } from "../../../GlobalStateContext";
 
 function FindListItem({restaurant}) {
+    const { serverIP } = useGlobalState();
     const [wish, setWish] = useState('');
     const category = ['한식','패스트푸드','일식','중식','아시아음식','양식','주점','분식','뷔페','기타'];
     const categoryColor = [
@@ -22,7 +24,7 @@ function FindListItem({restaurant}) {
     
     useEffect(()=> {
         if (sessionStorage.getItem("id") != null) {
-            axios.post('http://localhost:9977/tech/getWishState', {
+            axios.post(`${serverIP}/tech/getWishState`, {
                 restaurant: {id: restaurant.id},
                 user: {id: sessionStorage.getItem("id")}
             })
@@ -50,7 +52,7 @@ function FindListItem({restaurant}) {
     }
 
     const favorite = async(e)=> {
-        axios.post('http://localhost:9977/tech/wishlist', {
+        axios.post(`${serverIP}/tech/wishlist`, {
             restaurant: {id: restaurant.id},
             user: {id: sessionStorage.getItem("id")},
             state: e.target.innerText
@@ -82,7 +84,7 @@ function FindListItem({restaurant}) {
                         <span className='star-rating'>
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
                         </span>
-                        <span> ({restaurant.rating}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
+                        <span> ({Math.ceil(restaurant.rating*100)/100}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
                     <div>👁 {restaurant.hit} / ♥ {restaurant.wishCount}</div>
                 </div>
             </div>

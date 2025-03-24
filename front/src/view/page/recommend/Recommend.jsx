@@ -10,10 +10,13 @@ import questionMarkIcon from '../../../img/questionMarkIcon.png';
 import Post from '../../user/Post';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalState } from '../../../GlobalStateContext';
+
 const { kakao } = window;
 
 
 function Recommend() {
+    const { serverIP } = useGlobalState();
     var menuCategory = ["asia", "buffet", "bunsik", "china", "fastfood", "hansik", "japan", "joojeom", "western"];
     const [menuArr, setMenuArr] = useState(new Array(menuCategory.length).fill([]).map(() => [0, 1, 2, 3, 4]));
     const [selectedMenu, setSelectedMenu] = useState([]);
@@ -73,9 +76,8 @@ function Recommend() {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:9977/tech/getUserInfo?id=' + sessionStorage.getItem('id'))
+        axios.get(`${serverIP}/tech/getUserInfo?id=` + sessionStorage.getItem('id'))
             .then(res => {
-                console.log(res.data);
                 setAddr({ address: res.data.addr });
             })
             .catch(err => console.log(err));
@@ -92,8 +94,6 @@ function Recommend() {
             leftImage: imagePath + result[0] + '_' + result[1] + imageExt,
             rightImage: imagePath + result[2] + '_' + result[3] + imageExt
         }));
-
-        console.log(menuArr);
     }, [menuArr]);
 
     function getRandomMenu() {
@@ -304,12 +304,16 @@ function Recommend() {
                     });
 
                     setTimeout(() => {
-                        document.getElementById("select-menu" + i).querySelector("img").src = menuImage.rightImage;
-                        document.getElementById("select-menu" + i).querySelector("img").style.opacity = 1;
+                        if(document.getElementById("select-menu" + i)) {
+                            document.getElementById("select-menu" + i).querySelector("img").src = menuImage.rightImage;
+                            document.getElementById("select-menu" + i).querySelector("img").style.opacity = 1;
+                        }
                     }, 750);
 
                     setTimeout(() => {
-                        document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 0s ease-in-out';
+                        if(document.getElementById("select-menu" + i)){
+                            document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 0s ease-in-out';
+                        }
                     }, 1500);
                     break;
                 }
@@ -453,9 +457,8 @@ function Recommend() {
 
         for (var i = 0; i < selectedMenu.length; i++) x += selectedMenu[i] + '/';
 
-        axios.get("http://localhost:9977/recommend/list?menuCategory=" + x + '&address=' + trimAddress)
+        axios.get(`${serverIP}/recommend/list?menuCategory=` + x + '&address=' + trimAddress)
             .then(function (response) {
-                console.log(response.data);
                 let z = parseInt(Math.random() * response.data.length);
                 if (z >= response.data.length - 4) z -= 4;
                 let idd = 1;

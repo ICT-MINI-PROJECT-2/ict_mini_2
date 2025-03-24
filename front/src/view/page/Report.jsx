@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
+import { useGlobalState } from "../../GlobalStateContext";
 
 const ReportButton = styled.div`
     position: relative;
@@ -46,7 +47,8 @@ const ReportButton = styled.div`
     }
 `;
 
-function Report({ interact, setReport }) {
+function Report({ interact, setReport, setInteract }) {
+    const { serverIP } = useGlobalState();
     const [comment, setComment] = useState('');
     const [noMsg, setNoMsg] = useState(false);
 
@@ -59,7 +61,7 @@ function Report({ interact, setReport }) {
             setNoMsg(true);
         }
         else {
-            axios.post('http://localhost:9977/tech/sendDm', {
+            axios.post(`${serverIP}/tech/sendDm`, {
                 userFrom: { id: sessionStorage.getItem("id") },
                 userTo: { id: interact.selected.id },
                 comment: comment,
@@ -68,6 +70,7 @@ function Report({ interact, setReport }) {
                 .then(res => {
                     if (res.data === 'ok') {
                         setReport(false);
+                        setInteract({...interact, isOpen:false});
                     }
                 })
                 .catch(err => console.log(err))
@@ -75,7 +78,7 @@ function Report({ interact, setReport }) {
     }
 
     return (
-        <div className='report-container' style={{ left: interact.where.pageX + 50, top: interact.where.pageY + 50 }}>
+        <div className='report-container' style={{ left: interact.where.pageX-100, top: interact.where.pageY-100}}>
             <div className='report-exit' onClick={() => setReport(false)}>X</div>
             <div className='report-header' style={{ textAlign: 'center', marginTop: '10px' }}>신고하기</div>
             <div className='report-recipient'>

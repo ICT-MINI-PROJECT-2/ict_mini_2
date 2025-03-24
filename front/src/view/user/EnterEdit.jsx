@@ -6,8 +6,12 @@ import EditCheckList from "./EditCheckList";
 import ConfirmEdit from "./ConfirmEdit";
 import { Link } from "react-router-dom";
 import '../../css/user/editEnter.css';
-
+import { useGlobalState } from "../../GlobalStateContext";
 function EnterEdit() {
+    const { serverIP } = useGlobalState();
+    const id = sessionStorage.getItem("id");
+    const userId = sessionStorage.getItem("loginId");
+    const [data, setData] = useState({});
     const [editWhere, setEditWhere] = useState(0);
     const [editParam, setEditParam] = useState({});
     const [pw, setPw] = useState('');
@@ -22,9 +26,9 @@ function EnterEdit() {
     if(pw===''||pw===undefined){
     
     }else{
-      axios.post('http://localhost:9977/user/editEnterChk', {
-        id:sessionStorage.getItem("id"),
-        userpw:pw
+      axios.post(`${serverIP}/user/editEnterChk`, {
+        userid:data.userid,
+        userpw:''
       }).then(res => {
         console.log(res.data)
         if(res.data.id===-1){

@@ -6,18 +6,19 @@ import { Link } from "react-router-dom"
 import axios from "axios"
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import './EventPage.css'
-
+import { useGlobalState } from "../../../GlobalStateContext"
 // QueryClient 인스턴스
 export const queryClient = new QueryClient();
 
 // 이벤트 카드 컴포넌트 (memoized)
 const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
+    const { serverIP } = useGlobalState();
   // ... (MemoizedRenderEventCard 코드는 위와 동일) ...
     const hasThumbnail = event.files && event.files.length > 0
     let thumbnailUrl = "/placeholder-simple.svg";
 
     if (hasThumbnail && event.files[0]) {
-        thumbnailUrl = `http://localhost:9977${event.files[0].fileUrl}`
+        thumbnailUrl = `${serverIP}${event.files[0].fileUrl}`
     }
 
     const formatDate = (dateString) => {
@@ -73,7 +74,6 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                         }}
                         onError={(e) => {
                             if (e.target.src !== window.location.origin + "/placeholder-simple.svg") {
-                                console.log("Image load failed, using placeholder:", e.target.src);
                                 e.target.src = "/placeholder-simple.svg";
                             }
                         }}
@@ -144,6 +144,7 @@ MemoizedRenderEventCard.displayName = "MemoizedRenderEventCard"
 
 
 const EventList = memo(function EventList() {
+    const { serverIP } = useGlobalState();
     const [searchTerm, setSearchTerm] = useState("");
     const [searchType, setSearchType] = useState("제목내용");
     const [currentPage, setCurrentPage] = useState(1);
@@ -167,7 +168,7 @@ const EventList = memo(function EventList() {
         queryFn: ({ queryKey }) => {
             const [_, category, page, searchType, searchTerm, withImages] = queryKey;
             return axios
-                .get("http://localhost:9977/board/boardPage", {
+                .get(`${serverIP}/board/boardPage`, {
                     params: {
                         category,
                         page: page - 1,

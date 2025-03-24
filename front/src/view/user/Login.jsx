@@ -3,8 +3,10 @@ import axios from 'axios';
 import '../../css/user/login.css';
 import { Link } from 'react-router-dom';
 import Faded from '../../effect/Faded'
+import { useGlobalState } from '../../GlobalStateContext';
 
 function Login(){
+    const { serverIP } = useGlobalState();
     const [data, setData] = useState({});
 
     const setFormData = (e) => {
@@ -39,7 +41,7 @@ function Login(){
             alert_pw.style.opacity = 1;
         }
         else{
-            axios.post('http://localhost:9977/user/loginChk', {
+            axios.post(`${serverIP}/user/loginChk`, {
                 userid:userid,
                 userpw:userpw
             }).then(res => {

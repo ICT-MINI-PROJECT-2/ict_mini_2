@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import "./../board/FreePage.css"
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function FreePage() {
     const [boardData, setBoardData] = useState([]);
     const [noticeList, setNoticeList] = useState([]);
@@ -13,9 +13,10 @@ function FreePage() {
     const [totalRecord, setTotalRecord] = useState(0);
     const [currentView, setCurrentView] = useState('all');
     const mounted = useRef(false);
+    const { serverIP } = useGlobalState();
 
     const getBoardList = async (page) => {
-        let url = `http://localhost:9977/free/list?nowPage=${page}`;
+        let url = `${serverIP}/free/list?nowPage=${page}`;
         if (searchWord !== '') {
             url += `&searchWord=${searchWord}`;
         }
@@ -69,11 +70,12 @@ function FreePage() {
         return data.map((record) => (
             <ul className="free-list" key={record.id}>
                 <li>{record.id}</li>
-                <li style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',display:'inline-block', textAlign:'left'}}>
+                <li id="free-list-title">
                     <Link to={`/free/view/${record.id}`}>
                         {isNotice && <span id="notice-sticker">공지</span>}
-                        <span>{record.title}</span>
+                        <span style={{fontSize:'15px'}}>{record.title.length > 12 ? record.title.substring(0,12)+'...' : record.title }</span>
                     </Link>
+                    <span> [{record.comments.length}]</span>
                 </li>
                 <li>{record.user.username}</li>
                 <li>{record.hit}</li>
@@ -119,9 +121,10 @@ function FreePage() {
                         {boardData.map((record) => (
                             <ul className="free-list" key={record.id}>
                                 <li>{record.id}</li>
-                                <li style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',display:'inline-block', textAlign:'left'}}>
+                                <li  id="free-list-title">
                                     <Link to={`/free/view/${record.id}`}>
-                                        <span>{record.title}</span>
+                                        <span style={{fontSize:'15px'}}>{record.title.length > 16 ? record.title.substring(0,16)+'...' : record.title }</span>
+                                        <span> [{record.comments.length}]</span>
                                     </Link>
                                 </li>
                                 <li>

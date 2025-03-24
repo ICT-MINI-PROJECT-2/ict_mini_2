@@ -4,9 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import './InquiryList.css';
 import { ClipboardX, Pencil } from 'react-bootstrap-icons'; // Pencil 아이콘 추가
 import React from "react";
-
+import { useGlobalState } from "../../../GlobalStateContext";
 
 function InquiryList() {
+    const { serverIP } = useGlobalState();
     const [boardData, setBoardData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [searchWord, setSearchWord] = useState('');
@@ -29,8 +30,8 @@ function InquiryList() {
 
     function fetchData() {
         const searchTermParam = searchWord ? `&searchType=작성자&searchTerm=${searchWord}` : '';
-        const inquiryUrl = `http://localhost:9977/board/boardPage?category=INQUIRY${searchTermParam}`;
-        const faqUrl = `http://localhost:9977/board/boardPage?category=FAQ${searchTermParam}`;
+        const inquiryUrl = `${serverIP}/board/boardPage?category=INQUIRY${searchTermParam}`;
+        const faqUrl = `${serverIP}/board/boardPage?category=FAQ${searchTermParam}`;
 
         Promise.all([axios.get(inquiryUrl), axios.get(faqUrl)])
             .then(([inquiryResponse, faqResponse]) => {
@@ -68,7 +69,7 @@ function InquiryList() {
     const handleDelete = async (id) => {
         if (window.confirm("정말로 삭제하시겠습니까?")) {
             try {
-                await axios.delete(`http://localhost:9977/board/delete/${id}`);
+                await axios.delete(`${serverIP}/board/delete/${id}`);
                 fetchData();
                 alert("삭제되었습니다.");
             } catch (error) {

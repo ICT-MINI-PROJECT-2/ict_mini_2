@@ -34,13 +34,14 @@ import Interact from "./page/Interact";
 import Idfind from "./user/Idfind";
 import Pwfind from "./user/Pwfind";
 import ConfirmEdit from "./user/ConfirmEdit";
+import { useGlobalState } from "../GlobalStateContext";
 
 function Body() {
   const [interact, setInteract] = useState({
     isOpen: false,
     selected: 0,
   });
-
+  const { serverIP } = useGlobalState();
   const al_mount = useRef(false);
 
   useEffect(() => {
@@ -49,11 +50,11 @@ function Body() {
 
       const handleClick = (e) => {
         if (e.target.className === 'message-who' || e.target.className === 'msg-who') {
-          axios.post('http://localhost:9977/tech/selUser', {
+          axios.post(`${serverIP}/tech/selUser`, {
             id: e.target.id.split('-')[1],
           })
           .then(res => {
-            if (sessionStorage.getItem('id') !== res.data.id) {
+            if (sessionStorage.getItem('id') != res.data.id) {
               setInteract({
                 selected: res.data,
                 isOpen: true,

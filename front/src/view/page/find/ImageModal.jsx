@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function ImageModal({ imageList, setImageModal, restaurant }) {
+  const { serverIP } = useGlobalState();
   const mount = useRef(true);
 
   useEffect(() => {
@@ -9,7 +10,7 @@ function ImageModal({ imageList, setImageModal, restaurant }) {
       let modal = document.getElementById("review-image-modal");
 
       modal.style.opacity = 1;
-      modal.style.zIndex = 5;
+      modal.style.zIndex = 15;
       modal.style.left = (window.innerWidth - modal.offsetWidth) / 2 + "px";
       modal.style.top = (window.innerHeight - modal.offsetHeight) / 2 + "px";
 
@@ -107,7 +108,7 @@ function ImageModal({ imageList, setImageModal, restaurant }) {
 
     zoom.setAttribute(
       "src",
-      `http://localhost:9977/uploads/review/${item.id}/${item.filename}`
+      `${serverIP}/uploads/review/${item.id}/${item.filename}`
     );
     zoom.style.display = "block";
   };
@@ -118,7 +119,7 @@ function ImageModal({ imageList, setImageModal, restaurant }) {
       res.push(
         <div id="image-box" key={idx}>
           <img
-            src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`}
+            src={`${serverIP}/uploads/review/${item.id}/${item.filename}`}
             onClick={() => {
               zoomImage(item);
             }}
@@ -144,7 +145,7 @@ function ImageModal({ imageList, setImageModal, restaurant }) {
           backgroundColor: "rgba(0,0,0,0.5)",
           display: "none",
           backdropFilter: "blur(5px)",
-          zIndex: 4,
+          zIndex: 14,
         }}
       ></div>
 

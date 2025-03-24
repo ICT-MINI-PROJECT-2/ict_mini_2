@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
+import { useGlobalState } from "../../GlobalStateContext";
 
-function Dm({ interact, setDm }) {
+function Dm({ interact, setInteract, setDm }) {
     const [comment, setComment] = useState('');
     const [noMsg, setNoMsg] = useState(false);
-
+    const { serverIP } = useGlobalState();
     const changeComment = (e) => {
         setComment(e.target.value);
     }
@@ -15,7 +16,7 @@ function Dm({ interact, setDm }) {
             setNoMsg(true);
         }
         else {
-            axios.post('http://localhost:9977/tech/sendDm', {
+            axios.post(`${serverIP}/tech/sendDm`, {
                 userFrom: { id: sessionStorage.getItem("id") },
                 userTo: { id: interact.selected.id },
                 comment: comment
@@ -23,6 +24,7 @@ function Dm({ interact, setDm }) {
                 .then(res => {
                     if (res.data === 'ok') {
                         setDm(false);
+                        setInteract({...interact, isOpen:false});
                     }
                 })
                 .catch(err => console.log(err))
@@ -72,7 +74,7 @@ function Dm({ interact, setDm }) {
     }
 `;
     return (
-        <div className='dm-container' style={{ left: interact.where.pageX + 50, top: interact.where.pageY + 50 }}>
+        <div className='dm-container' style={{ left: interact.where.pageX-100, top: interact.where.pageY-100 }}>
             <div className='dm-exit' onClick={() => setDm(false)}>X</div>
             <div className='dm-header'>쪽지 보내기</div>
             <div className='dm-recipient'>

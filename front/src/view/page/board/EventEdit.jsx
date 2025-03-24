@@ -5,8 +5,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import './EventWrite.css';  //  스타일은 EventWrite.css를 사용
 import { queryClient } from './EventPage';
-
+import { useGlobalState } from '../../../GlobalStateContext';
 function EventEdit() {
+    const { serverIP } = useGlobalState();
     const navigate = useNavigate();
     const location = useLocation();
     const { id } = useParams();
@@ -30,7 +31,7 @@ function EventEdit() {
     useEffect(() => {
         const fetchEventData = async () => {
             try {
-                const response = await fetch(`http://localhost:9977/board/view/edit/${id}`);
+                const response = await fetch(`${serverIP}/board/view/edit/${id}`);
                 if (!response.ok) throw new Error("이벤트 수정 데이터를 불러오는데 실패했습니다.");
                 const eventData = await response.json();
 
@@ -42,8 +43,8 @@ function EventEdit() {
 
                 // 기존 파일 정보 설정
                 if (eventData.files.length > 0) {
-                    setThumbnailUrl(`http://localhost:9977${eventData.files[0].fileUrl}`);
-                    setContentImageUrls(eventData.files.slice(1).map(file => `http://localhost:9977${file.fileUrl}`));
+                    setThumbnailUrl(`${serverIP}${eventData.files[0].fileUrl}`);
+                    setContentImageUrls(eventData.files.slice(1).map(file => `${serverIP}${file.fileUrl}`));
                 }
             } catch (error) {
                 console.error("이벤트 데이터 불러오기 오류:", error);
@@ -109,7 +110,7 @@ function EventEdit() {
         contentImages.forEach(file => formData.append('files', file));
 
         try {
-            const response = await fetch('http://localhost:9977/board/eventUpdateOk', { method: 'POST', body: formData });
+            const response = await fetch(`${serverIP}/board/eventUpdateOk`, { method: 'POST', body: formData });
             if (!response.ok) throw new Error('이벤트 수정에 실패했습니다.');
             alert('글이 수정되었습니다.');
             queryClient.invalidateQueries(["eventList"]);

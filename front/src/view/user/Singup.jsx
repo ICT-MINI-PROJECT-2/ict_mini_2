@@ -6,8 +6,10 @@ import Post from './Post.jsx';
 import axios from 'axios';
 import CheckList from './CheckList.jsx';
 import SignUpConfirm from './SignUpConfirm.jsx';
+import { useGlobalState } from '../../GlobalStateContext.jsx';
 
 function Signup(){  
+    const { serverIP } = useGlobalState();
     const [param, setParam] = useState({});
 
     const [where, setWhere] = useState(0);
@@ -87,7 +89,7 @@ function Signup(){
                 setOkChk({...okChk, idOk:false, id_alert:'7자 이상 입력해주세요.'});
             else if(value.length>15) setOkChk({...okChk, idOk:false, id_alert:'15자 이하 입력해주세요.'});
             else {
-                axios.post("http://localhost:9977/user/idChk",{userid:value})
+                axios.post(`${serverIP}/user/idChk`,{userid:value})
                 .then(res => {
                     console.log(res.data);
                     if(res.data===1) setOkChk({...okChk, idOk:false, id_alert:'이미 존재하는 아이디입니다.'});

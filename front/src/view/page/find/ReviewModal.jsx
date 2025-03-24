@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import axios from 'axios';
+import { useGlobalState } from "../../../GlobalStateContext";
 
 function ReviewModal({ reviewModal, setReviewModal }) {
+  const { serverIP } = useGlobalState();
   const mount = useRef(true);
   const [review, setReview] = useState({});
   const [img_list, setImg_list] = useState([]);
@@ -11,7 +13,7 @@ function ReviewModal({ reviewModal, setReviewModal }) {
     if (!mount.current) mount.current = false;
     else {
       axios
-        .get('http://localhost:9977/review/selectReview?id=' + reviewModal.selected)
+        .get(`${serverIP}/review/selectReview?id=` + reviewModal.selected)
         .then(res => {
           setReview(res.data.review);
           setImg_list(res.data.img_list);
@@ -23,7 +25,7 @@ function ReviewModal({ reviewModal, setReviewModal }) {
       let modal = document.getElementById("review-modal");
 
       modal.style.opacity = 1;
-      modal.style.zIndex = 10;
+      modal.style.zIndex = 15;
       modal.style.left = (window.innerWidth - modal.offsetWidth) / 2 + 'px';
       modal.style.top = (window.innerHeight - modal.offsetHeight) / 2 + 'px';
 
@@ -118,7 +120,7 @@ function ReviewModal({ reviewModal, setReviewModal }) {
 
   const delReview = () => {
     setReviewModal({ ...reviewModal, isOpen: false });
-    axios.get('http://localhost:9977/review/deleteReview?id=' + review.id)
+    axios.get(`${serverIP}/review/deleteReview?id=` + review.id)
       .then(res => {
         window.location.reload(true);
       })
@@ -168,7 +170,7 @@ function ReviewModal({ reviewModal, setReviewModal }) {
         backgroundColor: 'rgba(0,0,0,0.5)',
         display: 'none',
         backdropFilter: 'blur(5px)',
-        zIndex: 4
+        zIndex: 14
       }}></div>
 
       <div id='review-modal'>
@@ -193,11 +195,11 @@ function ReviewModal({ reviewModal, setReviewModal }) {
             <span id='review-modal-comment'>{review.comment}</span><br />
             {
               img_list.map((item) => {
-                return (<img id='review-modal-img' src={`http://localhost:9977/uploads/review/${item.review.id}/${item.filename}`} />);
+                return (<img id='review-modal-img' src={`${serverIP}/uploads/review/${item.review.id}/${item.filename}`} />);
               })
             }
             <br />
-            {(sessionStorage.getItem('id') == review.user.id) && <span id='review-del-button' onClick={() => delChk(true)}>삭제</span>}
+            {((sessionStorage.getItem('id') == review.user.id) || sessionStorage.getItem('loginId')=='admin1234') && <span id='review-del-button' onClick={() => delChk(true)}>삭제</span>}
           </div>
         }
       </div>
