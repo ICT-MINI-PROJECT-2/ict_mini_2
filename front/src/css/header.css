@@ -26,7 +26,7 @@ a {
     perspective: 100%;
     z-index:100;
     white-space: nowrap;
-    font-size:24px;
+    font-size:20px;
 }
 
 #logo-img{
@@ -145,7 +145,7 @@ a {
 
 @media (max-width:1200px) {
     .header {
-        font-size:20px;
+        font-size:18px;
     }
     .header>li:nth-child(1) {
         width:23%;
@@ -162,7 +162,7 @@ a {
 }
 @media (max-width:850px) {
     .header-right {
-        font-size:20px;
+        font-size:16px;
     }
     .header>li:nth-child(1) {
         width: calc(100% - 150px);

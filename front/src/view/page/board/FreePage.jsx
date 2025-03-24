@@ -103,7 +103,7 @@ function FreePage() {
                     onKeyUp={handleSearch}
                 />
                 <input type="button" value="검색" onClick={() => { getBoardList(1); }} />
-                    <div>총 게시글 수: {totalRecord}개</div></>
+                    <div style={{float:'right'}}>총 게시글 수: {totalRecord}개</div></>
                 )}
             </div>
 
