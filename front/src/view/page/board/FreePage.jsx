@@ -106,7 +106,7 @@ function FreePage() {
                     <div style={{float:'right'}}>총 게시글 수: {totalRecord}개</div></>
                 )}
             </div>
-
+            
             <div className="board-list">
                 <ul className="free-list-header">
                     <li>번호</li>
@@ -115,7 +115,7 @@ function FreePage() {
                     <li>조회수</li>
                     <li>등록일</li>
                 </ul>
-                {currentView === 'all' && (
+                {currentView === 'all' && boardData.length !== 0 && (
                     <>
                         {renderList(noticeList.slice(0, 2), true)}
                         {boardData.map((record) => (
@@ -144,6 +144,11 @@ function FreePage() {
                 )}
                 {currentView === 'notice' && renderList(noticeList, true)}
             </div>
+
+            {
+                currentView === 'all' && boardData.length === 0 &&
+                <div style={{padding: '20px', fontWeight: 'bold', textAlign: 'center'}}>검색 결과가 없습니다.</div>
+            }
 
             <div className="write-btn">
                 {sessionStorage.getItem("loginStatus") === "Y" && currentView === 'all' && (
