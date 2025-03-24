@@ -73,46 +73,40 @@
   margin: 0;
   justify-content: center;
   border-radius: 0;
+  gap: 10px;
+
 }
 
 .my-page-item {
   padding: 0;
   margin: 0;
+  font-size: 1.0em;
+  color: #333;
+  border-radius: 10px;
 }
 
 .my-page-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
   min-width: 40px;
   height: 38px;
   background-color: #fff;
-  color: #007bff;
+  color: #b21848;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid #dee2e6;
   padding: 0;
-  border-radius: 0;
   margin-left: -1px; /* 버튼 사이 겹치는 테두리 처리 */
   position: relative;
   overflow: hidden;
+  font-size: 1.0em;
+  border: 1px solid #ddd;
+  border-radius: 10px;
 }
 
-/* 첫 번째 버튼의 왼쪽 테두리 */
-.my-pagination .my-page-item:first-child .my-page-link {
-  margin-left: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-/* 마지막 버튼의 오른쪽 테두리 */
-.my-pagination .my-page-item:last-child .my-page-link {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
 
 .my-page-item.active {
+  font-weight: bold;
   padding: 0;
   margin: 0;
 }
@@ -120,33 +114,20 @@
 /* 호버 효과 강화 */
 .my-page-link:hover {
   background-color: #f0f0f0;
-  color: #0056b3;
+  color: #b21848;
   z-index: 2;
 }
 
 /* 클릭 효과 (active 상태) */
 .my-page-item.active .my-page-link {
-  background-color: #007bff;
+  background-color: #b21848;
   color: white;
-  border-color: #007bff;
+  border-color:#b21848;
   z-index: 3;
   font-weight: 500;
 }
 
-/* 클릭 시 물결 효과 */
-.my-page-link::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.5);
-  opacity: 0;
-  border-radius: 100%;
-  transform: scale(1, 1) translate(-50%);
-  transform-origin: 50% 50%;
-}
+
 
 .my-page-link:active::after {
   animation: ripple 0.6s ease-out;
@@ -266,6 +247,10 @@
   border-bottom: 2px solid #b21848;
   padding-bottom: 10px;
   margin-bottom: 15px;
+}
+
+.bottom-blank{
+  height: 100px;
 }
 
 /* 개인정보 수정 버튼 스타일 */

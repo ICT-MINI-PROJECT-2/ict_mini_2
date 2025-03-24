@@ -3,7 +3,9 @@ import Faded from "../../effect/Faded";
 import axios from "axios";
 import EditPage from "./EditPage";
 import EditCheckList from "./EditCheckList";
+import ConfirmEdit from "./ConfirmEdit";
 import { Link } from "react-router-dom";
+import '../../css/user/editEnter.css';
 import { useGlobalState } from "../../GlobalStateContext";
 function EnterEdit() {
     const { serverIP } = useGlobalState();
@@ -48,7 +50,7 @@ function EnterEdit() {
     <Faded>
       {editWhere === 0 &&
     <div className="editEnter-container">
-        <div id="editEnter-title">로그인</div>
+        <div id="editEnter-title">개인정보 수정</div>
         <form name="editEnterForm" method="post" onSubmit={(e) => { e.preventDefault(); editChk() }}>    
             <div id="editEnter-box">
                 <div id="editEnter-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="editEnter-right">{sessionStorage.getItem('loginId')}<div id="alert-pw"></div></div>
@@ -63,18 +65,18 @@ function EnterEdit() {
     </div>
 }
 {editWhere === 1 &&
-  <div className="editEnter-container">
+  <div>
     <EditPage editParam={editParam} setEditParam={setEditParam} editWhere={editWhere} setEditWhere={setEditWhere}/>
   </div>
 }
 {editWhere === 2 &&
-  <div className="editEnter-container">
+  <div>
     <EditCheckList editParam={editParam} setEditParam={setEditParam} editwhere={editWhere} setEditWhere={setEditWhere}/>
   </div>
 }
 {
   editWhere === 3 &&
-  <Link to ="/"/>
+  <ConfirmEdit/>
 }
 </Faded>
   );

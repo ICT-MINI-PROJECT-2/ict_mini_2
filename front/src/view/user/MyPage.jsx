@@ -21,6 +21,18 @@ function MyPage() {
   const [nowReviewPage, setNowReviewPage] = useState(1)
   const [totalReviewPage, setTotalReviewPage] = useState(1)
 
+  const [commentRecord, setCommentRecord] = useState([])
+  const [board_commentRecord, setBoardCommentRecord] = useState([]);
+  const [commentPageNumber, setCommentPageNumber] = useState([])
+  const [nowCommentPage, setNowCommentPage] = useState(1)
+  const [totalCommentPage, setTotalCommentPage] = useState(1)
+
+  const [freeBoardRecord, setFreeBoardRecord] = useState([])
+  const [freeBoardPageNumber, setFreeBoardPageNumber] = useState([])
+  const [nowFreeBoardPage, setNowFreeBoardPage] = useState(1)
+  const [totalFreeBoardPage, setTotalFreeBoardPage] = useState(1)
+
+
   const [graphRecord, setGraphRecord] = useState([])
   const [chartData, setChartDate] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
@@ -35,7 +47,8 @@ function MyPage() {
       getWishList(1)
       graphData()
       getReviewList(1)
-      console.log("!  ")
+      getCommentList(1)
+      getFreeBoardList(1)
     }
   }, [])
 
@@ -119,7 +132,6 @@ function MyPage() {
     axios
       .post(url)
       .then((result) => {
-        console.log(result.data)
         //기존 데이터 초기화
         setReviewRecord([])
         setReviewRecord(result.data.review)
@@ -140,6 +152,72 @@ function MyPage() {
         console.log(error)
       })
   }
+
+  //댓글글리스트
+  function getCommentList(page) {
+    console.log(":::");
+    const id = sessionStorage.getItem("id")
+    const url = `http://localhost:9977/user/getCommentList?id=${id}&nowPage=${page}`
+
+    axios
+      .post(url)
+      .then((response) => {
+        console.log(response.data);
+        //기존 데이터 초기화
+        setCommentRecord([])
+        setCommentRecord(response.data.comment)
+        setCommentPageNumber([])
+        setBoardCommentRecord([]);
+        setBoardCommentRecord(response.data.free);
+        const pcVO = response.data.pcVO
+
+        for (let pc = pcVO.startPageNum; pc < pcVO.startPageNum + pcVO.onePageCount; pc++) {
+          if (pc <= pcVO.totalPage) {
+            setCommentPageNumber((prev) => {
+              return [...prev, pc]
+            })
+          }
+        }
+        setNowCommentPage(pcVO.nowPage)
+        setTotalCommentPage(pcVO.totalPage)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  //글리스트
+
+  function getFreeBoardList(page) {
+    const id = sessionStorage.getItem("id")
+    const url = `http://localhost:9977/user/getFreeBoardList?id=${id}&nowPage=${page}`
+
+    axios
+      .post(url)
+      .then((response) => {
+        console.log(response.data);
+        //기존 데이터 초기화
+        setFreeBoardRecord([])
+        setFreeBoardRecord(response.data.freeBoard)
+        setFreeBoardPageNumber([])
+        
+        const pfVO = response.data.pfVO
+
+        for (let pf = pfVO.startPageNum; pf < pfVO.startPageNum + pfVO.onePageCount; pf++) {
+          if (pf <= pfVO.totalPage) {
+            setFreeBoardPageNumber((prev) => {
+              return [...prev, pf]
+            })
+          }
+        }
+        setNowFreeBoardPage(pfVO.nowPage)
+        setTotalFreeBoardPage(pfVO.totalPage)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+ 
 
   //그래프
   //불러오기
@@ -247,9 +325,15 @@ function MyPage() {
         <div className="my-pagination-box">
               <ul className="my-pagination">
                 <li className="my-page-item">
-                  <a className="my-page-link" onClick={() => getWishList(nowWishPage > 1 ? nowWishPage - 1 : 1)}>
-                    Previous
-                  </a>
+                  {
+                    (function(){
+                      if(nowWishPage > 1){
+                        return <a className="my-page-link" onClick={() => getWishList(nowWishPage > 1 ? nowWishPage - 1 : 1)}>
+                          ◀
+                        </a>
+                      }
+                    })()
+                  }
                 </li>
                 {wishPageNumber.map((pg) => (
                   <li className={nowWishPage == pg ? "my-page-item active" : "my-page-item"} key={pg}>
@@ -259,12 +343,19 @@ function MyPage() {
                   </li>
                 ))}
                 <li className="my-page-item">
+                {
+                    (function(){
+                        if (nowWishPage < totalWishPage && nowWishPage > 0){
+                          return(
                   <a
                     className="my-page-link"
                     onClick={() => getWishList(nowWishPage < totalWishPage ? nowWishPage + 1 : totalWishPage)}
                   >
-                    Next
-                  </a>
+                    ▶
+                  </a>)
+                        }
+                      })()
+                    }
                 </li>
               </ul>
             </div>
@@ -310,9 +401,16 @@ function MyPage() {
         <div className="my-pagination-box">
               <ul className="my-pagination">
                 <li className="my-page-item">
+                  {
+                    (function(){
+                      if(nowReviewPage > 1){
+                        return(
                   <a className="my-page-link" onClick={() => getReviewList(nowReviewPage > 1 ? nowReviewPage - 1 : 1)}>
-                    Previous
-                  </a>
+                    ◀
+                  </a>)
+                     }
+                   })()
+                  }
                 </li>
                 {reviewPageNumber.map((pgReview) => (
                   <li className={nowReviewPage == pgReview ? "my-page-item active" : "my-page-item"} key={pgReview}>
@@ -322,15 +420,179 @@ function MyPage() {
                   </li>
                 ))}
                 <li className="my-page-item">
+                  {
+                    (function(){
+                      if(nowReviewPage < totalReviewPage && nowReviewPage > 0){
+                        return(
                   <a
                     className="my-page-link"
                     onClick={() => getReviewList(nowReviewPage < totalReviewPage ? nowReviewPage + 1 : totalReviewPage)}
                   >
-                    Next
-                  </a>
+                    ▶
+                  </a>)
+                  }
+                })()
+              }
                 </li>
               </ul>
             </div>
+
+            <div id="reviewlist-box">
+          <h2 id="reviewlist-title">작성한 자유게시판글</h2>
+          <div className="table-wrapper">
+            <table className="list-table">
+              <thead>
+                <tr>
+                  <th>글제목</th>
+                  <th>내용</th>
+                  <th>날짜</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                {freeBoardRecord.map((freeboardlistup) => (
+                  <tr key={freeboardlistup.id}>
+                    <td>{freeboardlistup.title}</td>
+                    <td
+                      style={{
+                        maxWidth: "200px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {freeboardlistup.cotent}
+                    </td>
+                    <td>{freeboardlistup.writedate.substring(0, 10)}</td>
+                    <td>
+                      <a>삭제</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="my-pagination-box">
+              <ul className="my-pagination">
+                <li className="my-page-item">
+                {
+                    (function(){
+                      if(nowFreeBoardPage > 1){
+                        return(
+                  <a className="my-page-link" onClick={() => getFreeBoardList(nowFreeBoardPage > 1 ? nowFreeBoardPage - 1 : 1)}>
+                    Previous
+                  </a>)
+                      }
+                    }
+                  )()
+                }
+                </li>
+                {freeBoardPageNumber.map((pfReview) => (
+                  <li className={nowFreeBoardPage == pfReview ? "my-page-item active" : "my-page-item"} key={pfReview}>
+                    <a className="my-page-link" onClick={() => getFreeBoardList(pfReview)}>
+                      {pfReview}
+                    </a>
+                  </li>
+                ))}
+                <li className="my-page-item">
+                {
+                    (function(){
+                      if(nowFreeBoardPage < totalFreeBoardPage && nowFreeBoardPage > 0){
+                        return(
+                  <a
+                    className="my-page-link"
+                    onClick={() => getFreeBoardList(nowFreeBoardPage < totalFreeBoardPage ? nowFreeBoardPage + 1 : totalFreeBoardPage)}
+                  >
+                    ▶
+                  </a>)
+                  }
+                })()
+              }
+                </li>
+              </ul>
+            </div>
+
+
+            <div id="reviewlist-box">
+          <h2 id="reviewlist-title">나의 댓글</h2>
+          <div className="table-wrapper">
+            <table className="list-table">
+              <thead>
+                <tr>
+                  <th>글제목</th>
+                  <th>댓글</th>
+                  <th>날짜</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                {commentRecord.map((item,idx) => (
+                  <tr key={item.id}>
+                    { board_commentRecord[idx] && <td>{board_commentRecord[idx].title}</td>}
+                    <td
+                      style={{
+                        maxWidth: "200px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {item.content}
+                    </td>
+                    <td>{item.writedate.substring(0, 10)}</td>
+                    <td>
+                      <a>삭제</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="my-pagination-box">
+              <ul className="my-pagination">
+                <li className="my-page-item">
+                {
+                    (function(){
+                      if(nowCommentPage > 1){
+                        return(
+                  <a className="my-page-link" onClick={() => getCommentList(nowCommentPage > 1 ? nowCommentPage - 1 : 1)}>
+                    ◀
+                  </a>)
+                     }
+                   })()
+                  }
+                </li>
+                {commentPageNumber.map((pgComment) => (
+                  <li className={nowCommentPage == pgComment ? "my-page-item active" : "my-page-item"} key={pgComment}>
+                    <a className="my-page-link" onClick={() => getCommentList(pgComment)}>
+                      {pgComment}
+                    </a>
+                  </li>
+                ))}
+                <li className="my-page-item">
+                {
+                    (function(){
+                      if(nowCommentPage < totalCommentPage && nowCommentPage > 0){
+                        return(
+                  <a
+                    className="my-page-link"
+                    onClick={() => getCommentList(nowCommentPage < totalCommentPage ? nowCommentPage + 1 : totalCommentPage)}
+                  >
+                    ▶
+                  </a>)
+                  }
+                })()
+              }
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bottom-blank">
+
+            </div>
+
         { loc.state == null && 
         <div className="edit-profile-button-container">
           <Link to="/editEnter" className="edit-profile-button"> 개인정보수정 </Link>

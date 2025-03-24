@@ -1,6 +1,8 @@
 package com.ke.serv.repository;
 
+import com.ke.serv.entity.CommentEntity;
 import com.ke.serv.entity.FreeBoardEntity;
+import com.ke.serv.entity.UserEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +34,10 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoardEntity, Inte
     List<FreeBoardEntity> findAllByCommentCountDesc();
 
     List<FreeBoardEntity> findAllByOrderByHitDesc();
+
+    int countIdByUser(UserEntity user);
+
+    List<FreeBoardEntity> findAllByUser(UserEntity entity, PageRequest of);
+
+
 }
