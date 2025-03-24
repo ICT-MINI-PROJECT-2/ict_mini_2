@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 // FontAwesome 아이콘 추가
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faFire } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 import { useGlobalState } from '../../GlobalStateContext';
@@ -97,6 +97,37 @@ const SocialShareButtons = ({ eventId, eventTitle }) => {
   );
 };
 
+// 인기 이벤트 배지 컴포넌트
+const PopularEventBadge = ({ hit }) => {
+  // 인기 이벤트 기준: 조회수 100 이상
+  const isPopular = hit >= 100;
+  
+  if (!isPopular) return null;
+  
+  return (
+    <div style={{
+      position: 'absolute',
+      top: '66px',
+      right: '20px',
+      backgroundColor: '#FF3B30',
+      color: 'white',
+      padding: '8px 15px',
+      borderRadius: '20px',
+      fontSize: '14px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px',
+      zIndex: 10,
+      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+      animation: 'pulse 2s infinite'
+    }}>
+      <FontAwesomeIcon icon={faFire} style={{ marginRight: '4px' }} />
+      인기
+    </div>
+  );
+};
+
 function MainPage(){
   const { serverIP } = useGlobalState();
   const navigate = useNavigate();
@@ -112,18 +143,38 @@ function MainPage(){
       else {
         axios.get(`${serverIP}/tech/event`)
         .then(res => {
-          let elist = [];
+          let activeEvents = [];
+          let endedEvents = [];
+          const now = new Date();
+          
+          // 진행 중인 이벤트와 종료된 이벤트 분리
           for(var i=0; i<res.data.length;i++) {
             if(i>=5) break;
-            elist.push(res.data[i]);
+            const eventEndDate = new Date(res.data[i].endDate);
+            if(eventEndDate < now) {
+              // 종료된 이벤트
+              endedEvents.push(res.data[i]);
+            } else {
+              // 진행 중인 이벤트
+              activeEvents.push(res.data[i]);
+            }
           }
-          // 종료일(endDate)이 빠른 순서대로 정렬
-          elist.sort((a, b) => {
+          
+          // 진행 중인 이벤트는 종료일이 빠른 순서대로 정렬
+          activeEvents.sort((a, b) => {
             const dateA = new Date(a.endDate || 0);
             const dateB = new Date(b.endDate || 0);
             return dateA - dateB;
           });
-          setEvent_list(elist);
+          
+          // 종료된 이벤트 중 가장 최근에 종료된 이벤트 하나만 선택 (있는 경우)
+          const recentEndedEvent = endedEvents.length > 0 
+            ? [endedEvents.sort((a, b) => new Date(b.endDate) - new Date(a.endDate))[0]]
+            : [];
+          
+          // 진행 중인 이벤트 다음에 종료된 이벤트 하나 추가
+          const eventList = [...activeEvents, ...recentEndedEvent];
+          setEvent_list(eventList);
         })
         .catch(err => console.log(err))
       }
@@ -255,12 +306,30 @@ function MainPage(){
             )}
           </div>
     
-          <div className="slider-container" style={{ borderRadius: '20px', overflow: 'hidden' }}>
+          <div className="slider-container" style={{ borderRadius: '20px', overflow: 'hidden', position: 'relative' }}>
             <Slider {...settings}>
               {
-                event_list.map((item,idx) => {
+                event_list.map((item, idx) => {
+                  // 이벤트가 종료되었는지 확인
+                  const isEnded = new Date(item.endDate) < new Date();
+                  
                   return(
-                  <div key={idx} className="slider-image-banner">
+                  <div key={idx} className={`slider-image-banner ${isEnded ? 'ended-event-slide' : ''}`}>
+                    {isEnded && <div className="ended-event-label" style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      background: 'rgba(0, 0, 0, 0.7)',
+                      color: 'white',
+                      padding: '5px 10px',
+                      borderRadius: '4px',
+                      zIndex: 10,
+                      fontWeight: 'bold'
+                    }}>종료된 이벤트</div>}
+                    
+                    {/* 인기 이벤트 배지 추가 */}
+                    <PopularEventBadge hit={item.hit || 0} />
+                    
                     <img style={{width:'100%',height:'100%',objectFit:'fill'}}
                       src={`${serverIP}/uploads/board/${item.id}/${item.files[0].fileName}`}/>
                     
@@ -406,5 +475,22 @@ function MainPage(){
     );
     
 }
+
+// CSS 애니메이션 추가
+const style = document.createElement('style');
+style.textContent = `
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+`;
+document.head.appendChild(style);
 
 export default MainPage;
