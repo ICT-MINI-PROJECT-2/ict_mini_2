@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function FreeWrite() {
+    const { serverIP } = useGlobalState();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
@@ -34,7 +35,7 @@ function FreeWrite() {
         }
         console.log(writeData);
 
-        axios.post('http://localhost:9977/free/writeOk', writeData)
+        axios.post(`${serverIP}/free/writeOk`, writeData)
         .then(res=>{
             if (res.data == 'success') {
                 navigate('/boardpage?category=BOARD');

@@ -2,12 +2,12 @@ import { useState } from 'react';
 import '../../css/user/checklist.css';
 import axios from 'axios';
 import Faded from '../../effect/Faded';
-import Signup from './Singup';
-import Login from './Login';
-import { useGlobalState } from '../../GlobalStateContext';
+import EnterEdit from './EnterEdit';
+import EditPage from './EditPage';
 
-function CheckList({param, setParam, where, setWhere}){
-    const { serverIP } = useGlobalState();
+
+
+function EditCheckList({editParam, setEditParam, editWhere, setEditWhere}) {
     const [selectedFoods, setSelectedFoods] = useState([]);
     const [allChecked, setAllChecked] = useState(false);
     const allFoods = ["한식","중국식","일식","양식","아시아음식","패스트푸드","주점","뷔페","패밀리레스트랑","기타"];
@@ -33,26 +33,26 @@ function CheckList({param, setParam, where, setWhere}){
 
     const handleSubmit =(event)=>{
         event.preventDefault();
-        console.log(param);
         const foodsString = selectedFoods.length > 0 ? selectedFoods.join('/') : '';
 
         console.log("보내는거", foodsString);
-        setParam({...param, foods:foodsString});
+        setEditParam({...editParam, foods:foodsString});
         
-        axios.post(`${serverIP}/user/checkList`,{...param, foods:foodsString})
+        axios.post('http://localhost:9977/user/editcheckList',{...editParam, foods:foodsString})
         .then(response =>{
             console.log('보냄',response.data);
-            setWhere(2);
-            <Signup where={where} setWhere={setWhere}/>
+            setEditWhere(3);
+            <EnterEdit editParam={editParam} setEditParam={setEditParam} editWhere={editWhere} seteditWhere={setEditWhere}/>
         })
         .catch(error =>{
             console.log("안보내지미",error);
+            setEditWhere(2);
         })
     }
 
     function prevPage(){
-        setWhere(0);
-        <Signup param={param} setParam={setParam} where={where} setWhere={setWhere}/>
+        setEditWhere(1);
+        <EditPage editParam={editParam} setEditParam={setEditParam} editWhere={editWhere} seteditWhere={setEditWhere}/>
     }
     
   
@@ -60,7 +60,7 @@ function CheckList({param, setParam, where, setWhere}){
         <Faded>
             
         <div className="checklist-container">
-        <div id = "step"><pre></pre>STEP 0{where+1}</div>
+        <div id = "step"><pre></pre>STEP 0{editWhere+1}</div>
           <div id="checklist-title">선호음식</div>
           <form id="checklistForm" name="checklistForm" onSubmit={handleSubmit}>
             <div className="all-select-wrapper">
@@ -93,4 +93,4 @@ function CheckList({param, setParam, where, setWhere}){
         </Faded>
       )
 }
-export default CheckList;
+export default EditCheckList;

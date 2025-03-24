@@ -1,5 +1,6 @@
 package com.ke.serv.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class CommentEntity {
 
     @ManyToOne
     @JoinColumn(name = "FREE_BOARD_ID")
+    @JsonBackReference
     private FreeBoardEntity freeBoard;
 
     @ManyToOne

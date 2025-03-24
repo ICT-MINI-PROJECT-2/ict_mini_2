@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useGlobalState } from "../../../GlobalStateContext";
 
 function FreeView(){
+    const { serverIP } = useGlobalState();
     const navigate = useNavigate();
     const {id} = useParams();
     let [record, setRecord] = useState({});
@@ -24,7 +26,7 @@ function FreeView(){
 
 
     function getBoardChoice(){
-        let url = `http://localhost:9977/free/view/${id}`;
+        let url = `${serverIP}/free/view/${id}`;
         if (sessionStorage.getItem("id")) {
             url += '?userNo=' + sessionStorage.getItem("id");
         }
@@ -49,7 +51,7 @@ function FreeView(){
 
     function boardDel(){
         if (window.confirm("글을 삭제하시겠습니까?")) {
-            axios.get(`http://localhost:9977/free/delete/${id}`)
+            axios.get(`${serverIP}/free/delete/${id}`)
             .then(res=>{
                 console.log(res.data);
                 if (res.data == 0) {
@@ -65,7 +67,7 @@ function FreeView(){
     }
 
     const getCommentList = ()=>{
-        axios.get(`http://localhost:9977/free/commentList/${id}`)
+        axios.get(`${serverIP}/free/commentList/${id}`)
         .then(res=>{
             console.log(res.data);
             setCommentList(res.data);
@@ -85,7 +87,7 @@ function FreeView(){
             },
             content: document.getElementById("comment").value
         }
-        axios.post('http://localhost:9977/free/addComment', commentData)
+        axios.post(`${serverIP}/free/addComment`, commentData)
         .then(res=>{
             if (res.data == "success") {
                 document.getElementById("comment").value = '';
@@ -101,7 +103,7 @@ function FreeView(){
 
     const commentDel = (comment_id)=>{
         if (window.confirm("댓글을 삭제하시겠습니까?")) {
-            axios.get(`http://localhost:9977/free/commentDel/${comment_id}`)
+            axios.get(`${serverIP}/free/commentDel/${comment_id}`)
             .then(res=>{
                 if (res.data == 0) {
                     getCommentList();
@@ -147,7 +149,7 @@ function FreeView(){
                                     <div id="comment-writedate">{record.writedate}</div>
 
                                     {
-                                        sessionStorage.getItem("id") == record.user.id &&
+                                        (sessionStorage.getItem("id") == record.user.id || sessionStorage.getItem('loginId') == 'admin1234') &&
                                         <div id='comment-del-btn' onClick={()=> commentDel(record.id)}>삭제</div>
                                     }
                                 </div>
@@ -161,7 +163,7 @@ function FreeView(){
                         <div className="view-btn">
                             <div onClick={()=>{navigate('/boardpage?category=BOARD')}}>목록</div>
                     {
-                        sessionStorage.getItem("loginId") == record.userid && (
+                        (sessionStorage.getItem("loginId") == record.userid || sessionStorage.getItem('loginId') == 'admin1234') && (
                             <>
                                 <div><Link to={`/free/edit/${record.id}`}>수정</Link></div>
                                 <div onClick={boardDel}>삭제</div>

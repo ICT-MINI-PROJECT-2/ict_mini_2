@@ -1,5 +1,5 @@
 import {useState , useEffect, useRef, useMemo} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../css/page/mainpage.css';
 import Faded from '../../effect/Faded';
 import axios from 'axios';
@@ -13,6 +13,8 @@ import "slick-carousel/slick/slick-theme.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+
+import { useGlobalState } from '../../GlobalStateContext';
 
 // 카운트다운 컴포넌트
 const EventCountdown = ({ endDate }) => {
@@ -68,9 +70,7 @@ const EventCountdown = ({ endDate }) => {
 
 // 소셜 미디어 공유 컴포넌트
 const SocialShareButtons = ({ eventId, eventTitle }) => {
-  const shareUrl = `http://localhost:3000/events/${eventId}`;
-  
-  const handleKakaoShare = () => {
+    const handleKakaoShare = () => {
     window.open('https://www.kakaocorp.com/page/');
   };
 
@@ -98,7 +98,8 @@ const SocialShareButtons = ({ eventId, eventTitle }) => {
 };
 
 function MainPage(){
-
+  const { serverIP } = useGlobalState();
+  const navigate = useNavigate();
   const [reviewModal, setReviewModal] = useState({
       isOpen: false,
       selected:0
@@ -109,9 +110,8 @@ function MainPage(){
     useEffect(()=>{
       if(main_mount.current){}
       else {
-        axios.get('http://localhost:9977/tech/event')
+        axios.get(`${serverIP}/tech/event`)
         .then(res => {
-          console.log(res.data);
           let elist = [];
           for(var i=0; i<res.data.length;i++) {
             if(i>=5) break;
@@ -130,7 +130,7 @@ function MainPage(){
     },[]);
 
     const setAPI = () =>{
-        axios.get('http://localhost:9977/api')
+        axios.get(`${serverIP}:9977/api`)
         .then(res => {
           console.log(res.data);
         })
@@ -168,30 +168,62 @@ function MainPage(){
 
     const [popReview, setPopReview] = useState({});
     const [popRstr, setPopRstr] = useState([]);
+    const [popBoard, setPopBoard] = useState([]);
     const [reviewRank, setReviewRank] = useState(0);
     const [rstrRank, setRstrRank] = useState(0);
+    const [boardRank, setBoardRank] = useState('hit');
 
     // useEffect(()=>{
       
     // }, [popRestaurant])
 
     useEffect(()=>{
-      axios.get('http://localhost:9977/find/getPopRestaurant')
+      axios.get(`${serverIP}/find/getPopRestaurant`)
       .then(res=>{
-        console.log(res.data);
         setPopRstr(res.data);
       })
       .catch(err=>console.log(err));
-    },[])
-
-    useEffect(()=>{
-      axios.get('http://localhost:9977/find/getPopReview')
+      axios.get(`${serverIP}/find/getPopReview`)
       .then(res=>{
-        console.log(res.data);
         setPopReview(res.data);
       })
       .catch(err=>console.log(err));
     },[])
+    useEffect(()=> {
+      axios.get(`${serverIP}/find/getPopBoard?sort=`+boardRank)
+      .then(res=> {
+        console.log(res.data);
+        var cnt=0;
+        var result=[];
+        for(var i=0;i<res.data.length;i++) {
+          if(cnt>=3) break;
+          if(boardRank=='notice') {
+            if(res.data[i].category=='notice') {
+              result.push(res.data[i]);
+              cnt++;
+            }
+          }
+          else if(boardRank=='hit') {
+            if(res.data[i].category!='notice'){
+              result.push(res.data[i]);
+              cnt++;
+            }
+          }
+          else {
+            if(res.data[i].category!='notice'){
+              result.push(res.data[i]);
+              cnt++;
+            }
+          }
+        }
+        setPopBoard(result);
+      })
+      .catch(err=>console.log(err))
+    },[boardRank])
+
+    const moveBoard = (where) => {
+      navigate('free/view/'+where);
+    }
 
     return (
       <Faded>
@@ -229,8 +261,8 @@ function MainPage(){
                 event_list.map((item,idx) => {
                   return(
                   <div key={idx} className="slider-image-banner">
-                    <img style={{width:'100%',height:'100%',objectFit:'cover',}}
-                      src={`http://localhost:9977/uploads/board/${item.id}/${item.files[0].fileName}`}/>
+                    <img style={{width:'100%',height:'100%',objectFit:'fill'}}
+                      src={`${serverIP}/uploads/board/${item.id}/${item.files[0].fileName}`}/>
                     
                     <EventCountdown endDate={item.endDate} />
                     <SocialShareButtons eventId={item.id} eventTitle={item.subject || '이벤트'} />
@@ -262,16 +294,16 @@ function MainPage(){
               </ul>
 
               {popReview.review_list != undefined && popReview.review_list[reviewRank]!=undefined && (
-                <div style={{cursor:'pointer'}}onClick={()=>setReviewModal({isOpen:true, selected:popReview.review_list[reviewRank].id})}>
+                <div style={{cursor:'pointer'}} onClick={()=>setReviewModal({isOpen:true, selected:popReview.review_list[reviewRank].id})}>
                   <div className='pop-img-box'>
                     <img
                       id="pop-rev-photo"
-                      src={`http://localhost:9977/uploads/review/${popReview.review_list[reviewRank].id}/${popReview.file_list[reviewRank].filename}`}
+                      src={`${serverIP}/uploads/review/${popReview.review_list[reviewRank].id}/${popReview.file_list[reviewRank].filename}`}
                     />
                     <img id="medal" src={`./img/main/medal${reviewRank+1}.png`}/>
                   </div>
                   <div style={{marginTop:'10px'}}>
-                    <span style={{fontWeight: 'bold'}}>👤{popReview.review_list[reviewRank].user.username}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📖{popReview.review_list[reviewRank].comment}</span><br/>
+                    <span style={{fontWeight: 'bold'}}>📖{popReview.review_list[reviewRank].comment}</span><br/>
                     <span className="star-rating">
                         <span
                           style={{
@@ -279,7 +311,9 @@ function MainPage(){
                             float: "left",
                           }}
                         ></span>
-                      </span>
+                      </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span>👤{popReview.review_list[reviewRank].user.username}</span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <span style={{padding: '0 20px', position: 'relative'}}>
                         <h5 style={{display:'inline', fontSize: '20px', fontWeight: '100'}}>👁</h5>
                         <span>{popReview.review_list[reviewRank].hit}</span>
@@ -305,7 +339,7 @@ function MainPage(){
                     <div className='pop-img-box'>
                       <img
                         id="pop-res-photo"
-                        src={`http://localhost:9977/uploads/review/${popRstr[rstrRank].review_file.review.id}/${popRstr[rstrRank].review_file.filename}`}
+                        src={`${serverIP}/uploads/review/${popRstr[rstrRank].review_file.review.id}/${popRstr[rstrRank].review_file.filename}`}
                       />
                       <img id="medal" src={`./img/main/medal${rstrRank+1}.png`}/>
                     </div>
@@ -330,8 +364,38 @@ function MainPage(){
                 </Link>
               )}
             </div>
+            <div className='main-today-three'>
+            <span>인기 게시글</span>
+            <ul className='main-today-btn'>
+              <li onClick={() => { setBoardRank('hit') }} style={boardRank == 'hit' ? {color: '#b21848', fontWeight: 'bold', zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'2',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>조회순</li>
+              <li onClick={() => { setBoardRank('comment') }} style={boardRank == 'comment' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'2',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>댓글순</li>
+              <li onClick={() => { setBoardRank('notice') }} style={boardRank == 'notice' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'1',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>공지</li>
+            </ul>
+            <div className='main-board-container'>
+              <div className='main-board-box' id='main-board-box-tt'>
+                <div>번호</div>
+                <div>제목</div>
+                <div>작성자</div>
+                {boardRank=='comment' ? <div>댓글수</div>:<div>조회수</div>}
+              </div>
+              {
+                popBoard.map((item,idx)=> {
+                  return(
+                    <div className='main-board-box'>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center'}}><img style={{width:'100%', height:'50%',margin:'0px',objectFit:'contain'}} src={`./img/main/medal${idx+1}.png`}/></div>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} onClick={() => moveBoard(item.id)}>{item.title}</div>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} id={`mgw-${item.user.id}`} className="msg-who">{item.user.username}</div>
+                      {boardRank=='comment' ? <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.comments.length}</div>:<div style={{display:'flex',padding:'0px', justifyContent:'center',alignItems:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.hit}</div>}
+                    </div>
+                  )
+                })
+              }
+            </div>
           </div>
-    
+          </div>
+
+              
+
           <button onClick={setAPI} style={{ display: 'none', marginTop: '300px' }}>
             절대 클릭 [X] api테스트용
           </button>

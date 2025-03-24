@@ -72,10 +72,9 @@ public class UserController {
     }
 
 
-
-
     @PostMapping("/editEnterChk")
     public UserEntity editEnterChk(@RequestBody UserEntity entity){
+        System.out.println(entity);
         UserEntity ue = new UserEntity();
         if(service.idEditChk(entity) == null){
             ue.setId(-1);
@@ -114,5 +113,16 @@ public class UserController {
     public String checkList(@RequestBody UserEntity entity) {
         System.out.println(service.signup(entity));
        return "foodsupdate ok";
+    }
+
+    @PostMapping("/editcheckList")
+    public String eidtcheckList(@RequestBody UserEntity entity) {
+        System.out.println(entity);
+        UserEntity result = service.updateEdit(entity);
+
+        if(result==null){
+            return "editFail";
+        }
+        return "editupdate ok";
     }
 }

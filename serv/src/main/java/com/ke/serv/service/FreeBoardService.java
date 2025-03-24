@@ -76,4 +76,11 @@ public class FreeBoardService {
     public int countCommentSelect(int id) {
         return commentRepo.countById(id);
     }
+
+    public List<FreeBoardEntity> getBoardsOrderedByCommentCount() { //댓글순
+        return repository.findAllByCommentCountDesc();
+    }
+    public List<FreeBoardEntity> getBoardOrderByHit(){
+        return repository.findAllByOrderByHitDesc();
+    }
 }
