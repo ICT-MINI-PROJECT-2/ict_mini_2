@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './NoticeWrite.css';
-
+import { useGlobalState } from '../../../GlobalStateContext';
 const NoticeWrite = () => {
+    const { serverIP } = useGlobalState();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -28,7 +29,7 @@ const NoticeWrite = () => {
         formData.append('user_id', 'admin1234');
 
         try {
-            const response = await axios.post('http://localhost:9977/board/eventWriteOk', formData, {
+            const response = await axios.post(`${serverIP}/board/eventWriteOk`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }

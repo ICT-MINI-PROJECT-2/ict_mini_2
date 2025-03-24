@@ -6,8 +6,10 @@ import plusImg from '../../../img/plus.png';
 import searchImg from '../../../img/search.png';
 import FindListItem from './FindListItem';
 import axios from 'axios';
+import { useGlobalState } from '../../../GlobalStateContext';
 
 function Find(){
+    const { serverIP } = useGlobalState();
     const [list, setList] = useState([]);
     const [searchWord, setSearchWord] = useState('');
     const [pageNumber, setPageNumber] = useState([]);
@@ -45,7 +47,7 @@ function Find(){
             sort: sort
         })
 
-        axios.post('http://localhost:9977/find/searchList', searchData)
+        axios.post(`${serverIP}/find/searchList`, searchData)
         .then(async function(res){
             setList(res.data.list);
             setPageNumber([]);

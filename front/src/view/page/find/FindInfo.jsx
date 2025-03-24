@@ -9,10 +9,12 @@ import "slick-carousel/slick/slick-theme.css";
 import marker from '../../../img/marker.png';
 import Review from './Review';
 import ImageModal from './ImageModal';
+import { useGlobalState } from '../../../GlobalStateContext';
 
 const {kakao} = window;
 
 function FindInfo() {
+    const { serverIP } = useGlobalState();
     const loc = useLocation();
     const mount = useRef(true);
     const [info, setInfo] = useState({});
@@ -37,8 +39,7 @@ function FindInfo() {
         }
     }, []);
     const getReview = () => {
-        console.log("!!");
-        axios.get('http://localhost:9977/review/list?restid='+loc.state.id)
+        axios.get(`${serverIP}/review/list?restid=`+loc.state.id)
         .then(res => {
             setReview_list(res.data);
         })
@@ -95,7 +96,7 @@ function FindInfo() {
                         if(info.rstrLoc.indexOf(a) !== -1) cnt++;
                     })
                     if(cnt >= addr_list.length-1 ) { //검색 점포명의 주소와 일치하는 카카오맵의 검색 결과
-                        axios.get('http://localhost:9977/tech/jsoup?place_id='+item.id)
+                        axios.get(`${serverIP}/tech/jsoup?place_id=`+item.id)
                         .then(res =>{
                             setMenu_list(res.data.menu_list);
                             setInfo_list(res.data.info_list);
@@ -118,7 +119,7 @@ function FindInfo() {
                     var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
     
                     if(sessionStorage.getItem("id") !== null && sessionStorage.getItem("id") != '') {
-                        axios.get('http://localhost:9977/tech/getUserInfo?id='+sessionStorage.getItem("id"))
+                        axios.get(`${serverIP}/tech/getUserInfo?id=`+sessionStorage.getItem("id"))
                         .then(res=>{
                             geocoder.addressSearch(res.data.addr , (ress, stat) => {
                                 if(ress) {
@@ -165,7 +166,7 @@ function FindInfo() {
     },[info]);
 
     const getInfo = ()=> {
-        axios.post(`http://localhost:9977/find/findInfo`, {id: loc.state.id})
+        axios.post(`${serverIP}/find/findInfo`, {id: loc.state.id})
         .then(res=>{
             setInfo({
                 id: res.data.id,
@@ -260,12 +261,12 @@ function FindInfo() {
                                     review_img_list.slice(0,4).map((item, idx) => {
                                         if (idx === 3 || idx === review_img_list.length - 1) {
                                             return <div>
-                                                        <img id="moreImage" key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} 
+                                                        <img id="moreImage" key={idx} src={`${serverIP}/uploads/review/${item.id}/${item.filename}`} 
                                                             onClick={()=>setImageModal(true)}/>
                                                         <div id="moreText">더보기</div>
                                                     </div>
                                         } else {
-                                            return <img key={idx} src={`http://localhost:9977/uploads/review/${item.id}/${item.filename}`} />;
+                                            return <img key={idx} src={`${serverIP}/uploads/review/${item.id}/${item.filename}`} />;
                                         }
                                     }) 
                                     : <div style={{width: '170px', padding: '5px 0'}}>등록된 사진이 없습니다.</div>

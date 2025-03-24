@@ -1,7 +1,9 @@
 package com.ke.serv.controller;
 
+import com.ke.serv.entity.FreeBoardEntity;
 import com.ke.serv.entity.ReviewEntity;
 import com.ke.serv.entity.ReviewFileEntity;
+import com.ke.serv.service.FreeBoardService;
 import com.ke.serv.service.ReviewService;
 import com.ke.serv.vo.PagingVO;
 import com.ke.serv.entity.RestaurantEntity;
@@ -19,6 +21,7 @@ import java.util.*;
 public class FindController {
     private final RestaurantService service;
     private final ReviewService review_service;
+    private final FreeBoardService free_service;
 
     @PostMapping("/searchList")
     public Map searchList(@RequestBody PagingVO pvo) {
@@ -113,5 +116,11 @@ public class FindController {
         map.put("file_list", file_list);
 
         return map;
+    }
+    @GetMapping("/getPopBoard")
+    public List<FreeBoardEntity> getPopBoard(String sort){
+        System.out.println(sort);
+        if(sort.equals("hit")) return free_service.getBoardOrderByHit();
+        return free_service.getBoardsOrderedByCommentCount();
     }
 }

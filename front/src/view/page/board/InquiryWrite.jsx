@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './InquiryWrite.css';
-
+import { useGlobalState } from '../../../GlobalStateContext';
 function InquiryWrite() {
+    const { serverIP } = useGlobalState();
     const [content, setContent] = useState('');
     const [password, setPassword] = useState('');
     const [userid, setUserId] = useState('');
@@ -55,7 +56,7 @@ function InquiryWrite() {
         }
         formData.append('category', category);
 
-        fetch('http://localhost:9977/board/eventWriteOk', {
+        fetch(`${serverIP}/board/eventWriteOk`, {
             method: 'POST',
             body: formData,
         })

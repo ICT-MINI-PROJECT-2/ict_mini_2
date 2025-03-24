@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './InquiryView.css';
-
+import { useGlobalState } from '../../../GlobalStateContext';
 function InquiryView() {
+    const { serverIP } = useGlobalState();
     const { id } = useParams();
     const [inquiry, setInquiry] = useState(null);
     const [conversation, setConversation] = useState([]);
@@ -35,7 +36,7 @@ function InquiryView() {
         e.preventDefault();
         setError('');
 
-        axios.get(`http://localhost:9977/board/inquiryView/${id}?password=${password}`)
+        axios.get(`${serverIP}/board/inquiryView/${id}?password=${password}`)
             .then(response => {
                 const inquiryData = response.data;
                 setInquiry(inquiryData);
@@ -69,7 +70,7 @@ function InquiryView() {
     };
 
     const fetchConversation = () => {
-        axios.get(`http://localhost:9977/board/conversation/${id}`)
+        axios.get(`${serverIP}/board/conversation/${id}`)
             .then(response => {
                 setConversation(response.data);
             })
@@ -94,7 +95,7 @@ function InquiryView() {
             return;
         }
 
-        axios.post(`http://localhost:9977/board/addReply/${id}`, { reply: reply, userId: sessionStorage.getItem("loginId") })
+        axios.post(`${serverIP}/board/addReply/${id}`, { reply: reply, userId: sessionStorage.getItem("loginId") })
             .then(response => {
                 alert('답변이 등록되었습니다.');
                 setReply('');
@@ -108,7 +109,7 @@ function InquiryView() {
 
     const handleDelete = () => {
         if (window.confirm("정말로 삭제하시겠습니까?")) {
-            axios.delete(`http://localhost:9977/board/delete/${id}`)
+            axios.delete(`${serverIP}/board/delete/${id}`)
                 .then(response => {
                     alert('문의글이 삭제되었습니다.');
                     navigate('/boardPage?category=INQUIRY');
