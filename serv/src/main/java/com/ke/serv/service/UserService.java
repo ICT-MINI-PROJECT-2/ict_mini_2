@@ -18,8 +18,8 @@ public class UserService {
     private final CommentRepository commentRepo;
     private final FreeBoardRepository freeBoardRepo;
 
-    public UserEntity idEditChk(UserEntity entity){return  repo.findById(entity.getId());}
-    public UserEntity pwEditChk(UserEntity entity){return  repo.findByIdAndUserpw(entity.getId(), entity.getUserpw());}
+    public UserEntity idEditChk(UserEntity entity){return  repo.findByUserid(entity.getUserid());}
+    public UserEntity pwEditChk(UserEntity entity){return  repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());}
 
     public UserEntity signup(UserEntity entity) {
         return repo.save(entity);

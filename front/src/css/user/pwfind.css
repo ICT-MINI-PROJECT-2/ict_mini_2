@@ -10,7 +10,7 @@
   
   #pwfind-title {
     text-align: center;
-    font-size: 45px;
+    font-size: 38px;
     padding-top: 40px;
   }
   
@@ -38,7 +38,7 @@
   
   .pwfind-submit {
     color: white;
-    font-size: 25px;
+    font-size: 20px;
     display: block;
     margin: auto;
     margin-top: 20px;
@@ -71,28 +71,21 @@
   }
   
   #userid {
-    width: 47.5%;
+    width: 37.5%;
   }
   
   #email1 {
-    width: 20%;
+    width: 15.5%;
   }
   
   #email2 {
-    width: 20%;
+    width: 15.5%;
   }
   
   #pwfind-right > input:focus {
     outline: none;
     background-color: #eb769b;
     color: white;
-  }
-  
-  #alert-id,
-  #alert-email {
-    color: #b21848;
-    font-size: 14px;
-    margin-top: 5px;
   }
   
   #idpw-find {

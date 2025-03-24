@@ -128,11 +128,11 @@ const [okChk, setOkChk] = useState({
 
   return (
     <div className="editPage-container" style={{paddingTop:'150px'}}>
-                <div id="editPage-title">개인정보수정정</div>
+                <div id="editPage-title">개인정보수정</div>
                     <form name="editPageForm">
                         <div id="editPage-box">
                             <div id="editPage-left"><div id="editidpw">아이디</div><div id="hidden-height111">I</div></div> <div id="editPage-right"><input type="text" id="userid" value={editParam.userid} readOnly onChange={setFormData} name="userid"/><div id="alert-id">{!okChk.idOk && okChk.id_alert}</div></div>
-                            <div id="editPage-left"><div id="editidpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="editPage-right"><input type="password" id="userpw" value={editParam.userpw} onChange={setFormData} name="userpw"/><div id="alert-pw">{!okChk.pwOk && okChk.pw_alert}</div></div>
+                            <input type="hidden" id="userpw" value={editParam.userpw} onChange={setFormData} name="userpw"/>
                             <div id="editPage-left"><div id="editidpw">이름</div><div id="hidden-height">I</div></div> <div id="editPage-right"><input type="text" id="username" value={editParam.username} readOnly onChange={setFormData} name="username"/><div id="alert-name">{!okChk.nameOk && okChk.name_alert}</div></div>
                             <div id="editPage-left"><div id="editidpw">이메일</div><div id="hidden-height">I</div></div> <div id="editPage-right"><input type="text" id="email1" value={editParam.email1} readOnly onChange={setFormData} name="email1"/> @ <input type="text" id="email2" value={editParam.email2} readOnly onChange={setFormData} name="email2"/><div id="alert-email">{!okChk.emailOk || !okChk.email2Ok ? okChk.email_alert : ''}</div></div>
                             <div id="editPage-left"><div id="editidpw">전화번호</div><div id="hidden-height">I</div></div> <div id="editPage-right"><input type="text" id="tel1" value={editParam.tel1} onChange={setFormData} readOnly name="tel1" maxLength='3'/> - <input type="text" id="tel2" readOnly value={editParam.tel2} onChange={setFormData} name="tel2" maxLength='4'/> - <input type="text" id="tel3" readOnly value={editParam.tel3} onChange={setFormData} name="tel3" maxLength='4'/><div id="alert-tel">{okChk.tel_alert}</div></div>

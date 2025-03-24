@@ -64,7 +64,8 @@ function Idfind() {
           alert("일치하는 정보가 없습니다.");
 
         }else {
-          alert("아이디는 " + res.data.userid + "입니다.");
+          if(res.data.userid === undefined) alert("해당하는 사용자가 없습니다.");
+          else alert("아이디는 " + res.data.userid + "입니다.");
           <Link to="/login" />;
         }
       })
