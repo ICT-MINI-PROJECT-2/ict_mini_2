@@ -62,6 +62,7 @@ function Signup(){
                 foods:''
             }
             setParam(params);
+            console.log(where,"123");
             setWhere(1);
         }
     }, [okChk]);
@@ -112,7 +113,7 @@ function Signup(){
             else setOkChk({...okChk, nameOk:true, name_alert:''});
         }
         else if(name === 'email1') {
-            if(value.length<3) setOkChk({...okChk, emailOk:false, email_alert:'올바르지 않은 이메일입니다'}); 
+            if(value.length<3) setOkChk({...okChk, emailOk:false, email_alert:'올바르지 않은 이메일입니다. 3자 이상 입력하세요'}); 
             else setOkChk({...okChk, emailOk:true, email_alert:''});
         }
         else if(name === 'email2') {
@@ -136,6 +137,7 @@ function Signup(){
         }
         else {
             setOkChk({...okChk, zipcodeOk:true, telOk:true, zipcode_alert:'', tel_alert:''}); 
+            console.log(okChk);
         }
     }
     const postButtonStyle = {
