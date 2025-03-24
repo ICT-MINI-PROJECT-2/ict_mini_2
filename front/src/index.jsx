@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {HashRouter, Route, Routes} from 'react-router-dom';
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom';
 
 import Body from './view/Body';
 import Footer from './view/Footer';
@@ -14,22 +14,30 @@ import './js/public.js';
 import { GlobalStateProvider } from './GlobalStateContext';
 
 const container = ReactDOM.createRoot(document.getElementById('container'));
-container.render(
-  <GlobalStateProvider>
-    <HashRouter>
-      <Header/>
-      <Menu/>
+
+const App = () => {
+  const location = useLocation();
+
+  const hideFooterPaths = ['/about'];
+
+  const shouldHideFooter = hideFooterPaths.includes(location.pathname);
+
+  return (
+    <GlobalStateProvider>
+      <Header />
+      <Menu />
       <Routes>
         <Route path="/*" element={<Body />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
-      </Routes>      
-      <Footer/>
-    </HashRouter>
-  </GlobalStateProvider>
+      </Routes>
+      {!shouldHideFooter && <Footer />}
+    </GlobalStateProvider>
+  );
+};
+
+container.render(
+  <HashRouter>
+    <App />
+  </HashRouter>
 );
-
-/*
-
-const serverIP = 'http://192.168.1.146:9977';
-*/

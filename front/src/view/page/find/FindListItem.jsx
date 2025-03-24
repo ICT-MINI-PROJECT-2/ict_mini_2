@@ -84,7 +84,7 @@ function FindListItem({restaurant}) {
                         <span className='star-rating'>
                             <span style ={{width:`${restaurant.rating*20}%`}}></span>
                         </span>
-                        <span> ({restaurant.rating}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
+                        <span> ({Math.ceil(restaurant.rating*100)/100}) /</span>&nbsp;{restaurant.reviewCount}명 참여</div>
                     <div>👁 {restaurant.hit} / ♥ {restaurant.wishCount}</div>
                 </div>
             </div>

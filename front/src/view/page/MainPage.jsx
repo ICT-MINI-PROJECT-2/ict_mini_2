@@ -311,9 +311,8 @@ function MainPage(){
                             float: "left",
                           }}
                         ></span>
-                      </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span>👤{popReview.review_list[reviewRank].user.username}</span>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                      <span style={{padding:'0 0px 0 20px'}}>👤{popReview.review_list[reviewRank].user.username}</span>
                       <span style={{padding: '0 20px', position: 'relative'}}>
                         <h5 style={{display:'inline', fontSize: '20px', fontWeight: '100'}}>👁</h5>
                         <span>{popReview.review_list[reviewRank].hit}</span>
