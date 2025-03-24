@@ -43,7 +43,7 @@ function About() {
 
   const generateRandomPositions = () => {
     let newPositions = [];
-    for (let i = 0; i < 34; i++) {
+    for (let i = 0; i < 44; i++) {
       let randomLeft, randomTop;
       let overlap = true;
       while (overlap) {
