@@ -1,12 +1,7 @@
 package com.ke.serv.service;
 
-import com.ke.serv.entity.RestaurantEntity;
-import com.ke.serv.entity.ReviewEntity;
-import com.ke.serv.entity.UserEntity;
-import com.ke.serv.entity.WishlistEntity;
-import com.ke.serv.repository.ReviewRepository;
-import com.ke.serv.repository.UserRepository;
-import com.ke.serv.repository.WishRepository;
+import com.ke.serv.entity.*;
+import com.ke.serv.repository.*;
 import com.ke.serv.vo.PagingWishVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,12 +15,21 @@ public class UserService {
     private final UserRepository repo;
     private final WishRepository wishRepo;
     private final ReviewRepository reviewRepo;
+    private final CommentRepository commentRepo;
+    private final FreeBoardRepository freeBoardRepo;
 
-    public UserEntity idEditChk(UserEntity entity){return  repo.findById(entity.getId());}
-    public UserEntity pwEditChk(UserEntity entity){return  repo.findByIdAndUserpw(entity.getId(), entity.getUserpw());}
+    public UserEntity idEditChk(UserEntity entity){return  repo.findByUserid(entity.getUserid());}
+    public UserEntity pwEditChk(UserEntity entity){return  repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());}
 
     public UserEntity signup(UserEntity entity) {
         return repo.save(entity);
+    }
+
+    public UserEntity idFind(UserEntity entity){
+        return repo.findByUsernameAndEmail1AndEmail2(entity.getUsername(), entity.getEmail1(), entity.getEmail2());
+    }
+    public UserEntity pwFind(UserEntity entity){
+        return repo.findByUseridAndEmail1AndEmail2(entity.getUserid(), entity.getEmail1(), entity.getEmail2());
     }
 
     public UserEntity idChk(UserEntity entity) {
@@ -74,5 +78,20 @@ public class UserService {
        return wishRepo.findAllByRestaurant(re);
     }
 
+    public int totalCommentRecord(UserEntity user){
+        return commentRepo.countIdByUser(user);
+    }
+
+    public List<CommentEntity> findCommentList(UserEntity entity, PagingWishVO pcVO){
+        return commentRepo.findAllByUser(entity, PageRequest.of(pcVO.getNowPage()-1, pcVO.getOnePageRecord()));
+    }
+
+    public int totalFreeBoardRecord(UserEntity user){
+        return freeBoardRepo.countIdByUser(user);
+    }
+
+    public List<FreeBoardEntity> findFreeBoardList(UserEntity entity, PagingWishVO pfVO){
+        return freeBoardRepo.findAllByUser(entity, PageRequest.of(pfVO.getNowPage()-1, pfVO.getOnePageRecord()));
+    }
 
 }

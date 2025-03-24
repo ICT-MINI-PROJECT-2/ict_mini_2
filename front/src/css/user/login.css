@@ -9,9 +9,8 @@
 }
 
 #login-title{
-	font-family: "Gowun Dodum", sans-serif;
 	text-align:center;
-	font-size:45px;
+	font-size:38px;
 	padding-top:40px;
 }
 
@@ -37,9 +36,8 @@
 }
 
 .login-submit {
-	font-family: "Gowun Dodum", sans-serif;
 	color:white;
-    font-size:25px;
+    font-size:20px;
 	display:block;
 	margin:auto;
 	margin-top:20px;
@@ -76,3 +74,17 @@
 	background-color:#eb769b;
 	color:white;
 }
+
+#login-idpw-find {
+	font-size: 15px;
+	color: #b21848;
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
+	width: 40%;
+	margin: 20px auto 0;
+  }
+  #login-idpw-find > a {
+	color: #b21848;
+	text-decoration: none;
+  }

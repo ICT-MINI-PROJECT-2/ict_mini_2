@@ -62,6 +62,7 @@ function Signup(){
                 foods:''
             }
             setParam(params);
+            console.log(where,"123");
             setWhere(1);
         }
     }, [okChk]);
@@ -112,7 +113,7 @@ function Signup(){
             else setOkChk({...okChk, nameOk:true, name_alert:''});
         }
         else if(name === 'email1') {
-            if(value.length<3) setOkChk({...okChk, emailOk:false, email_alert:'올바르지 않은 이메일입니다'}); 
+            if(value.length<3) setOkChk({...okChk, emailOk:false, email_alert:'올바르지 않은 이메일입니다. 3자 이상 입력하세요'}); 
             else setOkChk({...okChk, emailOk:true, email_alert:''});
         }
         else if(name === 'email2') {
@@ -136,6 +137,7 @@ function Signup(){
         }
         else {
             setOkChk({...okChk, zipcodeOk:true, telOk:true, zipcode_alert:'', tel_alert:''}); 
+            console.log(okChk);
         }
     }
     const postButtonStyle = {
@@ -166,8 +168,8 @@ function Signup(){
                     <form name="signupForm">
                         <div id="signup-box">
                             <div id="signup-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="userid" value={param.userid} onChange={setFormData} name="userid"/><div id="alert-id">{!okChk.idOk && okChk.id_alert}</div></div>
-                            <div id="signup-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw" value={param.userpw} onChange={setFormData} name="userpw"/><div id="alert-pw">{!okChk.pwOk && okChk.pw_alert}</div></div>
-                            <div id="signup-left"><div id="idpw">비밀번호확인</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" id="userpw_chk" value={param.userpw_chk} onChange={setFormData} name="userpw_chk"/><div id="alert-pwchk">{!okChk.pw_chkOk && okChk.pw_chk_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="password" style={{width:'38%'}} id="userpw" value={param.userpw} onChange={setFormData} name="userpw"/><div id="alert-pw">{!okChk.pwOk && okChk.pw_alert}</div></div>
+                            <div id="signup-left"><div id="idpw">비밀번호확인</div><div id="hidden-height">I</div></div> <div id="signup-right"><input style={{width:'38%'}}type="password" id="userpw_chk" value={param.userpw_chk} onChange={setFormData} name="userpw_chk"/><div id="alert-pwchk">{!okChk.pw_chkOk && okChk.pw_chk_alert}</div></div>
                             <div id="signup-left"><div id="idpw">이름</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="username" value={param.username} onChange={setFormData} name="username"/><div id="alert-name">{!okChk.nameOk && okChk.name_alert}</div></div>
                             <div id="signup-left"><div id="idpw">이메일</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="email1" value={param.email1} onChange={setFormData} name="email1"/> @ <input type="text" id="email2" value={param.email2} onChange={setFormData} name="email2"/><div id="alert-email">{!okChk.emailOk || !okChk.email2Ok ? okChk.email_alert : ''}</div></div>
                             <div id="signup-left"><div id="idpw">전화번호</div><div id="hidden-height">I</div></div> <div id="signup-right"><input type="text" id="tel1" value={param.tel1} onChange={setFormData} name="tel1" maxLength='3'/> - <input type="text" id="tel2"value={param.tel2} onChange={setFormData} name="tel2" maxLength='4'/> - <input type="text" id="tel3" value={param.tel3} onChange={setFormData} name="tel3" maxLength='4'/><div id="alert-tel">{okChk.tel_alert}</div></div>

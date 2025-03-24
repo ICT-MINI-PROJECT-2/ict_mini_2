@@ -1,9 +1,7 @@
 package com.ke.serv.controller;
 
-import com.ke.serv.entity.RestaurantEntity;
-import com.ke.serv.entity.ReviewEntity;
-import com.ke.serv.entity.UserEntity;
-import com.ke.serv.entity.WishlistEntity;
+import com.ke.serv.entity.*;
+import com.ke.serv.service.FreeBoardService;
 import com.ke.serv.service.RestaurantService;
 import com.ke.serv.service.UserService;
 import com.ke.serv.vo.PagingWishVO;
@@ -25,8 +23,10 @@ import java.util.Map;
 public class UserController {
     private final UserService service;
     private final RestaurantService rest_sevice;
+    private final FreeBoardService free_sevice;
     @PostMapping("/signup")
     public String signup(@RequestBody UserEntity entity) {
+        System.out.println(entity.toString()+"asdjfhnbalkjvbejkbaskjvbe");
         return "ok";
     }
 
@@ -59,6 +59,32 @@ public class UserController {
             map.put("review",review);
             return map;
         }
+    @PostMapping("/getCommentList")
+    public Map getCommentList(UserEntity entity, PagingWishVO pcVO, @PageableDefault(sort="id", direction =  Sort.Direction.DESC) Pageable pageable){
+        pcVO.setTotalRecord(service.totalCommentRecord(entity));
+        List<CommentEntity> comment = service.findCommentList(entity, pcVO);
+
+        List<FreeBoardEntity> free = new ArrayList<>();
+        for(CommentEntity commentEntity : comment) {
+            free.add(free_sevice.freeBoardSelect(commentEntity.getFreeBoard().getId()));
+        }
+
+        Map map = new HashMap();
+        map.put("pcVO",pcVO);
+        map.put("free",free);
+        map.put("comment", comment);
+        return map;
+    }
+    @PostMapping("/getFreeBoardList")
+    public Map getFreeBoardList(UserEntity entity, PagingWishVO pfVO, @PageableDefault(sort="id", direction =  Sort.Direction.DESC) Pageable pageable){
+        pfVO.setTotalRecord(service.totalFreeBoardRecord(entity));
+        List<FreeBoardEntity> freeBoard = service.findFreeBoardList(entity, pfVO);
+        Map map = new HashMap();
+        map.put("pfVO",pfVO);
+        map.put("freeBoard",freeBoard);
+        return map;
+    }
+
 
     @GetMapping("/graphData")
     public List<RestaurantEntity> getGraphData(UserEntity entity){
@@ -124,5 +150,23 @@ public class UserController {
             return "editFail";
         }
         return "editupdate ok";
+    }
+    @PostMapping("/idFind")
+    public UserEntity idFind(@RequestBody UserEntity entity){
+        UserEntity ue = new UserEntity();
+        if(service.idFind(entity) == null){
+            ue.setId(-1);
+        }
+        return service.idFind(entity);
+
+    }
+    @PostMapping("/pwFind")
+    public UserEntity pwFind(@RequestBody UserEntity entity){
+        UserEntity ue = new UserEntity();
+        if(service.pwFind(entity) == null){
+            ue.setId(-1);
+        }
+        return service.pwFind(entity);
+
     }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import '../../css/user/login.css';
+import { Link } from 'react-router-dom';
 import Faded from '../../effect/Faded'
 import { useGlobalState } from '../../GlobalStateContext';
 
@@ -63,13 +64,13 @@ function Login(){
             <div className="login-container">
                 <div id="login-title">로그인</div>
                 <form name="loginForm" method="post" onSubmit={(e) => { e.preventDefault(); loginChk() }}>                    <div id="signup-box">
-                        <div id="login-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="text" id="userid" name="userid" onChange={setFormData}/><div id="alert-id"></div></div>
-                        <div id="login-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="login-right"><input type="password" id="userpw" name="userpw" onChange={setFormData}/><div id="alert-pw"></div></div>
+                        <div id="login-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="login-right"><input style={{width:'40%'}} type="text" id="userid" name="userid" onChange={setFormData}/><div id="alert-id"></div></div>
+                        <div id="login-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="login-right"><input style={{width:'40%'}} type="password" id="userpw" name="userpw" onChange={setFormData}/><div id="alert-pw"></div></div>
                     </div>
-                    <input className="login-submit" type="submit" value="Login" />
-                    <div id="idpw-find">
-                        <div id="id-find"><a>아이디 찾기</a></div>
-                        <div id="pw-find"><a>비밀번호 찾기</a></div>
+                    <input className="login-submit" type="submit" value="로그인"/>
+                    <div id="login-idpw-find">
+                        <div id="login-id-find"><Link to="/idfind">아이디찾기</Link></div>
+                        <div id="login-pw-find"><Link to="/pwfind">비밀번호찾기</Link></div>
                     </div>
                 </form>
             </div>

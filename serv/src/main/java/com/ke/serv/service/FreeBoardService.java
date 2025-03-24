@@ -83,4 +83,8 @@ public class FreeBoardService {
     public List<FreeBoardEntity> getBoardOrderByHit(){
         return repository.findAllByOrderByHitDesc();
     }
+
+    public FreeBoardEntity freeBoardSelect(int id){
+        return  repository.findById(id);
+    }
 }

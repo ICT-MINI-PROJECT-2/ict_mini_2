@@ -1,18 +1,23 @@
-import {useState } from "react";
+import {useState,useEffect } from "react";
 import Faded from "../../effect/Faded";
 import axios from "axios";
 import EditPage from "./EditPage";
 import EditCheckList from "./EditCheckList";
+import ConfirmEdit from "./ConfirmEdit";
 import { Link } from "react-router-dom";
+import '../../css/user/editEnter.css';
 import { useGlobalState } from "../../GlobalStateContext";
 function EnterEdit() {
     const { serverIP } = useGlobalState();
     const id = sessionStorage.getItem("id");
-    const userId = sessionStorage.getItem("loginId");
     const [data, setData] = useState({});
     const [editWhere, setEditWhere] = useState(0);
     const [editParam, setEditParam] = useState({});
     const [pw, setPw] = useState('');
+
+    useEffect(()=>{
+      setData({...data,userid:sessionStorage.getItem("loginId")});
+    },[])
 
     const changePw = (e) => {
         setPw(e.target.value); 
@@ -26,7 +31,7 @@ function EnterEdit() {
     }else{
       axios.post(`${serverIP}/user/editEnterChk`, {
         userid:data.userid,
-        userpw:''
+        userpw:pw
       }).then(res => {
         console.log(res.data)
         if(res.data.id===-1){
@@ -48,33 +53,29 @@ function EnterEdit() {
     <Faded>
       {editWhere === 0 &&
     <div className="editEnter-container">
-        <div id="editEnter-title">로그인</div>
+        <div id="editEnter-title">개인정보 수정</div>
         <form name="editEnterForm" method="post" onSubmit={(e) => { e.preventDefault(); editChk() }}>    
             <div id="editEnter-box">
                 <div id="editEnter-left"><div id="idpw">아이디</div><div id="hidden-height">I</div></div> <div id="editEnter-right">{sessionStorage.getItem('loginId')}<div id="alert-pw"></div></div>
                 <div id="editEnter-left"><div id="idpw">비밀번호</div><div id="hidden-height">I</div></div> <div id="editEnter-right"><input value={pw} type="password" id="userpw" name="userpw" onChange={changePw}/><div id="alert-pw"></div></div>
             </div>
             <input className="editEnter-submit" type='button' onClick={()=>editChk()} value="비밀번호 확인"/>
-            <div id="idpw-find">
-                <div id="id-find"><a>아이디 찾기</a></div>
-                <div id="pw-find"><a>비밀번호 찾기</a></div>
-            </div>
         </form>
     </div>
 }
 {editWhere === 1 &&
-  <div className="editEnter-container">
+  <div>
     <EditPage editParam={editParam} setEditParam={setEditParam} editWhere={editWhere} setEditWhere={setEditWhere}/>
   </div>
 }
 {editWhere === 2 &&
-  <div className="editEnter-container">
+  <div>
     <EditCheckList editParam={editParam} setEditParam={setEditParam} editwhere={editWhere} setEditWhere={setEditWhere}/>
   </div>
 }
 {
   editWhere === 3 &&
-  <Link to ="/"/>
+  <ConfirmEdit/>
 }
 </Faded>
   );

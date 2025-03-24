@@ -31,7 +31,6 @@ function FreeWrite() {
             category: loc.state.category,
             user: {id: sessionStorage.getItem("id")}
         }
-        console.log(writeData);
 
         axios.post(`${serverIP}/free/writeOk`, writeData)
         .then(res=>{

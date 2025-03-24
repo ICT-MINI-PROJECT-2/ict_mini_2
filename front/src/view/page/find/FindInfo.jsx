@@ -130,7 +130,6 @@ function FindInfo() {
                                     let dists = getDistanceFromLatLonInKm(x,y,ax,ay)*1000;
                                     if(dists/1000 > 0) dists = getDistanceFromLatLonInKm(x,y,ax,ay).toFixed(2)+'km';
                                     else dists= parseInt(dists)+'m';
-                                    console.log(dists);
                                     setDist(dists);
                                     return;
                                 }

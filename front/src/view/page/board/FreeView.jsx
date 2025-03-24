@@ -35,6 +35,7 @@ function FreeView(){
             setRecord({
                 id: res.data.id,
                 category: res.data.category,
+                realid:res.data.user.id,
                 userid: res.data.user.userid,
                 username: res.data.user.username,
                 hit: res.data.hit,
@@ -127,7 +128,9 @@ function FreeView(){
                         {record.category === 'notice' && <span id="notice-sticker">공지</span>}
                         {record.title}
                         </div>
-                    <div>👤{record.username}</div>
+                    <div style={{ cursor: 'pointer' }}
+                                        id={`mgw-${record.realid}`}
+                                        className="msg-who">👤{record.username}</div>
                     <div>💬{commentList.length}</div>
                     <div>👁{record.hit}</div>
                 </div>
@@ -148,7 +151,9 @@ function FreeView(){
                             commentList.map(record=>{
                                 return (
                                     <div className="comment">
-                                        <div style={{fontWeight: 'bold', paddingBottom: '5px'}}>{record.user.username}</div>
+                                        <div style={{fontWeight: 'bold', paddingBottom: '5px',cursor:'pointer'}}
+                                        id={`mgw-${record.user.id}`}
+                                        className="msg-who">{record.user.username}</div>
                                         <div style={{whiteSpace: 'pre'}}>{record.content}</div>
                                         <div id="comment-writedate">{record.writedate}</div>
 

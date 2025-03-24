@@ -368,7 +368,7 @@ function MainPage(){
             <ul className='main-today-btn'>
               <li onClick={() => { setBoardRank('hit') }} style={boardRank == 'hit' ? {color: '#b21848', fontWeight: 'bold', zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'2',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>조회순</li>
               <li onClick={() => { setBoardRank('comment') }} style={boardRank == 'comment' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'2',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>댓글순</li>
-              <li onClick={() => { setBoardRank('notice') }} style={boardRank == 'notice' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'1',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>공지</li>
+              <li onClick={() => { setBoardRank('notice') }} style={boardRank == 'notice' ? {color: '#b21848', fontWeight: 'bold',zIndex:'3',fontSize:'12px',whiteSpace:'nowrap'} : {zIndex:'1',top:'10px',fontSize:'12px',whiteSpace:'nowrap'}}>공지사항</li>
             </ul>
             <div className='main-board-container'>
               <div className='main-board-box' id='main-board-box-tt'>
@@ -382,7 +382,7 @@ function MainPage(){
                   return(
                     <div className='main-board-box'>
                       <div style={{display:'flex',padding:'0px',alignItems:'center'}}><img style={{width:'100%', height:'50%',margin:'0px',objectFit:'contain'}} src={`./img/main/medal${idx+1}.png`}/></div>
-                      <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} onClick={() => moveBoard(item.id)}>{item.title}</div>
+                      <div style={{display:'flex',padding:'0px',alignItems:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} onClick={() => moveBoard(item.id)}>{item.title}</div>
                       <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',cursor:'pointer'}} id={`mgw-${item.user.id}`} className="msg-who">{item.user.username}</div>
                       {boardRank=='comment' ? <div style={{display:'flex',padding:'0px',alignItems:'center', justifyContent:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.comments.length}</div>:<div style={{display:'flex',padding:'0px', justifyContent:'center',alignItems:'center', whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.hit}</div>}
                     </div>

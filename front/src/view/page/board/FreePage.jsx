@@ -70,11 +70,12 @@ function FreePage() {
         return data.map((record) => (
             <ul className="free-list" key={record.id}>
                 <li>{record.id}</li>
-                <li>
+                <li id="free-list-title">
                     <Link to={`/free/view/${record.id}`}>
                         {isNotice && <span id="notice-sticker">공지</span>}
-                        <span>{record.title}[{record.comments.length}]</span>
+                        <span style={{fontSize:'15px'}}>{record.title.length > 12 ? record.title.substring(0,12)+'...' : record.title }</span>
                     </Link>
+                    <span> [{record.comments.length}]</span>
                 </li>
                 <li>{record.user.username}</li>
                 <li>{record.hit}</li>
@@ -90,9 +91,10 @@ function FreePage() {
                 {currentView === 'all' ? (
                     <div onClick={() => { setCurrentView('notice'); }}>공지 전체 목록</div>
                 ) : (
-                    <div onClick={() => { setCurrentView('all'); }}>게시글 목록</div>
+                    <h5 style={{color:'#e55',fontWeight:'bold',cursor:'pointer',textAlign:'left',fontSize:'16px',marginTop:'72px'}} onClick={() => { setCurrentView('all'); }}>게시글 목록</h5>
                 )}
-                <input
+                {currentView === 'all' && (
+                <><input
                     type="text"
                     placeholder="검색어를 입력하세요"
                     name="searchWord"
@@ -101,8 +103,7 @@ function FreePage() {
                     onKeyUp={handleSearch}
                 />
                 <input type="button" value="검색" onClick={() => { getBoardList(1); }} />
-                {currentView === 'all' && (
-                    <div>총 게시글 수: {totalRecord}개</div>
+                    <div>총 게시글 수: {totalRecord}개</div></>
                 )}
             </div>
 
@@ -120,10 +121,10 @@ function FreePage() {
                         {boardData.map((record) => (
                             <ul className="free-list" key={record.id}>
                                 <li>{record.id}</li>
-                                <li>
+                                <li  id="free-list-title">
                                     <Link to={`/free/view/${record.id}`}>
-                                        <span id="free-list-title">{record.title}</span>
-                                        <span>[{record.comments.length}]</span>
+                                        <span style={{fontSize:'15px'}}>{record.title.length > 16 ? record.title.substring(0,16)+'...' : record.title }</span>
+                                        <span> [{record.comments.length}]</span>
                                     </Link>
                                 </li>
                                 <li>

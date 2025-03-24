@@ -25,7 +25,7 @@ function ReviewModal({ reviewModal, setReviewModal }) {
       let modal = document.getElementById("review-modal");
 
       modal.style.opacity = 1;
-      modal.style.zIndex = 10;
+      modal.style.zIndex = 15;
       modal.style.left = (window.innerWidth - modal.offsetWidth) / 2 + 'px';
       modal.style.top = (window.innerHeight - modal.offsetHeight) / 2 + 'px';
 
@@ -170,7 +170,7 @@ function ReviewModal({ reviewModal, setReviewModal }) {
         backgroundColor: 'rgba(0,0,0,0.5)',
         display: 'none',
         backdropFilter: 'blur(5px)',
-        zIndex: 4
+        zIndex: 14
       }}></div>
 
       <div id='review-modal'>
