@@ -76,3 +76,17 @@
 	background-color:#eb769b;
 	color:white;
 }
+
+#login-idpw-find {
+	font-size: 15px;
+	color: #b21848;
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
+	width: 40%;
+	margin: 20px auto 0;
+  }
+  #login-idpw-find > a {
+	color: #b21848;
+	text-decoration: none;
+  }

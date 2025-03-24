@@ -31,6 +31,9 @@ import FreeEdit from "./page/board/FreeEdit";
 import EnterEdit from "./user/EnterEdit";
 import EditPage from "./user/EditPage";
 import Interact from "./page/Interact";
+import Idfind from "./user/Idfind";
+import Pwfind from "./user/Pwfind";
+import ConfirmEdit from "./user/ConfirmEdit";
 
 function Body() {
   const [interact, setInteract] = useState({
@@ -114,6 +117,9 @@ function Body() {
       <Route path="/findInfo" element={<FindInfo />} />
       <Route path="/test" element={<Test />} />
       <Route path="/editEnter" element={<EnterEdit/>} />
+      <Route path="/idfind" element={<Idfind/>} />
+      <Route path="/pwfind" element={<Pwfind/>} />
+      <Route path="/confirmEdit" element={<ConfirmEdit/>} />
 
       {/* 기본적으로 이벤트 게시판으로 이동 */}
       <Route path="/" element={<Navigate to="/boardpage?category=EVENT" />} />
