@@ -2,19 +2,19 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useGlobalState } from "../../../GlobalStateContext";
+import App from "./App";
+
 function FreeEdit() {
     const { serverIP } = useGlobalState();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [category, setCategory] = useState('');
     
     const {id} = useParams();
     const navigate = useNavigate();
 
     function changeTitle(event) {
         setTitle(event.target.value);
-    }
-    function changeContent(event) {
-        setContent(event.target.value);
     }
 
     const mounted = useRef(false);
@@ -30,6 +30,7 @@ function FreeEdit() {
         .then(res=>{
             setTitle(res.data.title);
             setContent(res.data.content);
+            setCategory(res.data.category);
         })
         .catch(err=>{
             console.log(err);
@@ -37,9 +38,13 @@ function FreeEdit() {
     }
 
     function boardSubmit() {
-        if (title == '' || title == null) {
+        if (!title.trim()) {
             alert("제목을 입력하세요.");
-            return false;
+            return;
+        }
+        if (!content.trim()) {
+            alert("내용을 입력하세요.");
+            return;
         }
 
         let editData = {
@@ -63,22 +68,24 @@ function FreeEdit() {
     }
     return (
         <div className="free-write">
-            <h1>글수정</h1>
+            {
+                category === 'free' ? <h2>글수정</h2> : <h2>공지수정</h2>
+            }
+            
             <div>
                 <label htmlFor="title">제목</label>
-                <input type="text" id="title" placeholder="글제목 입력" name="title"
+                <input type="text" id="title" placeholder="글제목을 입력해주세요." name="title"
                     value={title} onChange={changeTitle}
                 />
             </div>
 
             <div>
                 <label htmlFor="content">글내용</label>
-                <textarea id="content" placeholder="글내용 입력" name="content"
-                    value={content} onChange={changeContent}
-                ></textarea>
+                <App id="content" content={content} setContent={setContent}></App>
             </div>
-
-            <div id='write-btn' onClick={boardSubmit}>글수정</div>
+            
+            <div id='list-btn' onClick={()=>navigate('/boardpage?category=BOARD')}>목록</div>
+            <div id='write-btn' onClick={boardSubmit}>수정</div>
         </div>  
     );
 }
