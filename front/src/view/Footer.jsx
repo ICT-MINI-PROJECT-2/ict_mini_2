@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useLocation} from 'react-router-dom';
 import '../css/footer.css';
 import kakaoIcon from '../img/footer_kakao.png';
 import instaIcon from '../img/footer_insta.png';
@@ -9,7 +9,6 @@ function Footer({ loginStatus, contextPath }) {
     if (loginStatus === 'A') {
         return null;
     }
-
     return (
         <ul className="footer">
             <li className="footer-info">
