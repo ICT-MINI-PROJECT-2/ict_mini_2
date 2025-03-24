@@ -131,8 +131,8 @@ function FreeView(){
                     <div style={{ cursor: 'pointer' }}
                                         id={`mgw-${record.realid}`}
                                         className="msg-who">👤{record.username}</div>
-                    <div>💬 {commentList.length}</div>
-                    <div>👁 {record.hit}</div>
+                    <div>💬{commentList.length}</div>
+                    <div>👁{record.hit}</div>
                 </div>
                 <div id="view-content" dangerouslySetInnerHTML={{ __html: record.content }}></div>
 

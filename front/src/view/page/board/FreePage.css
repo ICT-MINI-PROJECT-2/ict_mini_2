@@ -16,18 +16,18 @@
     border: 2px solid #ccc;
     transition: all 0.5s;
 }
-#search>div {
+#search div {
     display: block;
     float: left;
     padding-top: 20px;
     transition: all 0.5s;
 }
-#search>div:first-child {
+#search div:first-child {
     color: #e55;
     font-weight: bold;
     cursor: pointer;
 }
-#search>div:last-child {
+#total-board-count {
     float: right;
 }
 #search>input[type=text] {
@@ -154,7 +154,7 @@
 .view-header {
     min-width: 600px;
     display: grid;
-    grid-template-columns: 6fr 1.5fr 1fr 1fr;
+    grid-template-columns: 6fr 1.5fr 1.1fr 1fr;
     text-align: center;
     line-height: 30px;
     border-bottom: 2px solid #ddd;
@@ -209,7 +209,7 @@
 .comment {
     margin: 10px auto;
     padding: 20px;
-    background-color: rgb(255, 255, 230);
+    background-color: rgb(255, 255, 240);
     border-bottom: 1px solid #eee;
     border-radius: 10px;
 }
