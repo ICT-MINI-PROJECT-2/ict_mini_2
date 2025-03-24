@@ -7,7 +7,6 @@ import com.ke.serv.entity.WishlistEntity;
 import com.ke.serv.repository.ReviewRepository;
 import com.ke.serv.repository.UserRepository;
 import com.ke.serv.repository.WishRepository;
-import com.ke.serv.vo.PagingVO;
 import com.ke.serv.vo.PagingWishVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +21,8 @@ public class UserService {
     private final WishRepository wishRepo;
     private final ReviewRepository reviewRepo;
 
-    public UserEntity editEnterChk(UserEntity entity){
-        return repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());
-    }
+    public UserEntity idEditChk(UserEntity entity){return  repo.findById(entity.getId());}
+    public UserEntity pwEditChk(UserEntity entity){return  repo.findByIdAndUserpw(entity.getId(), entity.getUserpw());}
 
     public UserEntity signup(UserEntity entity) {
         return repo.save(entity);
@@ -35,6 +33,9 @@ public class UserService {
     }
     public UserEntity pwChk(UserEntity entity) {
         return repo.findByUseridAndUserpw(entity.getUserid(), entity.getUserpw());
+    }
+    public UserEntity updateEdit(UserEntity entity){
+        return repo.save(entity);
     }
 
     public UserEntity selectUser(UserEntity entity) {
@@ -53,8 +54,8 @@ public class UserService {
         return wishRepo.findAllByUser(entity, PageRequest.of(pwVO.getNowPage() -1, pwVO.getOnePageRecord()));
     }
 
-    public int totalRecord(PagingWishVO pwVO) {
-        return wishRepo.countIdBy();
+    public int totalRecord(UserEntity user) {
+        return wishRepo.countIdByUser(user);
     }
 
     public List<WishlistEntity> graphData(UserEntity entity){
@@ -65,8 +66,8 @@ public class UserService {
         return reviewRepo.findAllByUser(entity, PageRequest.of(prVO.getNowPage()-1,prVO.getOnePageRecord()));
     }
 
-    public int totalReviewRecord(PagingWishVO prVO) {
-        return reviewRepo.countIdBy();
+    public int totalReviewRecord(UserEntity user) {
+        return reviewRepo.countIdByUser(user);
     }
 
     public List<WishlistEntity> selectWishList(RestaurantEntity re) {

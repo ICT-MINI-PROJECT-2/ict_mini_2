@@ -1,6 +1,8 @@
 package com.ke.serv.service;
 
+import com.ke.serv.entity.CommentEntity;
 import com.ke.serv.entity.FreeBoardEntity;
+import com.ke.serv.repository.CommentRepository;
 import com.ke.serv.repository.FreeBoardRepository;
 import com.ke.serv.vo.PagingVO;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FreeBoardService {
     private final FreeBoardRepository repository;
+    private final CommentRepository commentRepo;
+
     public int totalRecord(PagingVO pVO) {
         if (pVO.getSearchWord() == null || pVO.getSearchWord().isEmpty()){
             return repository.countIdByCategory("free");
@@ -55,5 +59,28 @@ public class FreeBoardService {
 
     public int countBoardSelect(int id) {
         return repository.countById(id);
+    }
+
+    public CommentEntity commentInsert(CommentEntity entity) {
+        return commentRepo.save(entity);
+    }
+
+    public List<CommentEntity> commentSelect(int board_id) {
+        return commentRepo.findAllByFreeBoardId(board_id);
+    }
+
+    public void commentDelete(int id) {
+        commentRepo.deleteById(id);
+    }
+
+    public int countCommentSelect(int id) {
+        return commentRepo.countById(id);
+    }
+
+    public List<FreeBoardEntity> getBoardsOrderedByCommentCount() { //댓글순
+        return repository.findAllByCommentCountDesc();
+    }
+    public List<FreeBoardEntity> getBoardOrderByHit(){
+        return repository.findAllByOrderByHitDesc();
     }
 }

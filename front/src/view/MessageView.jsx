@@ -1,7 +1,9 @@
 import { useRef, useEffect } from "react";
 import axios from 'axios';
+import { useGlobalState } from "../GlobalStateContext";
 
 function MessageView({msg_box, setMsg_box}){
+        const { serverIP } = useGlobalState();
         const mount = useRef(true);
         useEffect(()=>{
             if(!mount.current) mount.current = false;
@@ -93,18 +95,29 @@ function MessageView({msg_box, setMsg_box}){
         }
     const readMessage = (id) => {
         const det = document.getElementById('comment-detail-'+id);
-        console.log(det.style.display);
         if(det.style.display == 'inline-block') det.style.display='none';
         else det.style.display='inline-block';
-        axios.post('http://localhost:9977/tech/readMessage',{id:id})
+        axios.post(`${serverIP}/tech/readMessage`,{id:id})
         .then(res => {
             setMsg_box({...msg_box, msg_list:res.data});
         })
         .catch(err => console.log(err))
     }
+    const readReport = (id) => {
+        const det = document.getElementById('comment-detail-'+id);
+        if(det.style.display == 'inline-block') det.style.display='none';
+        else det.style.display='inline-block';
+    }
 
     const delMsg = (id) => {
-        axios.post('http://localhost:9977/tech/deleteMessage',{id:id})
+        axios.post(`${serverIP}/tech/deleteMessage`,{id:id})
+        .then(res => {
+            setMsg_box({...msg_box, msg_list:res.data});
+        })
+        .catch(err => console.log(err))
+    }
+    const delReport = (id) => {
+        axios.post(`${serverIP}/tech/deleteReport`,{id:id})
         .then(res => {
             setMsg_box({...msg_box, msg_list:res.data});
         })
@@ -113,28 +126,62 @@ function MessageView({msg_box, setMsg_box}){
 
     return(<div className='message-view-container'>
         <div id="message-view-exit" onClick={()=>setMsg_box({...msg_box,isOpen:false})}>×</div>
-        <div style={{textAlign:'center',fontSize:'24px'}}>쪽지 보관함</div>
+        {sessionStorage.getItem('loginId') != 'admin1234' ? <div style={{textAlign:'center',fontSize:'24px'}}>쪽지 보관함</div> : <div style={{textAlign:'center',fontSize:'24px'}}>신고 목록</div>}
+        {sessionStorage.getItem('loginId') != 'admin1234' ?
         <ul className='msg-ul'>
             <li>날짜</li>
             <li style={{paddingLeft:'10px'}}>내용</li>
             <li>보낸이</li>
             <li></li>
         </ul>
+        : <ul className='msg-ul'>
+            <li>날짜</li>
+            <li style={{paddingLeft:'10px',width:'40%'}}>내용</li>
+            <li style={{width:'15%'}}i>보낸이</li>
+            <li style={{width:'15%'}}>신고대상</li>
+            <li></li>
+        </ul>
+        }
         {
             msg_box.msg_list.map((item) => {
                 return (
                     <>
                     {
-                        item.state != 2 &&
+                        sessionStorage.getItem('loginId') == 'admin1234' ? 
+                        <>
+                            <ul>
+                            <li>
+                                {item.writedate.substring(0,10)}
+                            </li>
+                            <li className='msg-comm' style={{cursor:'pointer',paddingLeft:'10px',width:'40%'}} onClick={()=> readReport(item.id)}>
+                                {item.comment}
+                            </li>
+                            <li style={{width:'15%',cursor:'pointer'}} id={`mgw-${item.userFrom.id}`}
+                                        className="msg-who">
+                                {item.userFrom.username}
+                            </li>
+                            <li style={{width:'15%',cursor:'pointer'}} id={`mgw-${item.userTo.id}`}
+                                        className="msg-who">
+                                {item.userTo.username}
+                            </li>
+                            <li id='view-del-btn' onClick={()=>delReport(item.id)}>
+                                X
+                            </li>
+                            </ul>
+                            <div className='comment-detail' id={'comment-detail-'+item.id} style={{display:'none'}}>
+                                {item.comment}
+                            </div>
+                        </> :
+                        item.state != 2 && 
                         <>
                         <ul>
                             <li style={item.state!=0 ? {color:'gray'} : {}}>
                                 {item.writedate.substring(0,10)}
                             </li>
-                            <li className='msg-comm' style={item.state==0 ? {cursor:'pointer'}: {cursor:'pointer', color:'gray'}}onClick={()=> readMessage(item.id)}>
+                            <li className='msg-comm' style={item.state==0 ? {cursor:'pointer'}: {cursor:'pointer', color:'gray'}} onClick={()=> readMessage(item.id)}>
                                 {item.comment}
                             </li>
-                            <li style={item.state!=0 ? {color:'gray'} : {}}>
+                            <li style={item.state!=0 ? {color:'gray', cursor:'pointer'} : {cursor:'pointer'}} id={`mgw-${item.userFrom.id}`} className="msg-who">
                                 {item.userFrom.username}
                             </li>
                             <li id='view-del-btn' onClick={()=>delMsg(item.id)}>

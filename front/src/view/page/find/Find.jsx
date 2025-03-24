@@ -6,8 +6,10 @@ import plusImg from '../../../img/plus.png';
 import searchImg from '../../../img/search.png';
 import FindListItem from './FindListItem';
 import axios from 'axios';
+import { useGlobalState } from '../../../GlobalStateContext';
 
 function Find(){
+    const { serverIP } = useGlobalState();
     const [list, setList] = useState([]);
     const [searchWord, setSearchWord] = useState('');
     const [pageNumber, setPageNumber] = useState([]);
@@ -45,7 +47,7 @@ function Find(){
             sort: sort
         })
 
-        axios.post('http://localhost:9977/find/searchList', searchData)
+        axios.post(`${serverIP}/find/searchList`, searchData)
         .then(async function(res){
             setList(res.data.list);
             setPageNumber([]);
@@ -296,21 +298,21 @@ function Find(){
                     )}
                 </div>
 
-                <ul className="pagination">
+                <ul className="find-pagination">
                 {
                     (function(){
                         if (nowPage > 1){
-                            return (<a className="page-link" onClick={()=>setNowPage(nowPage-1)}>
-                                        <li className="page-item">◀</li>
+                            return (<a className="find-page-link" onClick={()=>setNowPage(nowPage-1)}>
+                                        <li className="find-page-item">◀</li>
                                     </a>)
                         }
                     })()
                 }
                 {
                     pageNumber.map(function(pg){
-                        var activeStyle = 'page-item';
-                        if (nowPage == pg) var activeStyle = 'page-item active';
-                        return (<a className="page-link" onClick={()=>setNowPage(pg)}>
+                        var activeStyle = 'find-page-item';
+                        if (nowPage == pg) var activeStyle = 'find-page-item active';
+                        return (<a className="find-page-link" onClick={()=>setNowPage(pg)}>
                                     <li className={activeStyle}>{pg}</li>
                                 </a>)
                     })
@@ -318,8 +320,8 @@ function Find(){
                 {
                     (function(){
                         if (nowPage < totalPage && nowPage > 0){
-                            return (<a className="page-link" onClick={()=>setNowPage(nowPage + 1)}>
-                                        <li className="page-item">▶</li>
+                            return (<a className="find-page-link" onClick={()=>setNowPage(nowPage + 1)}>
+                                        <li className="find-page-item">▶</li>
                                     </a>)
                         }
                     })()

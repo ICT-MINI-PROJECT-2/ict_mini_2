@@ -1,5 +1,8 @@
 import {Link} from 'react-router-dom';
 import '../css/header.css';
+import {useState, useEffect, useRef} from 'react';
+import axios from 'axios';
+import Interact from './page/Interact';
 
 function Header() {
 
@@ -8,11 +11,11 @@ function Header() {
         window.location.href="/";
     }
 
+
     return (
       <ul className="header">
         <li>
-            <ul className="header-left">
-                
+            <ul className="header-left">        
                 <li>
                 <Link to="/"><div id="logo-img"></div></Link>
                 </li>

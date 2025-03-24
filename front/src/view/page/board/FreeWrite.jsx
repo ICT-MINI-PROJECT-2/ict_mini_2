@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function FreeWrite() {
+    const { serverIP } = useGlobalState();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
@@ -34,10 +35,10 @@ function FreeWrite() {
         }
         console.log(writeData);
 
-        axios.post('http://localhost:9977/free/writeOk', writeData)
+        axios.post(`${serverIP}/free/writeOk`, writeData)
         .then(res=>{
             if (res.data == 'success') {
-                navigate('/free');
+                navigate('/boardpage?category=BOARD');
             } else if (res.data == 'fail') {
                 alert("게시글이 등록되지 않았습니다.");
             }
@@ -48,7 +49,7 @@ function FreeWrite() {
     }
     return (
         <div className="free-write">
-            <h1>게시판 글쓰기 폼</h1>
+            <h2>글쓰기</h2>
             <div>
                 <label htmlFor="title">제목</label>
                 <input type="text" id="title" placeholder="글제목 입력" name="title"
@@ -63,9 +64,7 @@ function FreeWrite() {
                 ></textarea>
             </div>
 
-            <div>
-                <button type="button" onClick={boardSubmit}>글등록</button>
-            </div>
+            <div id='write-btn' onClick={boardSubmit}>글등록</div>
         </div>  
     );
 }

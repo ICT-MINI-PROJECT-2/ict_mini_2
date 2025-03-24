@@ -1,6 +1,6 @@
 .find-container{
     position: relative;
-    margin-bottom: 210px;
+    margin-bottom: 160px;
     padding-top:150px;
     min-width: 900px;
     font-family: "IBM Plex Sans KR", sans-serif;
@@ -376,32 +376,27 @@
     z-index: -20;
 }
 
-.pagination {
+.find-pagination {
     width: 100%;
     line-height: 30px;
-    position: static;
     display: flex;
     justify-content: center;
-    font-size: 1.5em;
+    gap: 10px;
 }
-.pagination li {
+.find-page-item {
     float: left;
-    padding: 0 10px;
-}
-.find-container .page-link {
-    width: 20px;
-    margin: 0 5px;
-    padding: 1px;
-    font-size: 0.9em;
-}
-.page-item {
+    padding: 5px 12px;
     cursor: pointer;
+    font-size: 1.4em;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 10px;
 }
-.page-item.active {
+.find-page-item.active {
     font-weight: bold;
     color: #b21848;
 }
-.page-item:hover {
+.find-page-item:hover {
     color:#bd3c63;
 }
 
@@ -419,7 +414,7 @@
 
 .review-body {
     border-radius: 8px;
-    border: 2px solid gray;
+    border: 2px solid #ddd;
     backdrop-filter: blur(20px);
     height:70%;
     width:99.5%;
@@ -476,7 +471,7 @@ align-items: center;
     border-radius: 10px;
     margin-left:2vw;
     position: relative;
-    border: 2px solid gray;
+    border: 1px solid gray;
     cursor: pointer;
 }
 
@@ -553,7 +548,7 @@ position: absolute;
     padding-left: 40px;
     padding-top:15px;
     border-radius: 0px 0px 8px 8px;
-    border: 2px solid gray;
+    border: 2px solid #ddd;
 }
 .boxes{
     display:flex;

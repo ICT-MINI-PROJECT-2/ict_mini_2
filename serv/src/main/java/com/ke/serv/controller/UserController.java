@@ -8,7 +8,6 @@ import com.ke.serv.service.RestaurantService;
 import com.ke.serv.service.UserService;
 import com.ke.serv.vo.PagingWishVO;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -33,7 +32,7 @@ public class UserController {
 
     @PostMapping("/getWishList")
     public Map getWishList(UserEntity entity, PagingWishVO pwVO, @PageableDefault(sort="id", direction = Sort.Direction.DESC) Pageable pageable){
-        pwVO.setTotalRecord(service.totalRecord(pwVO));
+        pwVO.setTotalRecord(service.totalRecord(entity));
         List<WishlistEntity> we = service.findWishList(entity, pwVO); // 여기를 페이징
         List<RestaurantEntity> re = new ArrayList<>();
         for(WishlistEntity wish : we) {
@@ -48,7 +47,7 @@ public class UserController {
 
     @PostMapping("/getReviewList")
     public Map getReviewList(UserEntity entity, PagingWishVO prVO, @PageableDefault(sort="id", direction =  Sort.Direction.DESC) Pageable pageable){
-        prVO.setTotalRecord(service.totalReviewRecord(prVO));
+        prVO.setTotalRecord(service.totalReviewRecord(entity));
         List<ReviewEntity> review = service.findReviewList(entity, prVO);
         List<RestaurantEntity> rest = new ArrayList<>();
         for(ReviewEntity reviewEntity : review) {
@@ -73,14 +72,20 @@ public class UserController {
     }
 
 
-
-
     @PostMapping("/editEnterChk")
     public UserEntity editEnterChk(@RequestBody UserEntity entity){
-        UserEntity uec = new UserEntity();
+        System.out.println(entity);
+        UserEntity ue = new UserEntity();
+        if(service.idEditChk(entity) == null){
+            ue.setId(-1);
+            return ue;
+        }
+        if(service.pwEditChk(entity)==null){
+            ue.setId(-2);
+            return ue;
+        }
 
-
-        return uec;
+        return service.idEditChk(entity);
     }
 
 
@@ -108,5 +113,16 @@ public class UserController {
     public String checkList(@RequestBody UserEntity entity) {
         System.out.println(service.signup(entity));
        return "foodsupdate ok";
+    }
+
+    @PostMapping("/editcheckList")
+    public String eidtcheckList(@RequestBody UserEntity entity) {
+        System.out.println(entity);
+        UserEntity result = service.updateEdit(entity);
+
+        if(result==null){
+            return "editFail";
+        }
+        return "editupdate ok";
     }
 }

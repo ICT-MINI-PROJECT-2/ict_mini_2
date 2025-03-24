@@ -11,10 +11,11 @@ import TermsOfUse from './view/page/TermsOfUse';
 
 import './css/public.css';
 import './js/public.js';
+import { GlobalStateProvider } from './GlobalStateContext';
 
 const container = ReactDOM.createRoot(document.getElementById('container'));
 container.render(
-  <div>
+  <GlobalStateProvider>
     <HashRouter>
       <Header/>
       <Menu/>
@@ -25,5 +26,10 @@ container.render(
       </Routes>      
       <Footer/>
     </HashRouter>
-  </div>
+  </GlobalStateProvider>
 );
+
+/*
+
+const serverIP = 'http://192.168.1.146:9977';
+*/

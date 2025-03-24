@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
+import { useGlobalState } from "../../../GlobalStateContext";
 function FreeEdit() {
+    const { serverIP } = useGlobalState();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     
@@ -25,7 +26,7 @@ function FreeEdit() {
     }, []);
 
     function getBoard() {
-        axios(`http://localhost:9977/free/view/${id}`)
+        axios(`${serverIP}/free/view/${id}`)
         .then(res=>{
             setTitle(res.data.title);
             setContent(res.data.content);
@@ -48,10 +49,10 @@ function FreeEdit() {
             user: {id: sessionStorage.getItem("id")}
         }
 
-        axios.post('http://localhost:9977/free/editOk', editData)
+        axios.post(`${serverIP}/free/editOk`, editData)
         .then(res=>{
             if (res.data == 'success') {
-                navigate('/free');
+                navigate('/boardpage?category=BOARD');
             } else if (res.data == 'fail') {
                 alert("게시글이 수정되지 않았습니다.");
             }
@@ -62,7 +63,7 @@ function FreeEdit() {
     }
     return (
         <div className="free-write">
-            <h1>게시판 글수정 폼</h1>
+            <h1>글수정</h1>
             <div>
                 <label htmlFor="title">제목</label>
                 <input type="text" id="title" placeholder="글제목 입력" name="title"
@@ -77,9 +78,7 @@ function FreeEdit() {
                 ></textarea>
             </div>
 
-            <div>
-                <button type="button" onClick={boardSubmit}>글수정</button>
-            </div>
+            <div id='write-btn' onClick={boardSubmit}>글수정</div>
         </div>  
     );
 }
