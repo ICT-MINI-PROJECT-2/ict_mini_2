@@ -73,6 +73,13 @@
     float: left;
     text-align: center;
 }
+#free-list-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    text-align: left;
+}
 .write-btn {
     max-width: 1200px;
     min-width: 750px;
@@ -161,8 +168,11 @@
     border: none;
 }
 #view-content {
-    padding: 30px;
+    padding: 20px;
     white-space: pre;
+}
+.image_resized {
+    height: inherit;
 }
 .view-comment {
     margin: 10px auto;
@@ -170,26 +180,31 @@
     border-top: 2px solid #ddd;
     border-bottom: 2px solid #ddd;
 }
-.view-comment>input {
+.view-comment input, #comment {
+    height: 70px;
     margin: 10px;
-    padding-left: 10px;
     border: 1px solid #ddd;
     border-radius: 10px;
 }
-.view-comment>input[type=textarea] {
+#comment {
     width: calc(100% - 140px);
-    height: 70px;
-    
+    padding-top: 10px;
+    padding-left: 10px;
+    resize: none;
 }
-.view-comment>input[type=button] {
+.view-comment input[type=button] {
     width: 80px;
-    height: 70px;
+    height: 84px;
     background-color: #fff;
     cursor: pointer;
     transition: all 0.5s;
 }
-.view-comment>input[type=button]:hover {
+.view-comment input[type=button]:hover {
     background-color: #eee;
+}
+.comment-list {
+    max-height: 500px;
+    overflow-y: scroll;
 }
 .comment {
     margin: 10px auto;
@@ -251,34 +266,42 @@
 }
 .free-write label {
     padding-left: 10px;
+    font-size: 1.2em;
     font-weight: bold;
 }
-.free-write input, .free-write textarea {
+#title, #content {
     box-sizing: border-box;
     width: 100%;
     height: 50px;
     margin: 10px 0;
     padding-left: 10px;
-    border: 1px solid #eee;
-    border-radius: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
 }
-.free-write textarea {
-    height: 300px;
-    padding-top: 10px;
+.editor-container__editor {
+    margin: 10px auto;
+}
+.ck-editor__editable {
+    height: 500px;
     resize: none;
 }
-#write-btn {
+
+#list-btn, #write-btn {
     display: block;
     float: right;
     width: 80px;
     height: 40px;
     line-height: 40px;
+    margin: 20px auto;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 10px;
     background-color: #fff;
     cursor: pointer;
     transition: all 0.3s;
+}
+#list-btn {
+    float: left;
 }
 #write-btn:hover {
     box-shadow: 0px 0px 10px -2px #999;
