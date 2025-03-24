@@ -51,7 +51,6 @@ function Body() {
             id: e.target.id.split('-')[1],
           })
           .then(res => {
-            console.log(res.data.id);
             if (sessionStorage.getItem('id') != res.data.id) {
               setInteract({
                 selected: res.data,

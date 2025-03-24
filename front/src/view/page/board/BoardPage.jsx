@@ -148,7 +148,6 @@ function BoardPage() {
 
   const handleCategoryClick = (category) => {
     if (category === activeCategory) return
-    console.log("카테고리 클릭:", category)
     navigate(`/boardpage?category=${category}`)
   }
 

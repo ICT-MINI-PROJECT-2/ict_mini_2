@@ -70,12 +70,12 @@ function FreePage() {
         return data.map((record) => (
             <ul className="free-list" key={record.id}>
                 <li>{record.id}</li>
-                <li>
+                <li id="free-list-title">
                     <Link to={`/free/view/${record.id}`}>
                         {isNotice && <span id="notice-sticker">공지</span>}
-                        <span id="free-list-title">{record.title}</span>
-                        <span>[{record.comments.length}]</span>
+                        <span style={{fontSize:'15px'}}>{record.title.length > 12 ? record.title.substring(0,12)+'...' : record.title }</span>
                     </Link>
+                    <span> [{record.comments.length}]</span>
                 </li>
                 <li>{record.user.username}</li>
                 <li>{record.hit}</li>
@@ -121,10 +121,10 @@ function FreePage() {
                         {boardData.map((record) => (
                             <ul className="free-list" key={record.id}>
                                 <li>{record.id}</li>
-                                <li>
+                                <li  id="free-list-title">
                                     <Link to={`/free/view/${record.id}`}>
-                                        <span id="free-list-title">{record.title}</span>
-                                        <span>[{record.comments.length}]</span>
+                                        <span style={{fontSize:'15px'}}>{record.title.length > 16 ? record.title.substring(0,16)+'...' : record.title }</span>
+                                        <span> [{record.comments.length}]</span>
                                     </Link>
                                 </li>
                                 <li>
