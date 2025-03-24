@@ -74,7 +74,6 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                         }}
                         onError={(e) => {
                             if (e.target.src !== window.location.origin + "/placeholder-simple.svg") {
-                                console.log("Image load failed, using placeholder:", e.target.src);
                                 e.target.src = "/placeholder-simple.svg";
                             }
                         }}

@@ -33,7 +33,6 @@ function MessageBox({open, msg_box,setMsg_box}){
                 .then(res => {
                     let x = [];
                     let cnt = 0;
-                    console.log(res.data);
                     for(var i=0;i<res.data.length;i++) {
                         if(res.data[i].state == 2) {
                             x.push(res.data[i]);

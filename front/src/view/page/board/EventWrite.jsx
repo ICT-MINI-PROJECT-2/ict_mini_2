@@ -97,7 +97,6 @@ function BoardWrite() {
                 return response.text();
             })
             .then(data => {
-                console.log('Success:', data);
                 alert('글이 등록되었습니다.');
                 // **✅ 글 등록 성공 후 쿼리 캐시 무효화**
                 queryClient.invalidateQueries(["eventList", category]); 

@@ -30,9 +30,7 @@ function EventView() {
           throw new Error("이벤트를 불러오는데 실패했습니다.")
         }
         const data = await response.json()
-        console.log("받아온 이벤트 데이터:", data)
         setEvent(data)
-        console.log(data);
       } catch (error) {
         console.error("이벤트 로딩 중 오류 발생:", error)
         setError(error.message)
