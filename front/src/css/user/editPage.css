@@ -11,7 +11,7 @@
   
   #editPage-title {
     text-align: center;
-    font-size: 45px;
+    font-size: 38px;
     padding-top: 40px;
   }
   
@@ -42,15 +42,10 @@
     width: 28%;
   }
   
-  #tel1,
-  #tel2,
-  #tel3 {
-    width: 17%;
-  }
   
   .editPage-submit {
     color: white;
-    font-size: 25px;
+    font-size: 20px;
     display: block;
     margin: auto;
     margin-top: 20px;
@@ -133,12 +128,6 @@
   #zipcode {
     width: 30%;
   }
-  
-  #addr,
-  #addrdetail {
-    width: 70%;
-  }
-  
   #userid,
   #userpw,
   #userpw_chk,

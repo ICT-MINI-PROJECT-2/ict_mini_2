@@ -4,10 +4,11 @@ import axios from 'axios';
 import Faded from '../../effect/Faded';
 import EnterEdit from './EnterEdit';
 import EditPage from './EditPage';
-
+import { useGlobalState } from '../../GlobalStateContext';
 
 
 function EditCheckList({editParam, setEditParam, editWhere, setEditWhere}) {
+    const {serverIP} = useGlobalState();
     const [selectedFoods, setSelectedFoods] = useState([]);
     const [allChecked, setAllChecked] = useState(false);
     const allFoods = ["한식","중국식","일식","양식","아시아음식","패스트푸드","주점","뷔페","패밀리레스트랑","기타"];
@@ -38,7 +39,7 @@ function EditCheckList({editParam, setEditParam, editWhere, setEditWhere}) {
         console.log("보내는거", foodsString);
         setEditParam({...editParam, foods:foodsString});
         
-        axios.post('http://localhost:9977/user/editcheckList',{...editParam, foods:foodsString})
+        axios.post(`${serverIP}/user/editcheckList`,{...editParam, foods:foodsString})
         .then(response =>{
             console.log('보냄',response.data);
             setEditWhere(3);

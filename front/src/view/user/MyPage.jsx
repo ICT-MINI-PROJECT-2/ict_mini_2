@@ -157,7 +157,7 @@ function MyPage() {
   function getCommentList(page) {
     console.log(":::");
     const id = sessionStorage.getItem("id")
-    const url = `http://localhost:9977/user/getCommentList?id=${id}&nowPage=${page}`
+    const url = `${serverIP}/user/getCommentList?id=${id}&nowPage=${page}`
 
     axios
       .post(url)
@@ -190,7 +190,7 @@ function MyPage() {
 
   function getFreeBoardList(page) {
     const id = sessionStorage.getItem("id")
-    const url = `http://localhost:9977/user/getFreeBoardList?id=${id}&nowPage=${page}`
+    const url = `${serverIP}/user/getFreeBoardList?id=${id}&nowPage=${page}`
 
     axios
       .post(url)
@@ -438,13 +438,12 @@ function MyPage() {
             </div>
 
             <div id="reviewlist-box">
-          <h2 id="reviewlist-title">작성한 자유게시판글</h2>
+          <h2 id="reviewlist-title">작성한 글</h2>
           <div className="table-wrapper">
             <table className="list-table">
               <thead>
                 <tr>
                   <th>글제목</th>
-                  <th>내용</th>
                   <th>날짜</th>
                   <th>삭제</th>
                 </tr>
@@ -453,16 +452,6 @@ function MyPage() {
                 {freeBoardRecord.map((freeboardlistup) => (
                   <tr key={freeboardlistup.id}>
                     <td>{freeboardlistup.title}</td>
-                    <td
-                      style={{
-                        maxWidth: "200px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {freeboardlistup.cotent}
-                    </td>
                     <td>{freeboardlistup.writedate.substring(0, 10)}</td>
                     <td>
                       <a>삭제</a>
@@ -594,7 +583,7 @@ function MyPage() {
             </div>
 
         { loc.state == null && 
-        <div className="edit-profile-button-container">
+        <div className="edit-profile-button-container" style={{marginBottom:'100px'}}>
           <Link to="/editEnter" className="edit-profile-button"> 개인정보수정 </Link>
         </div>
         }

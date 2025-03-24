@@ -10,7 +10,7 @@
   
   #idfind-title {
     text-align: center;
-    font-size: 45px;
+    font-size: 38px;
     padding-top: 40px;
   }
   
@@ -37,7 +37,7 @@
   
   .idfind-submit {
     color: white;
-    font-size: 25px;
+    font-size: 20px;
     display: block;
     margin: auto;
     margin-top: 20px;
@@ -70,16 +70,8 @@
   }
   
 #username{
-    width: 47.5%;
+    width: 37.5%;
 }
-
-  #email1 {
-    width: 20%;
-  }
-  
-  #email2 {
-    width: 20%;
-  }
   
   #idfind-right > input:focus {
     outline: none;
@@ -87,12 +79,6 @@
     color: white;
   }
   
-  #alert-id,
-  #alert-email {
-    color: #b21848;
-    font-size: 14px;
-    margin-top: 5px;
-  }
   
   #idpw-find {
     font-size: 15px;

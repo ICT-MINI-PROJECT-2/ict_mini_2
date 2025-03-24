@@ -61,7 +61,8 @@ function Pwfind() {
         if (res.data.pw === -1) {
           alert("일치하는 정보가 없습니다.");
         } else {
-          alert("비밀번호는 " + res.data.userpw + "입니다.");
+          if(res.data.userpw === undefined) alert("해당하는 사용자가 없습니다.");
+          else alert("비밀번호는 " + res.data.userpw + "입니다.");
         }
       })
       .catch((err) => {
@@ -99,7 +100,7 @@ function Pwfind() {
               <div id="alert-email">{!okChk.emailOk || !okChk.email2Ok ? okChk.email_alert : ""}</div>
             </div>
           </div>
-          <input className="pwfind-submit" onClick={pwFindChk} type="button" value="아이디찾기" />
+          <input className="pwfind-submit" onClick={pwFindChk} type="button" value="비밀번호 찾기" />
           <div id="idpw-find">
             <div id="pw-find">
               <Link to="/idfind">아이디 찾기</Link>

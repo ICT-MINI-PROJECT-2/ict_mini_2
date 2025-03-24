@@ -91,9 +91,10 @@ function FreePage() {
                 {currentView === 'all' ? (
                     <div onClick={() => { setCurrentView('notice'); }}>공지 전체 목록</div>
                 ) : (
-                    <div onClick={() => { setCurrentView('all'); }}>게시글 목록</div>
+                    <h5 style={{color:'#e55',fontWeight:'bold',cursor:'pointer',textAlign:'left',fontSize:'16px',marginTop:'72px'}} onClick={() => { setCurrentView('all'); }}>게시글 목록</h5>
                 )}
-                <input
+                {currentView === 'all' && (
+                <><input
                     type="text"
                     placeholder="검색어를 입력하세요"
                     name="searchWord"
@@ -102,8 +103,7 @@ function FreePage() {
                     onKeyUp={handleSearch}
                 />
                 <input type="button" value="검색" onClick={() => { getBoardList(1); }} />
-                {currentView === 'all' && (
-                    <div>총 게시글 수: {totalRecord}개</div>
+                    <div>총 게시글 수: {totalRecord}개</div></>
                 )}
             </div>
 
