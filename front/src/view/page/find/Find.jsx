@@ -18,7 +18,7 @@ function Find(){
     const [totalRecord, setTotalRecord] = useState(0);
     const [sort, setSort] = useState('restaurant_no');
     const firstSearch = useRef(false);
-
+    const { pageMove, setPageMove } = useGlobalState();
     useEffect(() => {
         window.scrollTo({top:450,left:0,behavior:'smooth'});
     },[list])
@@ -134,6 +134,7 @@ function Find(){
                     });
                 });
         }
+        setPageMove(!pageMove);
     },[]);
 
     document.addEventListener('keydown', function(event) {

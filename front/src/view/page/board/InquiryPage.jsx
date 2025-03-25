@@ -169,7 +169,7 @@ function InquiryList() {
                 )}
 
                 {sessionStorage.getItem("loginId") === 'admin1234' && (
-                    <Link to="/boardwrite?category=FAQ" id='inquiry-write-button'>자주묻는질문</Link>
+                    <Link to="/boardwrite?category=FAQ" className="inquiry-faq-button" id='inquiry-write-button'>자주묻는질문</Link>
                 )}
             </div>
 

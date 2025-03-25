@@ -12,7 +12,7 @@ function MessageView({msg_box, setMsg_box}) {
             let modal = document.getElementsByClassName("message-view-container")[0];
 
             modal.style.opacity = 1;
-            modal.style.zIndex = 15;
+            modal.style.zIndex = 13;
             modal.style.left = (window.innerWidth - modal.offsetWidth) / 2 + 'px';
             modal.style.top = (window.innerHeight - modal.offsetHeight) / 2 + 'px';
 
@@ -140,7 +140,7 @@ function MessageView({msg_box, setMsg_box}) {
                 backgroundColor: 'rgba(0,0,0,0.5)',
                 display: msg_box.isOpen ? 'block' : 'none', // Show/Hide based on modal state
                 backdropFilter: 'blur(5px)',
-                zIndex: 14
+                zIndex: 12
             }}></div>
 
             <div className='message-view-container'>

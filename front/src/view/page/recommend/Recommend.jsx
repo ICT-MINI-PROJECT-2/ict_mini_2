@@ -75,7 +75,10 @@ function Recommend() {
         review: 0
     });
 
+    const { pageMove, setPageMove } = useGlobalState();
+
     useEffect(() => {
+        setPageMove(!pageMove);
         axios.get(`${serverIP}/tech/getUserInfo?id=` + sessionStorage.getItem('id'))
             .then(res => {
                 setAddr({ address: res.data.addr });
@@ -278,12 +281,15 @@ function Recommend() {
                     }, 750);
 
                     setTimeout(() => {
+                        if(document.getElementById("select-menu" + i))
                         document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 0s ease-in-out';
                     }, 1500);
                     break;
                 } else if (option === 'right') {
+                    if(document.getElementById("select-menu" + i)){
                     document.getElementById("select-menu" + i).querySelector("img").style.transition = 'opacity 1s ease-in-out';
                     document.getElementById("select-menu" + i).querySelector("img").style.opacity = 0;
+                    }
 
                     var fileName = menuImage.rightImage.substring(28, menuImage.rightImage.length - 4);
                     var menuName = fileName.substring(0, fileName.length - 2);

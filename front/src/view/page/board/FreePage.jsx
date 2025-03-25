@@ -14,15 +14,16 @@ function FreePage() {
     const [currentView, setCurrentView] = useState('all');
     const mounted = useRef(false);
     const { serverIP } = useGlobalState();
+    const { pageMove, setPageMove } = useGlobalState();
 
-    const getBoardList = async (page) => {
+    const getBoardList = (page) => {
+        console.log("!?");
         let url = `${serverIP}/free/list?nowPage=${page}`;
         if (searchWord !== '') {
             url += `&searchWord=${searchWord}`;
         }
 
-        try {
-            const res = await axios.get(url);
+        axios.get(url).then((res) => {
             const { noticeList, list, pVO } = res.data;
 
             setNoticeList(noticeList);
@@ -38,9 +39,7 @@ function FreePage() {
             setNowPage(pVO.nowPage);
             setTotalPage(pVO.totalPage);
             setTotalRecord(pVO.totalRecord);
-        } catch (err) {
-            console.log(err);
-        }
+        });
     };
 
     useEffect(() => {

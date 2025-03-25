@@ -7,9 +7,9 @@ const GlobalStateContext = createContext();
 // Provider 컴포넌트 생성
 export const GlobalStateProvider = ({ children }) => {
   const [serverIP, setServerIP] = useState('http://192.168.1.146:9977');
-
+  const [pageMove, setPageMove] = useState(false);
   return (
-    <GlobalStateContext.Provider value={{ serverIP, setServerIP }}>
+    <GlobalStateContext.Provider value={{ serverIP, setServerIP, pageMove, setPageMove }}>
       {children}
     </GlobalStateContext.Provider>
   );
