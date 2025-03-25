@@ -24,14 +24,14 @@
 }
 .mypage-table>ul:first-child>li {
   width: 100%;
-  padding: 5px;
+  padding: 10px 5px;
   background-color: #f8f9fa;
   font-weight: 600;
   color: #333;
   border-bottom: 2px solid #b21848; /* 테이블 헤더에 색상 적용 */
 }
 .mypage-table li {
-  padding: 5px;
+  padding: 10px 5px;
   width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;

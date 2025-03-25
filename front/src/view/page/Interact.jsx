@@ -19,7 +19,7 @@ function Interact({ interact, setInteract }) {
     };
 
     const moveInfo = (where) => {
-        navigate('/mypage', {state:where});
+        navigate('/userInfo', {state:where});
         setInteract({...interact, isOpen:false});
     }
 
