@@ -92,7 +92,7 @@ function Menu() {
                     </li> : <li>
                         <Link to="/login">로그인</Link>
                     </li>}
-                    <div id="up-button" onClick={() => scrollUp()}>
+                    <div style={{zIndex:'13'}} id="up-button" onClick={() => scrollUp()}>
                         ▲
                     </div>
                     {sessionStorage.getItem("loginStatus") === 'Y' && <MessageBox msg_box={msg_box} setMsg_box={setMsg_box} open={open} />}

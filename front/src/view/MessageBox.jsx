@@ -48,7 +48,7 @@ function MessageBox({open, msg_box,setMsg_box}){
     },[open])
     return(
         <>
-        <div className="message-box-container" onClick={() => setMsg_box({...msg_box, isOpen:true})}>
+        <div style={{width:'50px'}}className="message-box-container" onClick={() => setMsg_box({...msg_box, isOpen:true})}>
             ✉️
             { total != 0 && <span>{total}</span>}
         </div>
