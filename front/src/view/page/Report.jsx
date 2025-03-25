@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
 import { useGlobalState } from "../../GlobalStateContext";
@@ -52,6 +52,10 @@ function Report({ interact, setReport, setInteract }) {
     const [comment, setComment] = useState('');
     const [noMsg, setNoMsg] = useState(false);
 
+    const modalRef = useRef(null);
+    const isDragging = useRef(false);
+    const offset = useRef({ x: 0, y: 0 });
+
     const changeComment = (e) => {
         setComment(e.target.value);
     }
@@ -70,15 +74,68 @@ function Report({ interact, setReport, setInteract }) {
                 .then(res => {
                     if (res.data === 'ok') {
                         setReport(false);
-                        setInteract({...interact, isOpen:false});
+                        setInteract({ ...interact, isOpen: false });
                     }
                 })
                 .catch(err => console.log(err))
         }
     }
 
+    const onMouseDown = (e) => {
+        if (modalRef.current) {
+            isDragging.current = true;
+            offset.current = {
+                x: e.clientX - modalRef.current.getBoundingClientRect().left,
+                y: e.clientY - modalRef.current.getBoundingClientRect().top + modalRef.current.height/2,
+            };
+            modalRef.current.style.cursor = "grabbing"; 
+        }
+    };
+
+    const onMouseMove = (e) => {
+        if (isDragging.current && modalRef.current) {
+            const x = e.clientX - offset.current.x;
+            const y = e.clientY - offset.current.y;
+            modalRef.current.style.left = `${x}px`;
+            modalRef.current.style.top = `${y}px`;
+        }
+    };
+
+    const onMouseUp = () => {
+        if (isDragging.current && modalRef.current) {
+            isDragging.current = false;
+            modalRef.current.style.cursor = "grab";
+        }
+    };
+
+    useEffect(() => {
+        const modal = modalRef.current;
+
+        if (modal) {
+            modal.addEventListener('mousedown', onMouseDown);
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
+        }
+
+        return () => {
+            if (modal) {
+                modal.removeEventListener('mousedown', onMouseDown);
+            }
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+        };
+    }, []);
+
     return (
-        <div className='report-container' style={{ left: interact.where.pageX-100, top: interact.where.pageY-100}}>
+        <div
+            className='report-container'
+            ref={modalRef}
+            style={{
+                position: 'absolute',
+                left: interact.where.pageX - 100, 
+                top: interact.where.pageY - 100
+            }}
+        >
             <div className='report-exit' onClick={() => setReport(false)}>X</div>
             <div className='report-header' style={{ textAlign: 'center', marginTop: '10px' }}>신고하기</div>
             <div className='report-recipient'>

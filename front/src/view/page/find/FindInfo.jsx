@@ -210,11 +210,18 @@ function FindInfo() {
             <div className='rPhoto'>
                 <Slider {...settings}>
                 {
-                    img_list.map((item, idx) => {
+                    img_list.length > 1 ? img_list.map((item, idx) => {
                         return(<div>
                             <img key={idx} src={item} style={{width:'100%', height:'30%'}}/>
                         </div>);
-                    })
+                    }) : review_img_list.length > 1 ? review_img_list.map((item, idx) => {
+                        return (
+                            idx < 5 && <div key={idx}>
+                                <img src={`${serverIP}/uploads/review/${item.id}/${item.filename}`} 
+                                    style={{ width: '100%', objectFit: 'contain', maxHeight: '420px' }} />
+                            </div>
+                        );
+                    }) : <div>사진 정보가 없습니다.</div>
                 }
                 </Slider>
             </div>
