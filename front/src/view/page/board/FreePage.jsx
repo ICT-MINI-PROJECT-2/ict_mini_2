@@ -73,7 +73,7 @@ function FreePage() {
                 <li id="free-list-title">
                     <Link to={`/free/view/${record.id}`}>
                         {isNotice && <span id="notice-sticker">공지</span>}
-                        <span style={{fontSize:'15px'}}>{record.title.length > 12 ? record.title.substring(0,12)+'...' : record.title }</span>
+                        <span style={{fontSize:'15px'}}>{record.title.length > 15 ? record.title.substring(0,15)+'...' : record.title }</span>
                     </Link>
                     <span> [{record.comments.length}]</span>
                 </li>
@@ -115,7 +115,7 @@ function FreePage() {
                     <li>조회수</li>
                     <li>등록일</li>
                 </ul>
-                {currentView === 'all' && boardData.length !== 0 && (
+                {currentView === 'all' && boardData.length + noticeList.length !== 0 && (
                     <>
                         {renderList(noticeList.slice(0, 2), true)}
                         {boardData.map((record) => (
@@ -123,7 +123,7 @@ function FreePage() {
                                 <li>{record.id}</li>
                                 <li  id="free-list-title">
                                     <Link to={`/free/view/${record.id}`}>
-                                        <span style={{fontSize:'15px'}}>{record.title.length > 16 ? record.title.substring(0,16)+'...' : record.title }</span>
+                                        <span style={{fontSize:'15px'}}>{record.title.length > 19 ? record.title.substring(0,19)+'...' : record.title }</span>
                                         <span> [{record.comments.length}]</span>
                                     </Link>
                                 </li>
@@ -146,7 +146,7 @@ function FreePage() {
             </div>
 
             {
-                currentView === 'all' && boardData.length === 0 &&
+                currentView === 'all' && boardData.length + noticeList.length === 0 &&
                 <div style={{padding: '20px', fontWeight: 'bold', textAlign: 'center'}}>검색 결과가 없습니다.</div>
             }
 

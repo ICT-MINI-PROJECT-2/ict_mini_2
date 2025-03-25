@@ -169,7 +169,7 @@
 }
 #view-content {
     padding: 20px;
-    white-space: pre;
+    white-space: pre-wrap;
 }
 .image_resized {
     height: inherit;

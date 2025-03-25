@@ -33,7 +33,7 @@
   }
   
   .FaqUpdate_textarea {
-    height: 200px; /* Adjust as needed */
+    height: 200px !important; /* Adjust as needed */
     resize: vertical; /* Allow vertical resizing */
   }
   
