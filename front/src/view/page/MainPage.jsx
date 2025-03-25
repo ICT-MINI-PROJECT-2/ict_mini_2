@@ -98,6 +98,7 @@ const SocialShareButtons = ({ eventId, eventTitle }) => {
 };
 
 function MainPage(){
+  const { pageMove, setPageMove } = useGlobalState();
   const { serverIP } = useGlobalState();
   const navigate = useNavigate();
   const [reviewModal, setReviewModal] = useState({
@@ -110,6 +111,7 @@ function MainPage(){
     useEffect(()=>{
       if(main_mount.current){}
       else {
+        setPageMove(!pageMove);
         axios.get(`${serverIP}/tech/event`)
         .then(res => {
           let elist = [];

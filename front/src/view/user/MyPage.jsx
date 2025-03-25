@@ -35,6 +35,7 @@ function MyPage() {
 
   const [graphRecord, setGraphRecord] = useState([])
   const [chartData, setChartDate] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  const { pageMove, setPageMove } = useGlobalState();
 
   const loc = useLocation();
 
@@ -49,6 +50,7 @@ function MyPage() {
       getReviewList(1)
       getCommentList(1)
       getFreeBoardList(1)
+      setPageMove(!pageMove)
     }
   }, [])
 

@@ -42,6 +42,7 @@ function Body() {
     selected: 0,
   });
   const { serverIP } = useGlobalState();
+  const { pageMove } = useGlobalState();
   const al_mount = useRef(false);
 
   useEffect(() => {
@@ -73,6 +74,9 @@ function Body() {
       };
     }
   }, []);
+  useEffect(()=>{
+    window.scrollTo({top:0,left:0,behavior:'smooth'});
+  },[pageMove])
   return (
     <>{interact.isOpen && <Interact interact={interact} setInteract={setInteract}/>}
     <Routes>
@@ -115,6 +119,7 @@ function Body() {
       <Route path="/find" element={<Find />} />
       <Route path="/recommend" element={<Recommend />} />
       <Route path="/mypage" element={<MyPage />} />
+      <Route path="/userInfo" element={<MyPage />} />
       <Route path="/findInfo" element={<FindInfo />} />
       <Route path="/test" element={<Test />} />
       <Route path="/editEnter" element={<EnterEdit/>} />

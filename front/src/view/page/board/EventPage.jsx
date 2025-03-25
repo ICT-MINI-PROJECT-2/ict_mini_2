@@ -91,7 +91,7 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                         color: "white",
                         textAlign: "center",
                         width: "100%",
-                        textShadow: "2px 2px 4px rgba(0,0,0,1)",
+                        textShadow:'-1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black, 2px 2px 4px rgba(0,0,0,1)',
                     }}
                 >
                     <p style={{ fontSize: "14px", margin: "0" }}>
@@ -122,7 +122,9 @@ const MemoizedRenderEventCard = memo(function RenderEventCard({ event }) {
                     >
                         {event.user?.username?.charAt(0) || "?"}
                     </div>
-                    <span style={{ fontSize: "14px" }}>{event.user?.username || "최고관리자"}</span>
+                    <span style={{ fontSize: "14px",cursor:'pointer' }}
+                                        id={`mgw-${event.user.id}`}
+                                        className="msg-who">{event.user?.username || "최고관리자"}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", color: "#666" }}>
                     <div>
@@ -288,7 +290,6 @@ const EventList = memo(function EventList() {
                     }}>
                         <option value="제목내용">제목+내용</option>
                         <option value="제목만">제목만</option>
-                        <option value="작성자">작성자</option>
                      
                     </select>
                     <form onSubmit={handleSearch} style={{ display: "flex" }}>
