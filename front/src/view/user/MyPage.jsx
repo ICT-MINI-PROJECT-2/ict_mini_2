@@ -8,6 +8,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
 import { Doughnut } from "react-chartjs-2"
 import axios from "axios"
 import { useGlobalState } from "../../GlobalStateContext"
+import ReviewModal from "../page/find/ReviewModal"
 
 function MyPage() {
   const { serverIP } = useGlobalState();
@@ -39,6 +40,11 @@ function MyPage() {
 
   const loc = useLocation();
 
+  const [reviewModal, setReviewModal] = useState({
+    isOpen: false,
+    selected:0
+  });
+
   //페이지,마운트
   const mounted = useRef(false)
   useEffect(() => {
@@ -59,28 +65,28 @@ function MyPage() {
 
     const categoryLabels = [
       "한식",
-      "중국식",
+      "중식",
       "일식",
       "양식",
       "아시아음식",
       "패스트푸드",
       "주점",
       "뷔페",
-      "패밀리레스트랑",
+      "분식",
       "기타",
     ]
     const categoryData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     setChartDate(categoryData)
     categories.forEach((category) => {
       if (category === "한식") categoryData[0] += 1
-      if (category === "중국식") categoryData[1] += 1
+      if (category === "중식") categoryData[1] += 1
       if (category === "일식") categoryData[2] += 1
       if (category === "양식") categoryData[3] += 1
       if (category === "아시아음식") categoryData[4] += 1
       if (category === "패스트푸드") categoryData[5] += 1
       if (category === "주점") categoryData[6] += 1
       if (category === "뷔페") categoryData[7] += 1
-      if (category === "패밀리레스트랑") categoryData[8] += 1
+      if (category === "분식") categoryData[8] += 1
       if (category === "기타") categoryData[9] += 1
     })
   }, [graphRecord])
@@ -98,6 +104,7 @@ function MyPage() {
       .post(url)
       .then((res) => {
         //기존 데이터 초기화
+        console.log(res.data.re);
         setWishRecord([])
         setWishRecord(res.data.re)
         setWishvo([])
@@ -121,7 +128,12 @@ function MyPage() {
       })
   }
   function wishDel(id) {
-    console.log(id, "삭제버튼클릭")
+    axios.post(`${serverIP}/tech/wishlist`, {
+      restaurant: {id: id},
+      user: {id: sessionStorage.getItem("id")},
+      state: '♥'
+    })
+
   }
 
   //리뷰리스트
@@ -155,10 +167,11 @@ function MyPage() {
       })
   }
 
-  //댓글글리스트
+  //댓글 리스트
   function getCommentList(page) {
-    console.log(":::");
-    const id = sessionStorage.getItem("id")
+    let id;
+    if(loc.state == null) id = sessionStorage.getItem("id");
+    else id = loc.state.id;
     const url = `${serverIP}/user/getCommentList?id=${id}&nowPage=${page}`
 
     axios
@@ -191,7 +204,9 @@ function MyPage() {
   //글리스트
 
   function getFreeBoardList(page) {
-    const id = sessionStorage.getItem("id")
+    let id;
+    if(loc.state == null) id = sessionStorage.getItem("id");
+    else id = loc.state.id;
     const url = `${serverIP}/user/getFreeBoardList?id=${id}&nowPage=${page}`
 
     axios
@@ -242,7 +257,7 @@ function MyPage() {
 
   ChartJS.register(ArcElement, Tooltip, Legend)
   const data = {
-    labels: ["한식", "중국식", "일식", "양식", "아시아음식", "패스트푸드", "주점", "뷔페", "패밀리레스트랑", "기타"],
+    labels: ["한식", "중국식", "일식", "양식", "아시아음식", "패스트푸드", "주점", "뷔페", "분식", "기타"],
     datasets: [
       {
         label: "# of Votes",
@@ -290,6 +305,7 @@ function MyPage() {
 
   return (
     <Faded>
+      {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
       <div className="mypage-container">
         { loc.state!=null && <h1 style={{marginBottom:'50px'}}>'{loc.state.username}' 님의 정보</h1>}
         <h2 id="graph-title">선호음식</h2>
@@ -298,30 +314,24 @@ function MyPage() {
         </div>
 
         <div id="wishlist-box">
-          <h2 id="wishlist-title">찜목록</h2>
-          <div className="table-wrapper">
-            <table className="list-table">
-              <thead>
-                <tr>
-                  <th>찜한식당</th>
-                  <th>카테고리</th>
-                  <th>주소</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
+          <h2 id="wishlist-title">찜 목록</h2>
+          <div className="mypage-table">
+                <ul>
+                  <li>찜한식당</li>
+                  <li>카테고리</li>
+                  <li>주소</li>
+                  <li></li>
+                </ul>
                 {wishRecord.map((wishlistup) => (
-                  <tr key={wishlistup.id}>
-                    <td>{wishlistup.name}</td>
-                    <td>{wishlistup.categoryOne}</td>
-                    <td>{wishlistup.location}</td>
-                    <td>
-                      { loc.state == null && <a onClick={() => wishDel(wishlistup.id)}>삭제</a>}
-                    </td>
-                  </tr>
+                  <ul key={wishlistup.id}>
+                    <li><Link to={'/findInfo'} state={{id: wishlistup.id}}>{wishlistup.name}</Link></li>
+                    <li>{wishlistup.categoryOne}</li>
+                    <li>{wishlistup.location}</li>
+                    { loc.state == null && <li>
+                       <a id="mypage-del-btn" onClick={() => wishDel(wishlistup.id)}>삭제</a>
+                    </li>}
+                  </ul>
                 ))}
-              </tbody>
-            </table>
           </div>
         </div>
         <div className="my-pagination-box">
@@ -363,41 +373,24 @@ function MyPage() {
             </div>
 
         <div id="reviewlist-box">
-          <h2 id="reviewlist-title">나의 리뷰</h2>
-          <div className="table-wrapper">
-            <table className="list-table">
-              <thead>
-                <tr>
-                  <th>식당이름</th>
-                  <th>리뷰</th>
-                  <th>별점</th>
-                  <th>날짜</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {reviewRecord.map((reviewlistup) => (
-                  <tr key={reviewlistup.id}>
-                    <td>{reviewlistup.restaurant.name}</td>
-                    <td
-                      style={{
-                        maxWidth: "200px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {reviewlistup.comment}
-                    </td>
-                    <td>{reviewlistup.rating}</td>
-                    <td>{reviewlistup.writedate.substring(0, 10)}</td>
-                    <td>
-                    { loc.state == null && <a>삭제</a>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <h2 id="reviewlist-title">리뷰 목록</h2>
+          <div className="mypage-table">
+            <ul id="review-list-table">
+              <li>식당이름</li>
+              <li>리뷰</li>
+              <li>별점</li>
+              <li>날짜</li>
+            </ul>
+            {reviewRecord.map((reviewlistup) => (
+              <ul id="review-list-table" key={reviewlistup.id}>
+                <li>{reviewlistup.restaurant.name}</li>
+                <li onClick={()=>setReviewModal({isOpen:true, selected:reviewlistup.id})}>
+                  {reviewlistup.comment}
+                </li>
+                <li>{reviewlistup.rating}</li>
+                <li>{reviewlistup.writedate.substring(0, 10)}</li>
+              </ul>
+            ))}
           </div>
         </div>
         <div className="my-pagination-box">
@@ -440,28 +433,23 @@ function MyPage() {
             </div>
 
             <div id="reviewlist-box">
-          <h2 id="reviewlist-title">작성한 글</h2>
-          <div className="table-wrapper">
-            <table className="list-table">
-              <thead>
-                <tr>
-                  <th>글제목</th>
-                  <th>날짜</th>
-                  <th>삭제</th>
-                </tr>
-              </thead>
-              <tbody>
+          <h2 id="reviewlist-title">글 목록</h2>
+          <div className="mypage-table">
+                <ul id="board-list-table">
+                  <li>글제목</li>
+                  <li>날짜</li>
+                  <li></li>
+                </ul>
                 {freeBoardRecord.map((freeboardlistup) => (
-                  <tr key={freeboardlistup.id}>
-                    <td>{freeboardlistup.title}</td>
-                    <td>{freeboardlistup.writedate.substring(0, 10)}</td>
-                    <td>
-                      <a>삭제</a>
-                    </td>
-                  </tr>
+                  <ul id="board-list-table" key={freeboardlistup.id}>
+                    <li><Link to={`/free/view/${freeboardlistup.id}`}>{freeboardlistup.title}</Link></li>
+                    <li>{freeboardlistup.writedate.substring(0, 10)}</li>
+                    { loc.state == null &&
+                      <li>
+                        <a>삭제</a>
+                      </li>}
+                  </ul>
                 ))}
-              </tbody>
-            </table>
           </div>
         </div>
         <div className="my-pagination-box">
@@ -506,39 +494,29 @@ function MyPage() {
 
 
             <div id="reviewlist-box">
-          <h2 id="reviewlist-title">나의 댓글</h2>
-          <div className="table-wrapper">
-            <table className="list-table">
-              <thead>
-                <tr>
-                  <th>글제목</th>
-                  <th>댓글</th>
-                  <th>날짜</th>
-                  <th>삭제</th>
-                </tr>
-              </thead>
-              <tbody>
+          <h2 id="reviewlist-title">댓글 목록</h2>
+          <div className="mypage-table">
+                <ul id="comment-list-table">
+                  <li>글제목</li>
+                  <li>댓글</li>
+                  <li>날짜</li>
+                  <li></li>
+                </ul>
                 {commentRecord.map((item,idx) => (
-                  <tr key={item.id}>
-                    { board_commentRecord[idx] && <td>{board_commentRecord[idx].title}</td>}
-                    <td
-                      style={{
-                        maxWidth: "200px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {item.content}
-                    </td>
-                    <td>{item.writedate.substring(0, 10)}</td>
-                    <td>
+                  <ul id="comment-list-table" key={item.id}>
+                    { board_commentRecord[idx] && <li>{board_commentRecord[idx].title}</li>}
+                    
+                      <li>
+                        <Link to={`/free/view/${board_commentRecord[idx].id}`}>
+                        {item.content}</Link>
+                      </li>
+                    
+                    <li>{item.writedate.substring(0, 10)}</li>
+                    { loc.state == null && <li>
                       <a>삭제</a>
-                    </td>
-                  </tr>
+                    </li>}
+                  </ul>
                 ))}
-              </tbody>
-            </table>
           </div>
         </div>
         <div className="my-pagination-box">
