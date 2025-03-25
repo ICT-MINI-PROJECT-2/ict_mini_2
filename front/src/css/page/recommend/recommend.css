@@ -160,6 +160,10 @@
 .restaurantName{
   text-align: center;
   font-size:19px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 .restaurantAddress {
   overflow: hidden;

@@ -303,6 +303,37 @@ function MyPage() {
     },
   }
 
+  const boardDel = (id)=>{
+    if (window.confirm("글을 삭제하시겠습니까?")) {
+      axios.get(`${serverIP}/free/delete/${id}`)
+      .then(res=>{
+          if (res.data != 0) {
+              alert("게시글이 삭제되지 않았습니다.")
+          } else {
+            getFreeBoardList(1);
+          }
+      })
+      .catch(err=>{
+          console.log(err);
+      });
+    }
+  }
+  const commentDel = (id)=>{
+    if (window.confirm("댓글을 삭제하시겠습니까?")) {
+      axios.get(`${serverIP}/free/commentDel/${id}`)
+      .then(res=>{
+        if (res.data != 0) {
+          alert("게시글이 삭제되지 않았습니다.")
+      } else {
+          getCommentList(1);
+      }
+      })
+      .catch(err=>{
+          console.log(err);
+      });
+    }
+  }
+
   return (
     <Faded>
       {reviewModal.isOpen && <ReviewModal reviewModal ={reviewModal} setReviewModal={setReviewModal}/>}
@@ -328,7 +359,6 @@ function MyPage() {
                     <li>{wishlistup.categoryOne}</li>
                     <li>{wishlistup.location}</li>
                     { loc.state == null && <li>
-                       <a id="mypage-del-btn" onClick={() => wishDel(wishlistup.id)}>삭제</a>
                     </li>}
                   </ul>
                 ))}
@@ -384,7 +414,7 @@ function MyPage() {
             {reviewRecord.map((reviewlistup) => (
               <ul id="review-list-table" key={reviewlistup.id}>
                 <li>{reviewlistup.restaurant.name}</li>
-                <li onClick={()=>setReviewModal({isOpen:true, selected:reviewlistup.id})}>
+                <li style={{cursor:'pointer'}}onClick={()=>setReviewModal({isOpen:true, selected:reviewlistup.id})}>
                   {reviewlistup.comment}
                 </li>
                 <li>{reviewlistup.rating}</li>
@@ -446,7 +476,7 @@ function MyPage() {
                     <li>{freeboardlistup.writedate.substring(0, 10)}</li>
                     { loc.state == null &&
                       <li>
-                        <a>삭제</a>
+                        <a style={{cursor: 'pointer'}} onClick={()=>boardDel(freeboardlistup.id)}>삭제</a>
                       </li>}
                   </ul>
                 ))}
@@ -460,7 +490,7 @@ function MyPage() {
                       if(nowFreeBoardPage > 1){
                         return(
                   <a className="my-page-link" onClick={() => getFreeBoardList(nowFreeBoardPage > 1 ? nowFreeBoardPage - 1 : 1)}>
-                    Previous
+                    ◀
                   </a>)
                       }
                     }
@@ -513,7 +543,7 @@ function MyPage() {
                     
                     <li>{item.writedate.substring(0, 10)}</li>
                     { loc.state == null && <li>
-                      <a>삭제</a>
+                      <a style={{cursor: 'pointer'}} onClick={()=>{commentDel(item.id)}}>삭제</a>
                     </li>}
                   </ul>
                 ))}
